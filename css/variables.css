@@ -1,0 +1,52 @@
+:root {
+    /* Fondo (neutral scale) */
+    --fondo-100: #D9D9D9;
+    --fondo-200: #C7C7C7;
+    --fondo-300: #878787;
+    --fondo-500: #4D4F56;
+    --fondo-700: #242424;
+    --fondo-900: #151515;
+
+    /* Primary (orange) */
+    --primary-100: #FFC49C;
+    --primary-300: #FFA263;
+    --primary-500: #FE8D41;
+    --primary-700: #8B2AFF;
+    --primary-900: #E35B00;
+
+    /* Secondary (purple) */
+    --secondary-100: #D6B3FF;
+    --secondary-300: #B87CFF;
+    --secondary-500: #A151FF;
+    --secondary-700: #8B2AFF;
+    --secondary-900: #6F05EE;
+
+    /* Accent 2 */
+    --accent2-500: #03FFAF;
+
+    /* Roles semánticos (así el resto del CSS no cambia si ajustás un tono) */
+    --color-bg: var(--fondo-900);
+    --color-surface: var(--fondo-700);
+    --color-surface-light: var(--fondo-500);
+    --color-border: var(--fondo-500);
+    --color-text: var(--fondo-100);
+    --color-text-secondary: var(--fondo-300);
+
+    --color-primary: var(--primary-500);
+    --color-primary-hover: var(--primary-300);
+
+    --color-secondary: var(--secondary-500);
+    --color-secondary-hover: var(--secondary-300);
+
+    --color-success: var(--accent2-500);
+
+    --font-main: 'Radio Canada', -apple-system, 'Segoe UI', sans-serif;
+    --font-logo: 'Radio Canada', serif; /* reemplazá por tu fuente real del logo */
+
+    --radius-pill: 999px;
+    --radius-md: 10px;
+    --radius-lg: 20px;
+
+    --transition-fast: 0.15s ease;
+    --transition-mid: 0.3s ease;
+}

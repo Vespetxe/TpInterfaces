@@ -1,0 +1,71 @@
+/* Sign in — violeta (Secondary), animación 1: escala + brillo */
+.btn-signin {
+    background-color: var(--color-secondary);
+    color: #1a1a1a;
+    font-weight: 700;
+    padding: 14px 24px;
+    border-radius: var(--radius-pill);
+    width: 100%;
+    font-size: 15px;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btn-signin:hover {
+    background-color: var(--color-secondary-hover);
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(161, 114, 236, 0.4);
+}
+
+.btn-signin:active { transform: scale(0.98); }
+
+/* Create account — naranja (Primary), animación 2: relleno progresivo */
+.btn-create {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-primary);
+    color: #1a1a1a;
+    font-weight: 700;
+    padding: 14px 24px;
+    border-radius: var(--radius-pill);
+    width: 100%;
+    font-size: 15px;
+    z-index: 1;
+    transition: color var(--transition-mid);
+}
+
+.btn-create::before {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 0%;
+    background-color: var(--primary-700);
+    z-index: -1;
+    transition: height var(--transition-mid);
+}
+
+.btn-create:hover::before { height: 100%; }
+
+/* Botones sociales — animación 3: elevación + sombra */
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: var(--radius-pill);
+    padding: 14px 20px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn-social:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.btn-facebook { background-color: #1877F2; color: #fff; }
+.btn-google   { background-color: #ffffff; color: #333; }
+.btn-apple    { background-color: #000000; color: #fff; }
+
+.btn-social img, .btn-social svg { width: 18px; height: 18px; }
