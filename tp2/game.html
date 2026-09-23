@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/fatfooter.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="script" href="js/nav.js" defer>
+</head>
+<body>
+<header class="navbar">
+    <!-- 1. Lado Izquierdo: Menú Hamburguesa + Logo -->
+    <div class="nav-left">
+        <button class="hamburger-btn" aria-label="Abrir menú">
+            <span class="bar"></span>
+            <span class="bar bar-center"></span> <!-- La barra del centro lleva el triángulo -->
+            <span class="bar"></span>
+        </button>
+        <a href="index.html" class="logo">
+            <span class="nexus">Nexus</span><span class="games">Games</span>
+        </a>
+    </div>
+
+    <!-- 2. Centro: Buscador -->
+    <div class="nav-center">
+        <div class="search-box">
+            <input type="text" placeholder="Buscar" class="search-input" />
+            <button class="search-btn" aria-label="Buscar">
+                <!-- Icono de Lupa en SVG para mejor resolución -->
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Lado Derecho: Carrito + Avatar -->
+    <div class="nav-right">
+        <button class="cart-btn" aria-label="Carrito de compras">
+            🛒
+        </button>
+        <button class="avatar-btn" aria-label="Menú de usuario">
+            <img src="avatar.jpg" alt="Perfil de usuario" />
+        </button>
+    </div>
+</header>
+<main>
+
+</main>
+<footer>
+    <p>&copy; 2024 NexusGames. Todos los derechos reservados.</p>
+</footer>
+</body>
+</html>
