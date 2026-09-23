@@ -1,3 +1,7 @@
+/*Fuentes descargadas*/
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
     /* Fondo (neutral scale) */
     --fondo-100: #D9D9D9;
@@ -31,6 +35,8 @@
     --color-border: var(--fondo-500);
     --color-text: var(--fondo-100);
     --color-text-secondary: var(--fondo-300);
+    --font-logo1: 'MuseoModerno', sans-serif;
+    --font-logo2: 'Martian Mono', sans-serif;
 
     --color-primary: var(--primary-500);
     --color-primary-hover: var(--primary-300);

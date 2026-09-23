@@ -1,3 +1,5 @@
+@import url('variables.css');
+
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
@@ -9,9 +11,10 @@
 .auth-card {
     background-color: var(--color-surface);
     border-radius: var(--radius-lg);
-    padding: 40px 32px;
+    padding: 40px 80px;
     width: 100%;
-    max-width: 380px;
+    max-width: 560px;
+    height: 850px;
     text-align: center;
 }
 
@@ -27,8 +30,8 @@
     margin-bottom: 28px;
 }
 
-.wordmark .nexus { font-family: var(--font-logo); font-weight: 700; }
-.wordmark .games { font-weight: 400; }
+.wordmark .nexus { font-family: var(--font-logo1); font-weight: 500; font-size: 29.5px; }
+.wordmark .games { font-family: var(--font-logo2); font-weight: 300; font-size: 25.28px;}
 
 .auth-card h1 {
     font-size: 20px;
