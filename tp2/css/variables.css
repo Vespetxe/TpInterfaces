@@ -41,7 +41,7 @@
     --color-success: var(--accent2-500);
 
     --font-main: 'Radio Canada', -apple-system, 'Segoe UI', sans-serif;
-    --font-logo: 'Radio Canada', serif; /* reemplazá por tu fuente real del logo */
+    --font-logo: 'MuseoModerno', serif; /* reemplazá por tu fuente real del logo */
 
     --radius-pill: 999px;
     --radius-md: 10px;
