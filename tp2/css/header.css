@@ -135,7 +135,7 @@
 /* Estilo del texto de sugerencia (Placeholder) */
 .search-input::placeholder {
     color: var(--color-text-secondary);
-    font-style: italic;         /* Cursiva como en la imagen de Figma */
+    font-style: var(--font-main);         /* Cursiva como en la imagen de Figma */
 }
 
 /* Botón de la lupa */
