@@ -10,6 +10,7 @@
     background-color: var(--fondo-700); /* Fondo oscuro del header */
     padding: 10px 5px;
     color: var(--fondo-100); /* Color de texto claro */
+
 }
 
 /* Agrupadores principales */
@@ -121,7 +122,6 @@
     border-radius: 20px;        /* Redondeado tipo píldora */
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 /* El campo de texto interno */
 .search-input {
     width: 100%;
@@ -129,7 +129,7 @@
     outline: none;              /* Quita el borde azul/negro al hacer click */
     background: transparent;    /* Toma el fondo del contenedor */
     font-size: 14px;
-    color: var(--color-text-secondary);
+    color: var(--fondo-900);    /* Cambiado para que el texto escrito sea oscuro */
 }
 
 /* Estilo del texto de sugerencia (Placeholder) */
@@ -160,4 +160,44 @@
 .search-box:focus-within {
     background-color: var(--fondo-100);
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+/* Contenedor del avatar (el botón) */
+.avatar-btn {
+    width: 37px;
+    height: 37px;
+    border-radius: 50px;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+}
+
+/* La imagen dentro del avatar */
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* Evita que la foto se deforme o estire si no es cuadrada */
+    display: block;
+}
+.cart-btn {
+    width: 37px;
+    height: 37px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* El icono PNG adentro del círculo */
+.cart-icon {
+    width: 22px;
+    height: auto;
+    display: block;
 }
