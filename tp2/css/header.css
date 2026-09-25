@@ -10,7 +10,8 @@
     background-color: var(--fondo-700); /* Fondo oscuro del header */
     padding: 10px 5px;
     color: var(--fondo-100); /* Color de texto claro */
-
+    width: 100%;
+    position: fixed; /* Fija el header en la parte superior */
 }
 
 /* Agrupadores principales */
