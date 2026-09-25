@@ -47,7 +47,7 @@
     display: block;
     width: 28px;
     height: 5px;
-    background-color: var(--fondo-100); /* Estado reposo normal */
+    background-color: var(--fondo-100);
     border-radius: 10px;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -57,26 +57,34 @@
     position: relative;
 }
 
-/* Triángulo naranja (se dibuja con clip-path sobre la barra central) */
+/* Default: pegado al borde derecho, pico apunta hacia la izquierda (adentro) */
 .bar-center::after {
     content: "";
     position: absolute;
     top: 50%;
-    right: 0px; /* Posición inicial: lado derecho */
-    transform: translateY(-50%);
+    right: 0px;
     width: 11px;
     height: 11px;
-    background-color: var(--color-primary); /* Naranja de tu prototipo */
-
-  /* Triángulo que apunta hacia la derecha */
-    clip-path: polygon(0% 50%, 100% 0%, 100% 100%); /*Top-Left (Arriba Izquierda): 0% 50%, Top-Right (Arriba Derecha): 100% 0 Bottom-Right (Abajo Derecha): 100% 100% Bottom-Left (Abajo Izquierda)*/
-    
-  /* Sombra para despegarlo visualmente de la barra */
+    background-color: var(--color-primary);
+    clip-path: polygon(100% 0%, 100% 100%, 0% 50%);
     filter: drop-shadow(-3px 0px 14px rgba(21, 21, 21, 0.8));
     display: inline-block;
-    
-  /* Transición suave para desplazamiento, cambio de lado y escala */
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(-50%);
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-btn:hover .bar-center::after {
+    transform: translateY(-50%) scale(1.15);
+}
+
+/* Active: pegado al borde izquierdo, pico apunta hacia la derecha (adentro) */
+.hamburger-btn.active .bar-center::after {
+    right: 17px;
+    clip-path: polygon(0% 0%, 0% 100%, 100% 50%);
+}
+
+.hamburger-btn.active:hover .bar-center::after {
+    transform: translateY(-50%) scale(1.15);
 }
 
 .logo .nexus { font-family: var(--font-logo1); font-weight: 500; font-size: 21px; }
@@ -86,26 +94,10 @@
     ESTADOS INTERACTIVOS (HOVER & ACTIVE)
    ------------------------------------------ */
 
-/* HOVER: Ilumina las barras a blanco y resalta el triángulo */
+/* HOVER: resalta el triángulo */
 .hamburger-btn:hover .bar {
-    background-color: var(--fondo-300); /* Gris más claro al hacer hover */
+    background-color: var(--fondo-300);
 }
-
-.hamburger-btn:hover .bar-center::after {
-    transform: translateY(-50%) scale(1.15);
-}
-
-/* ACTIVE (CLICK): Cuando el menú está abierto */
-.hamburger-btn.active .bar {
-    background-color: var(--fondo-100);
-}
-
-/* El triángulo se desplaza a la izquierda y gira para apuntar a la izquierda */
-.hamburger-btn.active .bar-center::after {
-    right: calc(100% - 6px); /* Se mueve al borde izquierdo de la barra */
-    clip-path: polygon(100% 0, 100% 100%, 0 50%); /* Apunta a la izquierda */
-}
-
 /* ==========================================
     3. BUSCADOR (INPUT) EN EL HEADER
    ========================================== */
