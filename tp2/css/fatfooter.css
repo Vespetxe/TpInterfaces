@@ -92,20 +92,19 @@
 
 /* Input de Correo */
 .fat-footer .newsletter-form input[type="email"] {
-    background-color: #ffffff;
-    color: #333;
+    background-color: var(--fondo-100);
+    color: var(--fondo-900);
     border: none;
     border-radius: var(--radius-pill);
-    padding: 14px 20px;
+    height: 36px;
+    padding: 0 16px;
     font-size: 14px;
-    font-style: italic;
     outline: none;
     width: 100%;
 }
 
 .fat-footer .newsletter-form input[type="email"]::placeholder {
-    font-style: italic;
-    color: #8a8a8a;
+    color: var(--color-text-secondary);
 }
 
 
