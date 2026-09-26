@@ -16,7 +16,7 @@ function createBadges(game) {
         return `
         ${discount}
         <span class="badge badge--price">USD ${game.price}</span>
-        <button class="badge badge--cart" data-action="add-to-cart">Add to cart</button>
+        <button class="badge badge--cart" data-action="add-to-cart"><span class="badge__label-full">Add to cart</span><span class="badge__label-short">Cart</span></button>
     `;
 }
 

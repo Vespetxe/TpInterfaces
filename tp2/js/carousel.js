@@ -27,27 +27,27 @@ function renderCarousel(mount, title, list) {
     list.forEach((game) => track.appendChild(createGameCard(game)));
     mount.appendChild(section);
 
-  const CARDS_PER_VIEW = 8; // siempre entran 8, sea cual sea el ancho de pantalla
   let index = 0; // índice de la primera card visible
 
-  // En vez de medir "cuántas entran" (como antes), ahora es al revés:
-  // ya sabemos que queremos 8, así que calculamos qué ancho le toca a
-  // cada una para que esas 8 llenen justo el espacio real del viewport
-  // (viewport.clientWidth ya viene correcto solo por tener flex: 1).
+    function getCardsPerView() {
+        const value = Number.parseInt(getComputedStyle(track).getPropertyValue("--cards-per-view"), 10);
+        return Number.isFinite(value) && value > 0 ? value : 2;
+    }
+
+    // El CSS decide cuántas tarjetas entran según el ancho de pantalla.
     function measure() {
+        const cardsPerView = getCardsPerView();
         const trackStyle = getComputedStyle(track);
         const gap = parseFloat(trackStyle.columnGap) || 0;
         // El track tiene su propio margin-inline (el "aire" antes de la primera
         // card y después de la última). Ese margen le resta espacio real al
-        // área disponible, así que hay que descontarlo antes de repartir el
-        // ancho entre las 8 cards -- si no, quedan calculadas un poco más
-        // anchas de lo que en verdad entra, y la última se corta un poco.
+        // área disponible, así que hay que descontarlo antes de repartir el ancho.
         const trackMargin = parseFloat(trackStyle.marginLeft) + parseFloat(trackStyle.marginRight);
         const availableWidth = viewport.clientWidth - trackMargin;
-        const cardWidth = (availableWidth - gap * (CARDS_PER_VIEW - 1)) / CARDS_PER_VIEW;
+        const cardWidth = (availableWidth - gap * (cardsPerView - 1)) / cardsPerView;
         const step = cardWidth + gap;
-        const maxIndex = Math.max(0, list.length - CARDS_PER_VIEW);
-        return { cardWidth, step, maxIndex };
+        const maxIndex = Math.max(0, list.length - cardsPerView);
+        return { cardWidth, step, maxIndex, cardsPerView };
     }
 
     function update() {
@@ -78,14 +78,14 @@ function renderCarousel(mount, title, list) {
     }
 
     prev.addEventListener("click", () => {
-        index = Math.max(0, index - CARDS_PER_VIEW);
+        index = Math.max(0, index - getCardsPerView());
         triggerFadeAnimation();
         update();
     });
 
     next.addEventListener("click", () => {
-        const { maxIndex } = measure();
-        index = Math.min(maxIndex, index + CARDS_PER_VIEW);
+        const { maxIndex, cardsPerView } = measure();
+        index = Math.min(maxIndex, index + cardsPerView);
         triggerFadeAnimation();
         update();
     });

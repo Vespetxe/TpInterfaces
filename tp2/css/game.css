@@ -1,45 +1,170 @@
+@import url('variables.css');
+
 .game-detail-main {
     width: min(1180px, calc(100% - 40px));
-    min-height: 55vh;
-    margin: 48px auto 80px;
-    color: var(--text-primary, #fff);
+    margin: 40px auto 80px;
 }
 
-.game-detail__back {
-    display: inline-block;
-    margin-bottom: 24px;
-    color: var(--text-primary, #fff);
-    text-decoration: none;
+/* Breadcrumb */
+.breadcrumb {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
 }
+.breadcrumb a { color: var(--color-primary); }
+.breadcrumb a:hover { color: var(--color-secondary); }
+.breadcrumb__sep { margin: 0 6px; color: var(--color-text-secondary); }
+.breadcrumb__current { color: var(--color-text-secondary); }
 
-.game-detail__back:hover { color: var(--accent, #9c6bff); }
-
-.game-detail__content {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-    gap: 36px;
-    align-items: center;
-    padding: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.04);
-}
-
-.game-detail__image {
-    display: block;
+.game-hero {
+    position: relative;
     width: 100%;
-    max-height: 540px;
+    aspect-ratio: 1377 / 774;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    overflow: hidden;
+}
+.game-hero__image {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 14px;
+    display: block;
+}
+.game-hero__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-primary);
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 14px 40px;
+    border-radius: var(--radius-pill);
+    transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+.game-hero__play:hover {
+    background-color: var(--color-primary-hover);
+    transform: translate(-50%, -50%) scale(1.05);
 }
 
-.game-detail__category { color: #b79aff; text-transform: uppercase; letter-spacing: 0.12em; }
-.game-detail__info h1 { margin: 10px 0 18px; font-size: clamp(2rem, 4vw, 3.5rem); }
-.game-detail__description { line-height: 1.7; color: rgba(255, 255, 255, 0.78); }
-.game-detail__rating { margin-top: 24px; }
-.game-detail__price { display: inline-block; margin-top: 8px; padding: 10px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); }
-.game-detail__message { padding: 40px 0; }
-@media (max-width: 720px) {
-    .game-detail-main { width: min(100% - 28px, 520px); margin-top: 28px; }
-    .game-detail__content { grid-template-columns: 1fr; gap: 22px; padding: 18px; }
+/* Barra inferior tipo reproductor */
+.game-hero__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--color-surface);
+    padding: 12px 16px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    margin-bottom: 16px;
 }
+.game-hero__name {
+    font-weight: 700;
+    font-size: 15px;
+}
+.game-hero__actions {
+    display: flex;
+    gap: 16px;
+}
+.game-hero__actions button {
+    font-size: 16px;
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+}
+.game-hero__actions button:hover {
+    color: var(--color-primary);
+}
+
+/* Gallery — sin animación, solo cambia la imagen grande al click */
+.game-gallery { margin-bottom: 40px; }
+.game-gallery__title { font-size: 18px; margin-bottom: 12px; }
+.game-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+.game-gallery__thumb {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+.game-gallery__thumb img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+}
+
+
+/* Body: descripción + comentarios */
+.game-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
+    gap: 40px;
+    align-items: start;
+}
+.game-info__title { font-size: 28px; margin-bottom: 16px; }
+.game-info__description { color: var(--color-text-secondary); line-height: 1.6; margin-bottom: 16px; }
+.game-info h2 { font-size: 18px; margin: 24px 0 10px; }
+.game-info__features { padding-left: 20px; color: var(--color-text-secondary); line-height: 1.8; }
+.game-info__faq dt { font-weight: 700; margin-top: 14px; }
+.game-info__faq dd { color: var(--color-text-secondary); margin: 4px 0 0; }
+
+/* Comentarios */
+.game-comments {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+}
+.game-comments__title { font-size: 16px; margin-bottom: 16px; }
+.game-comments__form { display: flex; gap: 8px; margin-bottom: 20px; }
+.game-comments__form input {
+    flex: 1;
+    background-color: var(--fondo-100);
+    color: var(--fondo-900);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 0 16px;
+    height: 36px;
+    font-size: 13px;
+}
+.game-comments__form button {
+    background-color: var(--color-primary);
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 0 16px;
+    border-radius: var(--radius-pill);
+}
+.game-comments__form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.comment {
+    display: flex;
+    gap: 10px;
+}
+.comment__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.comment__body { flex: 1; }
+.comment__likes {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.game-hero__actions button svg { display: block; }
+
+.game-comments__list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.comment__header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+.comment__user { font-weight: 700; color: var(--color-primary); }
+.comment__time { color: var(--color-text-secondary); }
+.comment__text { font-size: 14px; line-height: 1.5; color: var(--color-text); }
+.comment__likes { font-size: 12px; color: var(--color-text-secondary); }
