@@ -6,7 +6,7 @@
 .fat-footer {
     background-color: var(--fondo-900);
     color: var(--color-text-secondary);
-    padding: 60px 40px 30px 40px;
+    padding: clamp(32px, 5vw, 60px) clamp(16px, 4vw, 40px) 30px;
     font-size: 14px;
     line-height: 1.6;
     font-family: var(--font-main);
@@ -15,8 +15,8 @@
 /* Grid de 7 Columnas */
 .fat-footer .footer-container {
     display: grid;
-    grid-template-columns: repeat(7, minmax(120px, 1fr));
-    gap: 30px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -186,5 +186,17 @@
     font-weight: 300;
     font-size: 25.28px;
     color: var(--color-text);
+}
+
+@media (min-width: 600px) {
+    .fat-footer .footer-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 900px) {
+    .fat-footer .footer-container { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1280px) {
+    .fat-footer .footer-container { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 24px; }
 }
 

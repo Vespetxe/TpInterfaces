@@ -42,6 +42,8 @@
     display: flex;
     gap: 4px;
     align-items: center;
+    flex-wrap: wrap;
+    row-gap: 3px;
 }
 .game-card--free .game-card__badges { justify-content: flex-end; }
 
@@ -131,6 +133,7 @@
     margin: -14px 0;
 }
 .carousel__track {
+    --cards-per-view: 2;
     display: flex;
     gap: 12px;
     transition: transform .4s cubic-bezier(.4, 0, .2, 1);
@@ -179,3 +182,34 @@
 }
 
 .game-card[data-id="90001"] { cursor: pointer; }
+
+@media (min-width: 480px) {
+    .carousel__track { --cards-per-view: 3; }
+}
+
+@media (min-width: 720px) {
+    .carousel__track { --cards-per-view: 4; }
+}
+
+@media (min-width: 1100px) {
+    .carousel__track { --cards-per-view: 6; }
+}
+
+@media (min-width: 1600px) {
+    .carousel__track { --cards-per-view: 8; }
+}
+
+@media (max-width: 420px) {
+    .carousel__title { margin-left: 12px; font-size: .95rem; }
+    .carousel__body { gap: 4px; padding-inline: 4px; }
+    .carousel__arrow { width: 30px; height: 30px; }
+    .carousel__track { gap: 8px; margin-inline: 3px; }
+
+    .game-card__badges { top: 4px; left: 4px; right: 4px; gap: 3px; flex-wrap: wrap; }
+    .badge { padding: 3px 5px; font-size: .56rem; }
+    .game-card__footer { padding: 6px 7px; }
+    .game-card__title { font-size: .62rem; }
+    .game-card__meta { gap: 3px; font-size: .52rem; }
+    .game-card__category { min-width: 0; max-width: 58%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .game-card__likes { gap: 2px; white-space: nowrap; }
+}

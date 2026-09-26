@@ -1,1 +1,11 @@
 
+main {
+    width: 100%;
+    min-width: 0;
+}
+
+#carousels {
+    width: 100%;
+    margin-inline: 0;
+    padding-inline: 0;
+}

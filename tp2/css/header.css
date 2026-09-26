@@ -247,3 +247,34 @@
 body.category-menu-open { overflow: hidden; }
 
 .carousel { scroll-margin-top: calc(var(--navbar-height) + 16px); }
+
+@media (max-width: 560px) {
+    :root { --navbar-height: 50px; }
+    .navbar { gap: 4px; padding: 8px; }
+    .nav-left, .nav-right { gap: 4px; flex-shrink: 0; }
+    .nav-center { min-width: 0; margin-inline: 2px; }
+    .hamburger-btn { gap: 4px; padding: 4px; }
+    .hamburger-btn .bar { width: 24px; height: 4px; }
+    .hamburger-btn.active .bar-center::after { right: 14px; }
+    .logo { white-space: nowrap; }
+    .logo .nexus { font-size: 18px; }
+    .logo .games { font-size: 15px; }
+    .search-box { min-width: 0; height: 34px; padding-inline: 8px; }
+    .search-input { min-width: 0; font-size: 12px; }
+    .search-btn { flex: 0 0 auto; margin-left: 4px; }
+    .cart-btn, .avatar-btn { width: 32px; height: 32px; flex: 0 0 32px; }
+    .cart-icon { width: 19px; }
+}
+
+@media (max-width: 360px) {
+    .nav-left, .nav-right { gap: 2px; }
+    .nav-center { margin-inline: 0; }
+    .logo .nexus { font-size: 16px; }
+    .logo .games { font-size: 13px; }
+    .cart-btn, .avatar-btn { width: 28px; height: 28px; flex-basis: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .category-menu__home,
+    .category-menu__list a { transition: none; }
+}
