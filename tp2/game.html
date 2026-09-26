@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/fatfooter.css">
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/game.css">
 
 </head>
 <body>
@@ -49,8 +50,10 @@
         </button>
     </div>
 </header>
-<main>
-
+<main class="game-detail-main">
+    <section id="game-detail" class="game-detail" aria-live="polite">
+        <p class="game-detail__message">Cargando juego...</p>
+    </section>
 </main>
 <footer class="fat-footer">
     <div class="footer-container">
@@ -195,5 +198,7 @@
 
 </footer>
 <script src="js/nav.js" defer></script>
+<script src="js/recommendation.js"></script>
+<script src="js/game-detail.js"></script>
 </body>
 </html>

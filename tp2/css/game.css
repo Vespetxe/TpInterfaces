@@ -1,0 +1,45 @@
+.game-detail-main {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 55vh;
+    margin: 48px auto 80px;
+    color: var(--text-primary, #fff);
+}
+
+.game-detail__back {
+    display: inline-block;
+    margin-bottom: 24px;
+    color: var(--text-primary, #fff);
+    text-decoration: none;
+}
+
+.game-detail__back:hover { color: var(--accent, #9c6bff); }
+
+.game-detail__content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 36px;
+    align-items: center;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.game-detail__image {
+    display: block;
+    width: 100%;
+    max-height: 540px;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+.game-detail__category { color: #b79aff; text-transform: uppercase; letter-spacing: 0.12em; }
+.game-detail__info h1 { margin: 10px 0 18px; font-size: clamp(2rem, 4vw, 3.5rem); }
+.game-detail__description { line-height: 1.7; color: rgba(255, 255, 255, 0.78); }
+.game-detail__rating { margin-top: 24px; }
+.game-detail__price { display: inline-block; margin-top: 8px; padding: 10px 14px; border-radius: 8px; background: rgba(255, 255, 255, 0.1); }
+.game-detail__message { padding: 40px 0; }
+@media (max-width: 720px) {
+    .game-detail-main { width: min(100% - 28px, 520px); margin-top: 28px; }
+    .game-detail__content { grid-template-columns: 1fr; gap: 22px; padding: 18px; }
+}

@@ -70,7 +70,7 @@
 
 .btn-social img, .btn-social svg { width: 18px; height: 18px; }
 
-/* ===== Game Card ===== */
+/* ===== Game Card ===== 
 .game-card {
     width: 203px;
     height: 298px;
@@ -191,4 +191,4 @@
     gap: 4px;
     font-size: 11px;
     color: var(--color-text-secondary);
-}
+}*/

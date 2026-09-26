@@ -4,7 +4,7 @@
 
 .game-card {
     --card-bg: var(--color-surface, #2b2b2b);
-    --card-accent: var(--color-orange, #ff8a3d);
+    --card-accent: var(--color-primary, #ff8a3d);
     --card-radius: 16px;
 
     position: relative;
@@ -55,17 +55,19 @@
     white-space: nowrap;
     line-height: 1.1;
 }
-.badge--discount { background: #17231f; color: #2fe6a3; box-shadow: 0 0 0 1px #2fe6a3; }
-.badge--price    { background: #2a2233; color: #fff;    box-shadow: 0 0 0 1px #6b4fa3; }
-.badge--cart     { background: #b57bff; color: #1a1a1a; cursor: pointer; margin-left: auto; }
+.badge--discount { background: #17231f; color: var(--color-success, #2fe6a3); box-shadow: 0 0 0 1px var(--color-success, #2fe6a3); }
+.badge--price    { background: #2a2233; color: var(--color-text, #fff); box-shadow: 0 0 0 1px #6b4fa3; }
+.badge--cart     { background: var(--color-secondary, #b57bff); color: #1a1a1a; cursor: pointer; margin-left: auto; }
 .badge--free     { background: var(--card-accent); color: #1a1a1a; cursor: pointer; }
 .badge--cart:hover, .badge--free:hover { filter: brightness(1.1); }
+.badge--cart:hover { background: var(--color-secondary-hover, #c79bff); }
+.badge--free:hover { background: var(--color-primary-hover, #ffa263); }
 
 /* Footer: solo el título por defecto */
 .game-card__footer {
     padding: 8px 10px;
-    background: #333;
-    color: #fff;
+    background: var(--color-surface, #333);
+    color: var(--color-text, #fff);
 }
 .game-card__title {
     margin: 0;
@@ -90,7 +92,8 @@
 .game-card__category {
     padding: 1px 6px;
     border-radius: 6px;
-    background: #666;
+    background: var(--color-surface-light, #666);
+    color: var(--color-text, #fff);
 }
 .game-card__likes { display: inline-flex; align-items: center; gap: 3px; }
 
@@ -110,7 +113,7 @@
 }
 
 /* ========== CAROUSEL ========== */
-.carousel { margin: 24px 0; color: #fff; }
+.carousel { margin: 24px 0; color: var(--color-text, #fff); }
 .carousel__title { margin: 0 0 8px 16px; font-size: 1rem; font-weight: 500; }
 
 .carousel__body {
@@ -130,21 +133,49 @@
 .carousel__track {
     display: flex;
     gap: 12px;
-    transition: transform .4s ease;
+    transition: transform .4s cubic-bezier(.4, 0, .2, 1);
     margin-inline: 5px; /* evita que el primer y último card queden pegados al borde del viewport */
+}
+
+/*  Se agrega/saca esta clase desde JS en cada click de flecha.
+    Corre EN PARALELO al transition de transform de arriba: mientras el
+    track se desliza a su nueva posición, la opacidad baja y vuelve a subir. */
+.carousel__track.is-animating {
+    animation: carousel-fade .4s ease;
+}
+
+@keyframes carousel-fade {
+    0%   { opacity: 1; }
+    50%  { opacity: .35; }
+    100% { opacity: 1; }
 }
 
 .carousel__arrow {
     flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     border-radius: 50%;
-    background: #444;
-    color: #fff;
-    font-size: 1rem;
-    line-height: 1;
+    background: var(--color-surface-light, #444);
+    color: var(--color-text, #fff);
     cursor: pointer;
+    transition: background-color .2s ease, color .2s ease, transform .15s ease;
 }
-.carousel__arrow:hover:not(:disabled) { background: var(--card-accent, #ff8a3d); color: #1a1a1a; }
+.carousel__arrow:hover:not(:disabled) {
+    background: var(--color-primary, #ff8a3d);
+    color: #1a1a1a;
+    transform: scale(1.08);
+}
 .carousel__arrow:disabled { opacity: .3; cursor: default; }
+
+.carousels__message {
+    padding: 40px 16px;
+    text-align: center;
+    color: #999;
+    font-size: .9rem;
+}
+
+.game-card[data-id="90001"] { cursor: pointer; }

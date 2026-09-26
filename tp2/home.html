@@ -13,10 +13,10 @@
     <script src="js/nav.js" defer></script>
 </head>
 <body>
-    <header class="navbar">
+    <header class="navbar" id="page-top">
         <!-- 1. Lado Izquierdo: Menú Hamburguesa + Logo -->
         <div class="nav-left">
-            <button class="hamburger-btn" aria-label="Abrir menú">
+            <button class="hamburger-btn" aria-label="Abrir menú" aria-controls="category-menu" aria-expanded="false">
             <span class="bar"></span>
             <span class="bar bar-center"></span> <!-- La barra del centro lleva el triángulo -->
             <span class="bar"></span>
@@ -50,6 +50,12 @@
             </button>
         </div>
     </header>
+    <div class="category-menu-backdrop" data-menu-close hidden></div>
+    <nav class="category-menu" id="category-menu" aria-label="Categorías" hidden>
+        <a class="category-menu__home" href="#page-top">Home</a>
+        <div class="category-menu__divider"></div>
+        <ul class="category-menu__list" id="category-menu-list"></ul>
+    </nav>
     <main>
         <div id="carousels"></div>
     </main>
@@ -195,7 +201,9 @@
 
 
     </footer>
-    <script src="js/data.js"></script>
+    <script src="js/recommendation.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/categories.js"></script>
     <script src="js/cards.js"></script>
     <script src="js/carousel.js"></script>
     <script src="js/home.js"></script>

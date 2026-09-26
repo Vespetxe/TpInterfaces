@@ -4,6 +4,9 @@
     1. ESTILOS GENERALES DEL HEADER / NAV
    ========================================== */
 .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1002;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -11,8 +14,9 @@
     padding: 10px 5px;
     color: var(--fondo-100); /* Color de texto claro */
     width: 100%;
-    /*position: fixed; /* Fija el header en la parte superior */
 }
+
+:root { --navbar-height: 58px; }
 
 /* Agrupadores principales */
 .nav-left, .nav-center, .nav-right {
@@ -194,3 +198,52 @@
     height: auto;
     display: block;
 }
+
+/* Menú lateral de géneros disponibles en la Home */
+.category-menu-backdrop[hidden],
+.category-menu[hidden] { display: none; }
+
+.category-menu-backdrop {
+    position: fixed;
+    inset: var(--navbar-height) 0 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.58);
+}
+
+.category-menu {
+    position: fixed;
+    inset: var(--navbar-height) auto 0 0;
+    z-index: 1001;
+    width: min(300px, 86vw);
+    overflow-y: auto;
+    padding: 18px 16px 28px;
+    background: #242424;
+    color: #f4f4f4;
+    box-shadow: 8px 0 28px rgba(0, 0, 0, 0.3);
+}
+
+.category-menu__home,
+.category-menu__list a {
+    display: block;
+    padding: 6px 0;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1.35;
+    text-decoration: none;
+    transition: color 0.18s ease, padding-left 0.18s ease;
+}
+
+.category-menu__home { font-weight: 600; }
+.category-menu__list { margin: 0; padding: 0; list-style: none; }
+.category-menu__list a:hover,
+.category-menu__home:hover { padding-left: 5px; color: var(--color-primary, #ff8a3d); }
+
+.category-menu__divider {
+    height: 1px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.22);
+}
+
+body.category-menu-open { overflow: hidden; }
+
+.carousel { scroll-margin-top: calc(var(--navbar-height) + 16px); }
