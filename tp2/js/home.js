@@ -26,11 +26,19 @@ const carouselsMount = document.getElementById("carousels");
 // Se guarda el catálogo recibido para que el listener pueda buscar juegos.
 let games = [];
 
-    function showMessage(text) {
+// Muestra un mensaje de carga, error o ausencia de juegos en el contenedor.
+function showMessage(text) {
     carouselsMount.innerHTML = `<p class="carousels__message">${text}</p>`;
     }
 
+// Evita iniciar la Home antes de que el header, el footer y la navegación estén listos.
+const layoutReady = window.siteLayoutReady
+    ? Promise.resolve()
+    : new Promise((resolve) => document.addEventListener("site:layout-ready", resolve, { once: true }));
+
+// Espera el layout, carga el catálogo y construye los carruseles de la Home.
 async function init() {
+    await layoutReady;
     showMessage("Cargando juegos...");
 
     try {
@@ -47,13 +55,25 @@ async function init() {
     }
 
     carouselsMount.innerHTML = ""; // saca el mensaje de "Cargando..."
-    renderCarousel(carouselsMount, "Recommended For You", [RECOMMENDED_GAME]);
+    renderHeroCarousel(document.getElementById("hero-carousel"), games.slice(0, 5));
+
+    // Sin historial de usuario, recomendamos los juegos con mejor rating de la API.
+    const recommendedGames = games
+        // Descarta el juego curado y los registros sin imagen o sin calificación.
+        .filter((game) => game.id !== RECOMMENDED_GAME.id && game.image && game.rating > 0)
+        // Ordena de mayor a menor rating y toma los primeros once resultados.
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 11);
+    renderCarousel(carouselsMount, "Recommended For You", [RECOMMENDED_GAME, ...recommendedGames]);
 
     CATEGORIES.forEach((category) => {
+        // Selecciona los juegos que pertenecen a este género y los muestra en su carrusel.
         const categoryGames = games
+            // Incluye juegos que tengan el género actual, sin distinguir mayúsculas.
             .filter((game) => game.genres?.some((genre) =>
                 genre.toLocaleLowerCase() === category.toLocaleLowerCase()
             ))
+            // Asigna el nombre de esta sección como categoría visible de cada card.
             .map((game) => ({ ...game, category }));
         if (categoryGames.length > 0) {
             renderCarousel(carouselsMount, category, categoryGames);
@@ -65,8 +85,8 @@ async function init() {
 
 init();
 
-// Event delegation: un solo listener para todos los botones de todas las cards.
-carouselsMount.addEventListener("click", (e) => {
+// Atiende los botones de todas las cards desde un único listener en el elemento main.
+document.querySelector("main").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-action]");
     const card = e.target.closest(".game-card");
     if (!card) return;

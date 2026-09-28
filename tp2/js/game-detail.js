@@ -12,7 +12,9 @@ const GAME_COMMENTS = [
     { user: "VoidRunner", time: "5 hours ago", text: "Simple rules, but surprisingly deep. I kept making moves that looked right and completely ruined the board.", likes: 29, avatar: "assets/img/voidrunner.png" }
 ];
 
+// Escapa caracteres HTML para mostrar texto externo sin que se interprete como etiquetas.
 function escapeDetailText(value = "") {
+    // Convierte cada carácter especial en su entidad HTML segura.
     return String(value).replace(/[&<>"']/g, (character) => ({
         "&": "&amp;",
         "<": "&lt;",
@@ -22,6 +24,7 @@ function escapeDetailText(value = "") {
     })[character]);
 }
 
+// Dibuja la página de detalle para un juego recibido desde la API.
 function renderApiGameDetail(game) {
     const title = escapeDetailText(game.title);
     const image = escapeDetailText(game.fullImage || game.image || "");
@@ -59,8 +62,10 @@ function renderApiGameDetail(game) {
 
 if (requestedId !== RECOMMENDED_GAME.id) {
     detailMount.innerHTML = `<p class="game-detail__message">Loading game...</p>`;
+    // Busca en la API el juego indicado por la URL y dibuja su detalle si existe.
     fetchGames()
         .then((apiGames) => {
+            // Encuentra el juego cuyo identificador coincide con el parámetro de la URL.
             const game = apiGames.find((item) => item.id === requestedId);
             if (game) {
                 renderApiGameDetail(game);
@@ -71,6 +76,7 @@ if (requestedId !== RECOMMENDED_GAME.id) {
                 `;
             }
         })
+        // Muestra un mensaje alternativo si falla la carga de la API.
         .catch(() => {
             detailMount.innerHTML = `
                 <p class="game-detail__message">The game could not be loaded.</p>
@@ -81,6 +87,7 @@ if (requestedId !== RECOMMENDED_GAME.id) {
     const game = RECOMMENDED_GAME;
     document.title = `${game.title} | Nexus Games`;
 
+    // Renderiza el detalle local y convierte sus listas en secciones HTML.
     detailMount.innerHTML = `
         <nav class="breadcrumb" aria-label="Breadcrumb">
             <a href="home.html">Home</a>
@@ -108,7 +115,7 @@ if (requestedId !== RECOMMENDED_GAME.id) {
         <section class="game-gallery">
             <h2 class="game-gallery__title">See It in Action</h2>
             <div class="game-gallery__grid">
-                ${game.gallery.map((src, i) => `
+                ${/* Crea una miniatura por cada imagen de la galería. */ game.gallery.map((src, i) => `
                     <div class="game-gallery__thumb">
                         <img src="${src}" alt="Screenshot ${i + 1} of ${game.title}">
                     </div>
@@ -126,12 +133,12 @@ if (requestedId !== RECOMMENDED_GAME.id) {
 
                 <h2>Features</h2>
                 <ul class="game-info__features">
-                    ${game.features.map(f => `<li>${f}</li>`).join("")}
+                    ${/* Convierte cada característica en un elemento de lista. */ game.features.map(f => `<li>${f}</li>`).join("")}
                 </ul>
 
                 <h2>FAQ</h2>
                 <dl class="game-info__faq">
-                    ${game.faq.map(item => `<dt>${item.q}</dt><dd>${item.a}</dd>`).join("")}
+                    ${/* Muestra cada pregunta frecuente junto con su respuesta. */ game.faq.map(item => `<dt>${item.q}</dt><dd>${item.a}</dd>`).join("")}
                 </dl>
             </article>
 
@@ -143,7 +150,7 @@ if (requestedId !== RECOMMENDED_GAME.id) {
                     <button type="submit">Post Comment</button>
                 </form>
                 <ul class="game-comments__list" id="commentsList">
-                    ${GAME_COMMENTS.map(c => `
+                    ${/* Genera un bloque visual por cada comentario de ejemplo. */ GAME_COMMENTS.map(c => `
                         <li class="comment">
                             <img class="comment__avatar" src="${c.avatar}" alt="${c.user}">
                             <div class="comment__body">
@@ -161,7 +168,7 @@ if (requestedId !== RECOMMENDED_GAME.id) {
         </div>
     `;
 
-    // Comentario nuevo: se agrega arriba de la lista en memoria (sin backend, no persiste)
+    // Agrega el comentario enviado al inicio de la lista; queda solo en memoria.
     document.getElementById("commentForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const input = e.target.querySelector("input");
@@ -184,10 +191,11 @@ if (requestedId !== RECOMMENDED_GAME.id) {
         input.value = "";
     });
 
-    // Placeholder hasta que exista la página de gameplay real
+    // Avisa que la pantalla de gameplay todavía no está implementada.
     document.querySelector(".game-hero__play").addEventListener("click", () => {
         alert("Peg Solitaire gameplay isn't implemented yet in this delivery.");
     });
+    // Alterna el modo de pantalla completa para la imagen principal del juego.
     document.getElementById("fullscreenBtn").addEventListener("click", () => {
         const hero = document.querySelector(".game-hero");
         if (!document.fullscreenElement) {

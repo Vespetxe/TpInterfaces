@@ -3,7 +3,7 @@
 const ICON_CHEVRON_LEFT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 const ICON_CHEVRON_RIGHT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
-// Crea un carousel dentro de `mount` con el título y la lista de juegos.
+// Crea el carrusel dentro de `mount`, agrega sus cards y configura navegación y animaciones.
 function renderCarousel(mount, title, list) {
     const section = document.createElement("section");
     section.className = "carousel";
@@ -24,17 +24,19 @@ function renderCarousel(mount, title, list) {
     const prev = section.querySelector(".carousel__arrow--prev");
     const next = section.querySelector(".carousel__arrow--next");
 
+    // Crea y agrega una card por cada juego de la lista recibida.
     list.forEach((game) => track.appendChild(createGameCard(game)));
     mount.appendChild(section);
 
   let index = 0; // índice de la primera card visible
 
+    // Lee del CSS cuántas cards deben verse según el ancho actual.
     function getCardsPerView() {
         const value = Number.parseInt(getComputedStyle(track).getPropertyValue("--cards-per-view"), 10);
         return Number.isFinite(value) && value > 0 ? value : 2;
     }
 
-    // El CSS decide cuántas tarjetas entran según el ancho de pantalla.
+    // Calcula medidas y límites usando la cantidad de cards por vista que define el CSS.
     function measure() {
         const cardsPerView = getCardsPerView();
         const trackStyle = getComputedStyle(track);
@@ -50,6 +52,7 @@ function renderCarousel(mount, title, list) {
         return { cardWidth, step, maxIndex, cardsPerView };
     }
 
+    // Aplica las medidas al track y actualiza el estado de las flechas.
     function update() {
         const { cardWidth, step, maxIndex } = measure();
         index = Math.min(index, maxIndex); // por si el resize achicó el límite
@@ -64,25 +67,21 @@ function renderCarousel(mount, title, list) {
         next.disabled = index >= maxIndex;
     }
 
-  // Reinicia la animación de fade del track. Sacar y volver a poner la MISMA
-  // clase no alcanza: el navegador junta los dos cambios y no pasa nada.
-  // Por eso, entre sacarla y ponerla, se lee track.offsetWidth: leer esa
-  // propiedad obliga al navegador a recalcular el layout en ese instante
-  // (un "reflow" forzado), lo que separa el "sacar" del "poner" en dos pasos
-  // reales. Recién ahí, al agregar la clase de nuevo, @keyframes arranca
-  // desde cero. Es un truco conocido para reiniciar animaciones CSS por JS.
+    // Reinicia el fade; leer offsetWidth fuerza a aplicar la clase quitada antes de volver a agregarla.
     function triggerFadeAnimation() {
         track.classList.remove("is-animating");
         void track.offsetWidth; // fuerza el reflow
         track.classList.add("is-animating");
     }
 
+    // Retrocede un grupo de cards sin pasar del inicio.
     prev.addEventListener("click", () => {
         index = Math.max(0, index - getCardsPerView());
         triggerFadeAnimation();
         update();
     });
 
+    // Avanza un grupo de cards sin superar el último grupo disponible.
     next.addEventListener("click", () => {
         const { maxIndex, cardsPerView } = measure();
         index = Math.min(maxIndex, index + cardsPerView);
@@ -90,6 +89,7 @@ function renderCarousel(mount, title, list) {
         update();
     });
 
+    // Recalcula el tamaño de las cards y los límites al cambiar el viewport.
     window.addEventListener("resize", update);
     update();
 }

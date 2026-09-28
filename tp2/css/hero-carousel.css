@@ -1,0 +1,154 @@
+.hero-carousel {
+    margin: 24px auto 36px;
+    width: calc(100% - 80px);
+    max-width: none;
+    padding-inline: 0;
+    box-sizing: border-box;
+    color: var(--color-text, #fff);
+}
+
+/* Hero Carousel Styles */
+.hero-carousel__body {
+    position: relative;
+    --hero-card-width: min(1200px, calc(100% - 160px));
+    --hero-card-half: min(600px, calc(50% - 80px));
+    width: 100%;
+    max-width: none;
+    margin-inline: auto;
+}
+
+/* Hero Carousel Viewport and Track */
+.hero-carousel__viewport {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    padding-block: 18px;
+    margin-block: -18px;
+    border-radius: 18px;
+}
+
+/* Hero Carousel Track and Cards */
+.hero-carousel__track {
+    display: flex;
+    gap: 30px;
+    transition: transform .95s cubic-bezier(.22, 1, .36, 1);
+}
+
+/* Hero Card Styles */
+.hero-card {
+    flex: 0 0 var(--hero-card-width);
+    width: var(--hero-card-width);
+    height: 480px;
+    aspect-ratio: auto;
+    border-radius: 18px;
+    transform: scale(.96);
+    filter: brightness(.52);
+    opacity: .86;
+    transition: transform .95s cubic-bezier(.22, 1, .36, 1), filter .95s ease, opacity .95s ease;
+}
+
+/* Hero Card Active State */
+.hero-card.is-active {
+    transform: scale(1);
+    filter: brightness(1);
+    opacity: 1;
+}
+
+/* Hero Card Media and Badges */
+.hero-card .game-card__media {
+    position: absolute;
+    inset: 0;
+}
+
+/* Hero Card Image Positioning */
+.hero-card .game-card__img { object-position: center 30%; }
+
+/* Hero Card Badges and Highlight */
+.hero-card .game-card__badges {
+    z-index: 1;
+    top: 24px;
+    right: 24px;
+    left: auto;
+    gap: 10px;
+}
+
+.hero-card .badge {
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: .9rem;
+}
+
+.hero-card .badge--price,
+.hero-card .badge--discount {
+    background: rgba(24, 24, 24, .82);
+    backdrop-filter: blur(8px);
+}
+
+.hero-card .badge--free,
+.hero-card .badge--cart {
+    margin-left: 0;
+    padding-inline: 20px;
+    font-weight: 700;
+}
+
+.hero-card .game-card__footer { display: none; }
+
+.hero-card__highlight {
+    position: absolute;
+    z-index: 2;
+    top: 24px;
+    left: 24px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(24, 24, 24, .82);
+    color: #fff;
+    font-size: .9rem;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+}
+
+.hero-carousel__arrow {
+    position: absolute;
+    z-index: 3;
+    top: 50%;
+    width: 36px;
+    height: 36px;
+    transform: translateY(-50%);
+}
+
+.hero-carousel__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
+.hero-carousel__arrow--prev { left: calc(50% - var(--hero-card-half) - 45px); }
+.hero-carousel__arrow--next { right: calc(50% - var(--hero-card-half) - 45px); }
+
+@media (max-width: 1360px) {
+    .hero-carousel { width: calc(100% - 80px); }
+}
+
+@media (max-width: 700px) {
+    .hero-carousel { width: calc(100% - 40px); }
+
+    .hero-carousel__body {
+        --hero-card-width: calc(100% - 64px);
+        --hero-card-half: calc(50% - 32px);
+    }
+
+    .hero-card {
+        height: 360px;
+    }
+
+    .hero-carousel__body { padding-bottom: 44px; }
+    .hero-carousel__arrow {
+        top: auto;
+        bottom: 0;
+        width: 28px;
+        height: 28px;
+        transform: none;
+    }
+    .hero-carousel__arrow:hover:not(:disabled) { transform: scale(1.08); }
+    .hero-carousel__arrow--prev { left: 0; }
+    .hero-carousel__arrow--next { right: 0; }
+    .hero-card .game-card__badges { top: 14px; right: 14px; }
+    .hero-card .badge,
+    .hero-card__highlight { padding: 8px 10px; font-size: .72rem; }
+    .hero-card__highlight { top: 14px; left: 14px; }
+}

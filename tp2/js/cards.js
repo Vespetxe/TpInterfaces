@@ -3,7 +3,7 @@ const ICON_LIKE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" s
 // 15000 -> "15K"
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact" });
 
-// Acá está la lógica free vs paid: cada tipo devuelve badges y botón distintos.
+// Devuelve las etiquetas y el botón que corresponden según el juego sea gratis o pago.
 function createBadges(game) {
     if (game.type === "free") {
         return `<button class="badge badge--free" data-action="play">Play Free</button>`;
@@ -20,6 +20,7 @@ function createBadges(game) {
     `;
 }
 
+// Construye el HTML de una card con portada, etiquetas, título, género y likes.
 function createGameCard(game) {
     const card = document.createElement("article");
     card.className = `game-card game-card--${game.type}`;
