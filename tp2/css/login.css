@@ -60,12 +60,28 @@
     border-radius: var(--radius-pill);
     padding: 14px 20px;
     font-size: 14px;
-    font-style: italic;
 }
 
 .field input::placeholder {
     font-style: italic;
     color: #8a8a8a;
+}
+
+.field input.input-error { border: 2px solid var(--color-required); }
+
+.field-error {
+    display: block;
+    color: var(--color-required);
+    font-size: 12px;
+    margin-top: 6px;
+    text-align: left;
+    min-height: 16px;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.field-error.show {
+    opacity: 1;
 }
 
 .toggle-password {
@@ -151,5 +167,40 @@
     stroke-dashoffset: 24;
     animation: draw 0.4s ease 0.2s forwards;
 }
+.required { color: var(--color-required); margin-left: 2px; }
 
 @keyframes draw { to { stroke-dashoffset: 0; } }
+
+.dob-row {
+    display: flex;
+    gap: 12px;
+}
+
+.dob-row select {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    background-color: #ffffff;
+    color: #333;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 14px 20px;
+    font-size: 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+.valid-check {
+    color: var(--color-success);
+    margin-left: 4px;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.valid-check.show {
+    opacity: 1;
+}

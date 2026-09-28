@@ -46,6 +46,7 @@
     --color-secondary-hover: var(--secondary-300);
 
     --color-success: var(--accent2-500);
+    --color-required: #C73A3A;
 
     --font-main: 'Radio Canada', -apple-system, 'Segoe UI', sans-serif;
     --font-logo: 'MuseoModerno', serif; /* reemplazá por tu fuente real del logo */
@@ -56,4 +57,6 @@
 
     --transition-fast: 0.15s ease;
     --transition-mid: 0.3s ease;
+
+
 }

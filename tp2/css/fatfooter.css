@@ -124,18 +124,7 @@
     isolation: isolate;
 }
 
-/* Reset técnico del pseudo-elemento heredado */
-.fat-footer .newsletter-form button.btn-create::before {
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    border-radius: var(--radius-pill);
-    z-index: -1;
-}
 
-.fat-footer .newsletter-form button.btn-create:hover {
-    color: #ffffff;
-}
 
 /* Área del Logo Inferior */
 .fat-footer .footer-bottom {
