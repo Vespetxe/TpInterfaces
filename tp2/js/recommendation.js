@@ -5,7 +5,7 @@ const RECOMMENDED_GAME = {
     title: "Plankton's Petri Puzzle",
     category: "Puzzle",
     genres: ["Puzzle"],
-    image: "assets/img/Planktons petri puzzle card.jpg",
+    image: "assets/img/imgCards/Planktons petri puzzle card.jpg",
     fullImage: "assets/img/Planktons petri puzzle.jpg",
     description: "Test your logic with Plankton in a collection of puzzle challenges inspired by his laboratory.",
     rating: 4.5,

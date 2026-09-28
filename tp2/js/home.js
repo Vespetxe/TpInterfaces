@@ -83,6 +83,10 @@ carouselsMount.addEventListener("click", (e) => {
     if (btn.dataset.action === "add-to-cart") {
         console.log("Agregar al carrito:", game.title); // acá va tu lógica del carrito
     } else if (btn.dataset.action === "play") {
-        console.log("Jugar:", game.title);
+        if (id === RECOMMENDED_GAME.id) {
+            window.location.href = `game.html?id=${id}`;
+        } else {
+            console.log("Jugar:", game.title);
+        }
     }
 });

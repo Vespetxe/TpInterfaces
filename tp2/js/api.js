@@ -33,6 +33,8 @@ function adaptGame(raw) {
         title: raw.name,
         category: raw.genres?.[0]?.name || "Otros",
         genres: (raw.genres || []).map((genre) => genre.name),
+        released: raw.released || "",
+        platforms: (raw.platforms || []).map((platform) => platform.name),
         // low_res para las cards (listas); background_image original queda
         // disponible por si después se hace una vista de detalle del juego.
         image: raw.background_image_low_res || raw.background_image,

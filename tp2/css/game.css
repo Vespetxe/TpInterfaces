@@ -111,6 +111,29 @@
 .game-info__faq dt { font-weight: 700; margin-top: 14px; }
 .game-info__faq dd { color: var(--color-text-secondary); margin: 4px 0 0; }
 
+.api-game-detail {
+    padding: clamp(20px, 4vw, 40px);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+}
+.api-game-detail h1 { margin-bottom: 14px; font-size: clamp(24px, 4vw, 36px); }
+.api-game-detail > p { max-width: 80ch; color: var(--color-text-secondary); line-height: 1.7; }
+.api-game-detail dl {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin: 28px 0;
+}
+.api-game-detail dt { margin-bottom: 5px; color: var(--color-text-secondary); font-size: 13px; }
+.api-game-detail dd { overflow-wrap: anywhere; }
+.api-game-detail__rating { color: var(--color-primary); font-weight: 700; }
+.game-detail__back { display: inline-block; margin-top: 8px; color: var(--color-primary); }
+.game-detail__message { padding: 40px 0; }
+
+@media (max-width: 640px) {
+    .api-game-detail dl { grid-template-columns: 1fr; gap: 14px; }
+}
+
 /* Comentarios */
 .game-comments {
     background-color: var(--color-surface);

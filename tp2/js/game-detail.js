@@ -12,11 +12,71 @@ const GAME_COMMENTS = [
     { user: "VoidRunner", time: "5 hours ago", text: "Simple rules, but surprisingly deep. I kept making moves that looked right and completely ruined the board.", likes: 29, avatar: "assets/img/voidrunner.png" }
 ];
 
-if (requestedId !== RECOMMENDED_GAME.id) {
+function escapeDetailText(value = "") {
+    return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+    })[character]);
+}
+
+function renderApiGameDetail(game) {
+    const title = escapeDetailText(game.title);
+    const image = escapeDetailText(game.fullImage || game.image || "");
+    const description = escapeDetailText(game.description || "No description is available for this game yet.");
+    const category = escapeDetailText(game.genres?.join(", ") || game.category || "Game");
+    const release = escapeDetailText(game.released || "Not listed");
+    const platforms = escapeDetailText(game.platforms?.join(", ") || "Not listed");
+
+    document.title = `${title} | Nexus Games`;
     detailMount.innerHTML = `
-        <p class="game-detail__message">Game not found.</p>
-        <a class="game-detail__back" href="home.html">Back to games</a>
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <a href="home.html">Home</a>
+            <span class="breadcrumb__sep">›</span>
+            <span class="breadcrumb__current">${title}</span>
+        </nav>
+        <div class="game-hero">
+            <img class="game-hero__image" src="${image}" alt="${title}">
+        </div>
+        <div class="game-hero__toolbar">
+            <span class="game-hero__name">${title}</span>
+            <span class="api-game-detail__rating">★ ${Number(game.rating || 0).toFixed(1)}</span>
+        </div>
+        <article class="api-game-detail">
+            <h1>${title}</h1>
+            <p>${description}</p>
+            <dl>
+                <div><dt>Genres</dt><dd>${category}</dd></div>
+                <div><dt>Release date</dt><dd>${release}</dd></div>
+                <div><dt>Platforms</dt><dd>${platforms}</dd></div>
+            </dl>
+            <a class="game-detail__back" href="home.html">Back to Home</a>
+        </article>
     `;
+}
+
+if (requestedId !== RECOMMENDED_GAME.id) {
+    detailMount.innerHTML = `<p class="game-detail__message">Loading game...</p>`;
+    fetchGames()
+        .then((apiGames) => {
+            const game = apiGames.find((item) => item.id === requestedId);
+            if (game) {
+                renderApiGameDetail(game);
+            } else {
+                detailMount.innerHTML = `
+                    <p class="game-detail__message">Game not found.</p>
+                    <a class="game-detail__back" href="home.html">Back to games</a>
+                `;
+            }
+        })
+        .catch(() => {
+            detailMount.innerHTML = `
+                <p class="game-detail__message">The game could not be loaded.</p>
+                <a class="game-detail__back" href="home.html">Back to games</a>
+            `;
+        });
 } else {
     const game = RECOMMENDED_GAME;
     document.title = `${game.title} | Nexus Games`;
