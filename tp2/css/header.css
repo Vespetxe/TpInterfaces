@@ -16,7 +16,7 @@
     width: 100%;
 }
 
-:root { --navbar-height: 58px; }
+:root { --navbar-height: 57px; }
 
 /* Agrupadores principales */
 .nav-left, .nav-center, .nav-right {
@@ -281,4 +281,35 @@ body.category-menu-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
     .category-menu__home,
     .category-menu__list a { transition: none; }
+}
+/* Menú desplegable del perfil (derecha) */
+.profile-menu[hidden] { display: none; }
+
+.profile-menu {
+    position: fixed;
+    top: var(--navbar-height);
+    right: 0;
+    z-index: 1001;
+    width: min(300px, 86vw);
+    padding: 18px 16px 28px;
+    background: #242424;
+    color: #f4f4f4;
+    box-shadow: -8px 0 28px rgba(0, 0, 0, 0.3);
+}
+
+.profile-menu a {
+    display: block;
+    padding: 6px 0;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1.35;
+    transition: color 0.18s ease, padding-left 0.18s ease;
+}
+
+.profile-menu a:hover { padding-left: 5px; color: var(--color-primary); }
+
+.profile-menu__divider {
+    height: 1px;
+    margin: 12px 0;
+    background: rgba(255, 255, 255, 0.22);
 }

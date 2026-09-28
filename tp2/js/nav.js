@@ -61,3 +61,22 @@ function refreshCategoryMenu() {
         return `<li><a href="#${section.id}">${title}</a></li>`;
     }).join('');
 }
+// barra lateral desplegable menu perfil
+(() => {
+    const avatarBtn = document.querySelector('.avatar-btn');
+    const profileMenu = document.getElementById('profileMenu');
+    if (!avatarBtn || !profileMenu) return;
+
+    avatarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileMenu.hidden = !profileMenu.hidden;
+    });
+
+    // Se cierra al hacer click fuera del menú o con Esc
+    document.addEventListener('click', (e) => {
+        if (!profileMenu.contains(e.target)) profileMenu.hidden = true;
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') profileMenu.hidden = true;
+    });
+})();
