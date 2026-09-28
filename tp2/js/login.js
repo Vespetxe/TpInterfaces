@@ -1,3 +1,4 @@
+const authBrand = document.getElementById('authBrand');
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const showRegister = document.getElementById('showRegister');
@@ -12,12 +13,14 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 showRegister.addEventListener('click', () => {
     loginForm.style.display = 'none';
     registerForm.style.display = 'block';
+    authBrand.style.display = 'none';
 });
 
 // Vuelve del formulario de registro al de inicio de sesión.
 showLogin.addEventListener('click', () => {
     registerForm.style.display = 'none';
     loginForm.style.display = 'block';
+    authBrand.style.display = 'block';
 });
 
 // Evita el envío tradicional y lleva a la página principal.

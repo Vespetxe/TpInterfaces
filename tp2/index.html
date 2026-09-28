@@ -15,10 +15,12 @@
 <div class="auth-wrapper">
     <div class="auth-card">
 
-        <div class="logo-icon">
-            <img src="assets/img/LogoNexus.png" alt="Nexus Games Logo" width="48" height="48">
+        <div class="auth-brand" id="authBrand">
+            <div class="logo-icon">
+                <img src="assets/img/LogoNexus.png" alt="Nexus Games Logo" width="48" height="48">
+            </div>
+            <div class="wordmark"><span class="nexus">Nexus</span><span class="games">Games</span></div>
         </div>
-        <div class="wordmark"><span class="nexus">Nexus</span><span class="games">Games</span></div>
 
         <!-- LOGIN -->
         <form id="loginForm">
@@ -62,6 +64,10 @@
 
         <!-- REGISTER -->
         <form id="registerForm">
+            <button type="button" id="showLogin" class="back-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                Back
+            </button>
             <h1>Add your data</h1>
 
             <div class="field">
@@ -112,7 +118,6 @@
             </div>
 
             <button type="submit" class="btn-create">Create account</button>
-            <p class="switch-text"><button type="button" id="showLogin" style="color:var(--color-primary);font-weight:700;">← Back to Sign in</button></p>
         </form>
 
     </div>
