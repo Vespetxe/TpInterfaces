@@ -191,9 +191,9 @@ if (requestedId !== RECOMMENDED_GAME.id) {
         input.value = "";
     });
 
-    // Avisa que la pantalla de gameplay todavía no está implementada.
+    // Al pulsar Play, quita el aspecto atenuado de la imagen principal.
     document.querySelector(".game-hero__play").addEventListener("click", () => {
-        alert("Peg Solitaire gameplay isn't implemented yet in this delivery.");
+        document.querySelector(".game-hero").classList.add("game-hero--enabled");
     });
     // Alterna el modo de pantalla completa para la imagen principal del juego.
     document.getElementById("fullscreenBtn").addEventListener("click", () => {

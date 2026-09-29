@@ -118,7 +118,7 @@
 
 /* ========== CAROUSEL ========== */
 .carousel { margin: 24px 0; color: var(--color-text, #fff); }
-.carousel__title { margin: 0 0 8px 16px; font-size: 1rem; font-weight: 500; }
+.carousel__title { margin: 0 0 8px 55px; font-size: 1rem; font-weight: 500; }
 
 .carousel__body {
     display: flex;
@@ -138,7 +138,10 @@
     --cards-per-view: 2;
     display: flex;
     gap: 12px;
-    transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+    /* Como el valor 1.45 supera el rango normal de 0 a 1, la curva hace que el
+    elemento se pase un poco de su posición final y vuelva. Eso genera un efecto de rebote, también llamado overshoot. 
+    Se nota especialmente en movimientos de escala o posición. */
+    transition: transform 1.25s cubic-bezier(.22, 1.35, .36, 1);
     margin-inline: 5px; /* evita que el primer y último card queden pegados al borde del viewport */
 }
 
@@ -146,12 +149,12 @@
     Corre EN PARALELO al transition de transform de arriba: mientras el
     track se desliza a su nueva posición, la opacidad baja y vuelve a subir. */
 .carousel__track.is-animating {
-    animation: carousel-fade .4s ease;
+    animation: carousel-fade .65s ease;
 }
 
 @keyframes carousel-fade {
     0%   { opacity: 1; }
-    50%  { opacity: .35; }
+    50%  { opacity: .65; }
     100% { opacity: 1; }
 }
 
@@ -202,7 +205,7 @@
 }
 
 @media (max-width: 420px) {
-    .carousel__title { margin-left: 12px; font-size: .95rem; }
+    .carousel__title { margin-left: 40px; font-size: .95rem; }
     .carousel__body { gap: 4px; padding-inline: 4px; }
     .carousel__arrow { width: 30px; height: 30px; }
     .carousel__track { gap: 8px; margin-inline: 3px; }

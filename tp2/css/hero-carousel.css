@@ -1,5 +1,5 @@
 .hero-carousel {
-    margin: 24px auto 36px;
+    margin: 40px auto 36px;
     width: calc(100% - 80px);
     max-width: none;
     padding-inline: 0;
@@ -31,7 +31,10 @@
 .hero-carousel__track {
     display: flex;
     gap: 30px;
-    transition: transform .95s cubic-bezier(.22, 1, .36, 1);
+    /* Como el valor 1.45 supera el rango normal de 0 a 1, la curva hace que el
+    elemento se pase un poco de su posición final y vuelva. Eso genera un efecto de rebote, también llamado overshoot. 
+    Se nota especialmente en movimientos de escala o posición. */
+    transition: transform 1s cubic-bezier(.22, 1.45, .36, 1);
 }
 
 /* Hero Card Styles */
@@ -136,17 +139,19 @@
         height: 360px;
     }
 
-    .hero-carousel__body { padding-bottom: 44px; }
+    /* En móvil, las flechas quedan a los costados de la card y centradas en altura. */
     .hero-carousel__arrow {
-        top: auto;
-        bottom: 0;
+        top: 50%;
+        bottom: auto;
         width: 28px;
         height: 28px;
-        transform: none;
+        transform: translateY(-50%);
     }
-    .hero-carousel__arrow:hover:not(:disabled) { transform: scale(1.08); }
+    .hero-carousel__arrow:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); }
     .hero-carousel__arrow--prev { left: 0; }
     .hero-carousel__arrow--next { right: 0; }
+    /* Evita que la etiqueta del destacado se superponga con precio y acciones. */
+    .hero-card__highlight { display: none; }
     .hero-card .game-card__badges { top: 14px; right: 14px; }
     .hero-card .badge,
     .hero-card__highlight { padding: 8px 10px; font-size: .72rem; }

@@ -4,10 +4,23 @@ const registerForm = document.getElementById('registerForm');
 const showRegister = document.getElementById('showRegister');
 const showLogin = document.getElementById('showLogin');
 const successOverlay = document.getElementById('successOverlay');
+const successTitle = document.getElementById('successTitle');
+const successMessage = document.getElementById('successMessage');
 const regPassword = document.getElementById('regPassword');
 const confirmPassword = document.getElementById('confirmPassword');
 const passwordError = document.getElementById('passwordError');
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Muestra el aviso correspondiente y redirige a Home cuando termina su animación.
+function showSuccessAndRedirect(title, message) {
+    successTitle.textContent = title;
+    successMessage.textContent = message;
+    successOverlay.classList.add('show');
+
+    setTimeout(() => {
+        window.location.href = 'home.html';
+    }, 2000);
+}
 
 // Cambia del formulario de inicio de sesión al de registro.
 showRegister.addEventListener('click', () => {
@@ -23,10 +36,10 @@ showLogin.addEventListener('click', () => {
     authBrand.style.display = 'block';
 });
 
-// Evita el envío tradicional y lleva a la página principal.
+// Evita el envío tradicional y muestra una confirmación antes de ir a Home.
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    window.location.href = 'home.html';
+    showSuccessAndRedirect('Welcome back!', 'Taking you to Home...');
 });
 // --- Poblar los selects de fecha de nacimiento ---
 const dobYear = document.getElementById('dobYear');
@@ -124,13 +137,8 @@ registerForm.addEventListener('submit', (e) => {
         return; // el borde rojo y el mensaje ya están visibles, no hace falta el alert
     }
 
-    // Animación de registro exitoso
-    successOverlay.classList.add('show');
-
-    // Espera a que termine la animación de éxito antes de abrir Home.
-    setTimeout(() => {
-        window.location.href = 'home.html';
-    }, 2000);
+    // Reutiliza el mismo aviso visual que se muestra al iniciar sesión.
+    showSuccessAndRedirect('Account created!', 'Taking you to Home...');
 });
 
 

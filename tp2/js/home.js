@@ -29,7 +29,49 @@ let games = [];
 // Muestra un mensaje de carga, error o ausencia de juegos en el contenedor.
 function showMessage(text) {
     carouselsMount.innerHTML = `<p class="carousels__message">${text}</p>`;
-    }
+}
+
+// Actualiza la barra y el porcentaje durante cinco segundos exactos.
+function animateHomeLoader() {
+    const loader = document.getElementById("homeLoader");
+    const progress = document.getElementById("homeLoaderProgress");
+    const fill = document.getElementById("homeLoaderFill");
+    const percentage = document.getElementById("homeLoaderPercent");
+    const duration = 5000;
+
+    if (!loader || !progress || !fill || !percentage) return Promise.resolve();
+
+    const startedAt = performance.now();
+
+    return new Promise((resolve) => {
+        function updateProgress(now) {
+            const amount = Math.min((now - startedAt) / duration, 1);
+            const percent = Math.floor(amount * 100);
+
+            fill.style.width = `${percent}%`;
+            percentage.textContent = `${percent}%`;
+            progress.setAttribute("aria-valuenow", String(percent));
+
+            if (amount === 1) {
+                resolve();
+                return;
+            }
+
+            requestAnimationFrame(updateProgress);
+        }
+
+        requestAnimationFrame(updateProgress);
+    });
+}
+
+// Oculta la pantalla de carga con una transición cuando termina el progreso.
+function hideHomeLoader() {
+    const loader = document.getElementById("homeLoader");
+    if (!loader) return;
+
+    loader.classList.add("is-hidden");
+    loader.setAttribute("aria-hidden", "true");
+}
 
 // Evita iniciar la Home antes de que el header, el footer y la navegación estén listos.
 const layoutReady = window.siteLayoutReady
@@ -38,16 +80,26 @@ const layoutReady = window.siteLayoutReady
 
 // Espera el layout, carga el catálogo y construye los carruseles de la Home.
 async function init() {
-    await layoutReady;
     showMessage("Cargando juegos...");
 
-    try {
-        games = [RECOMMENDED_GAME, ...await fetchGames()];
-    } catch (err) {
-        console.error("Error al traer los juegos de la API:", err);
+    // Corre el loading visual en paralelo con la consulta real del catálogo.
+    const loadingComplete = animateHomeLoader();
+    const gamesRequest = fetchGames()
+        .then((apiGames) => ({ apiGames }))
+        .catch((error) => ({ error }));
+
+    await loadingComplete;
+    hideHomeLoader();
+    await layoutReady;
+
+    const result = await gamesRequest;
+    if (result.error) {
+        console.error("Error al traer los juegos de la API:", result.error);
         showMessage("No se pudieron cargar los juegos. Probá recargar la página.");
         return;
     }
+
+    games = [RECOMMENDED_GAME, ...result.apiGames];
 
     if (games.length === 0) {
         showMessage("No hay juegos para mostrar.");

@@ -118,6 +118,24 @@
             </div>
 
             <button type="submit" class="btn-create">Create account</button>
+
+            <!-- Reutiliza las mismas opciones de acceso social disponibles en el login. -->
+            <div class="divider">or</div>
+
+            <div class="social-stack">
+                <button type="button" class="btn-social btn-facebook">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg>
+                    Continue with Facebook
+                </button>
+                <button type="button" class="btn-social btn-google">
+                    <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.4-.2-2H12v3.9h6c-.1.9-.7 2.4-2 3.3l3.2 2.5c1.9-1.8 3-4.4 3-7.7z"/><path fill="#34A853" d="M12 23c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6C4.7 20.6 8.1 23 12 23z"/><path fill="#FBBC05" d="M6.4 15c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V8.4H3.1C2.4 9.8 2 11.4 2 13s.4 3.2 1.1 4.6L6.4 15z"/><path fill="#EA4335" d="M12 5.4c1.5 0 2.8.5 3.8 1.5l2.8-2.8C16.9 2.4 14.7 1.5 12 1.5 8.1 1.5 4.7 3.9 3.1 7.4l3.3 2.6C7.2 7.1 9.4 5.4 12 5.4z"/></svg>
+                    Continue with Google
+                </button>
+                <button type="button" class="btn-social btn-apple">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 1c.1 1.1-.3 2.1-.9 2.9-.7.8-1.7 1.5-2.8 1.4-.1-1.1.4-2.2 1-2.9.7-.8 1.9-1.4 2.7-1.4zm4.2 16.2c-.3.7-.6 1.3-1 1.9-.6.9-1.2 1.9-2.2 1.9-1 0-1.3-.6-2.4-.6-1.1 0-1.5.6-2.4.6-1 0-1.7-.9-2.3-1.8-1.3-1.9-2.3-5.4-1-7.7.6-1.1 1.7-1.9 2.9-1.9 1 0 1.6.6 2.4.6.8 0 1.3-.6 2.4-.6 1 0 2.1.6 2.9 1.6-2.6 1.4-2.2 5.1.7 6z"/></svg>
+                    Continue with Apple
+                </button>
+            </div>
         </form>
 
     </div>
@@ -130,8 +148,8 @@
                 <path d="M5 13l4 4L19 7" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </div>
-        <p style="font-weight:700; font-size:16px;">Account created!</p>
-        <p style="color: var(--color-text-secondary); font-size:13px; margin-top:4px;">Taking you to Home...</p>
+        <p id="successTitle" style="font-weight:700; font-size:16px;">Account created!</p>
+        <p id="successMessage" style="color: var(--color-text-secondary); font-size:13px; margin-top:4px;">Taking you to Home...</p>
     </div>
 </div>
 

@@ -28,7 +28,11 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    /* Atenúa la imagen para representar el estado previo a pulsar Play. */
+    filter: brightness(.45) saturate(.65);
+    transition: filter .5s ease;
 }
+.game-hero--enabled .game-hero__image { filter: brightness(1) saturate(1); }
 .game-hero__play {
     position: absolute;
     top: 50%;
@@ -153,12 +157,24 @@
     font-size: 13px;
 }
 .game-comments__form button {
-    background-color: var(--color-primary);
-    color: #1a1a1a;
+    /* La capa naranja crece desde la izquierda cuando el usuario pasa el cursor. */
+    background-color: var(--color-surface-light, #444);
+    background-image: linear-gradient(var(--color-primary), var(--color-primary));
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 0 100%;
+    color: var(--color-text, #fff);
     font-weight: 700;
     font-size: 13px;
     padding: 0 16px;
+    height: 36px;
     border-radius: var(--radius-pill);
+    transition: background-size .45s ease, color .25s ease;
+}
+.game-comments__form button:hover,
+.game-comments__form button:focus-visible {
+    background-size: 100% 100%;
+    color: var(--fondo-900, #1a1a1a);
 }
 .game-comments__form {
     display: flex;

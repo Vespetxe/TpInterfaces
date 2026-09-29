@@ -14,6 +14,21 @@
 
 </head>
 <body>
+    <!-- Pantalla inicial de carga: el progreso se anima desde home.js durante cinco segundos. -->
+    <div class="home-loader" id="homeLoader" role="status" aria-live="polite" aria-label="Loading Nexus Games">
+        <div class="home-loader__content">
+            <div class="home-loader__brand">
+                <img class="home-loader__logo" src="assets/img/LogoNexus.png" alt="">
+                <span class="home-loader__name"><span>Nexus</span><span>Games</span></span>
+            </div>
+            <p class="home-loader__message">Loading your next adventure...</p>
+            <div class="home-loader__progress" id="homeLoaderProgress" role="progressbar" aria-label="Loading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span class="home-loader__fill" id="homeLoaderFill"></span>
+            </div>
+            <span class="home-loader__percent" id="homeLoaderPercent">0%</span>
+        </div>
+    </div>
+
     <div id="site-header"></div>
     <main>
         <div id="hero-carousel"></div>
