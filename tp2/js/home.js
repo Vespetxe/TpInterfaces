@@ -1,26 +1,3 @@
-/*const carouselsMount = document.getElementById("carousels");
-
-// Un carousel por categoría, filtrando el array de datos.
-const categories = [...new Set(games.map((g) => g.category))];
-categories.forEach((cat) => {
-    renderCarousel(carouselsMount, cat, games.filter((g) => g.category === cat));
-});
-
-// Event delegation: un solo listener para todos los botones de todas las cards.
-carouselsMount.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-action]");
-    if (!btn) return;
-
-    const id = Number(btn.closest(".game-card").dataset.id);
-    const game = games.find((g) => g.id === id);
-
-    if (btn.dataset.action === "add-to-cart") {
-        console.log("Agregar al carrito:", game.title); // acá va tu lógica del carrito
-    } else if (btn.dataset.action === "play") {
-        console.log("Jugar:", game.title);
-    }
-});*/
-
 const carouselsMount = document.getElementById("carousels");
 
 // Se guarda el catálogo recibido para que el listener pueda buscar juegos.
@@ -31,7 +8,7 @@ function showMessage(text) {
     carouselsMount.innerHTML = `<p class="carousels__message">${text}</p>`;
 }
 
-// Actualiza la barra y el porcentaje durante cinco segundos exactos.
+// Anima la barra de progreso durante cinco segundos, independientemente de la API.
 function animateHomeLoader() {
     const loader = document.getElementById("homeLoader");
     const progress = document.getElementById("homeLoaderProgress");
@@ -64,7 +41,7 @@ function animateHomeLoader() {
     });
 }
 
-// Oculta la pantalla de carga con una transición cuando termina el progreso.
+// Oculta el loader al completar el progreso y permite ver la Home.
 function hideHomeLoader() {
     const loader = document.getElementById("homeLoader");
     if (!loader) return;
@@ -82,7 +59,7 @@ const layoutReady = window.siteLayoutReady
 async function init() {
     showMessage("Cargando juegos...");
 
-    // Corre el loading visual en paralelo con la consulta real del catálogo.
+    // La carga visual avanza mientras se obtiene el catálogo de la API.
     const loadingComplete = animateHomeLoader();
     const gamesRequest = fetchGames()
         .then((apiGames) => ({ apiGames }))

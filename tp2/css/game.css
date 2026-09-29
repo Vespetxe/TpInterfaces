@@ -67,15 +67,42 @@
 }
 .game-hero__actions {
     display: flex;
-    gap: 16px;
+    align-items: center;
+    gap: 8px;
 }
+/* Agrupa las acciones en botones circulares con hover y estado activo visibles. */
 .game-hero__actions button {
-    font-size: 16px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background-color: var(--color-bg);
     color: var(--color-text-secondary);
-    transition: color var(--transition-fast);
+    transition: transform .2s cubic-bezier(.22, 1.45, .36, 1), color .2s ease,
+        background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 .game-hero__actions button:hover {
     color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: rgba(254, 141, 65, .12);
+    box-shadow: 0 4px 12px rgba(254, 141, 65, .18);
+    transform: translateY(-2px);
+}
+.game-hero__actions button[aria-pressed="true"] {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: rgba(254, 141, 65, .16);
+}
+.game-hero__actions [data-action="dislike"][aria-pressed="true"] {
+    color: #ff7777;
+    border-color: #ff7777;
+    background-color: rgba(255, 119, 119, .14);
+}
+.game-hero__actions button:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
 }
 
 /* Gallery — sin animación, solo cambia la imagen grande al click */
@@ -136,6 +163,11 @@
 
 @media (max-width: 640px) {
     .api-game-detail dl { grid-template-columns: 1fr; gap: 14px; }
+
+    /* En móvil, separa el título de la fila de acciones para que no se amontonen. */
+    .game-hero__toolbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .game-hero__actions { width: 100%; justify-content: space-between; gap: 4px; }
+    .game-hero__actions button { width: 38px; height: 38px; }
 }
 
 /* Comentarios */
@@ -199,7 +231,15 @@
     align-items: center;
     gap: 4px;
 }
-.game-hero__actions button svg { display: block; }
+/* Unifica el tamaño de los SVG y les da una respuesta sutil al hover y al estado activo. */
+.game-hero__actions button svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    transition: transform .2s ease;
+}
+.game-hero__actions button:hover svg { transform: scale(1.08); }
+.game-hero__actions button[aria-pressed="true"] svg { stroke-width: 2.1; }
 
 .game-comments__list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
 .comment__header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }

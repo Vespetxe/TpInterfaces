@@ -1,4 +1,5 @@
-const ICON_LIKE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 22V11m0 11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3m0 11h9.5a2 2 0 0 0 2-1.6l1.4-7A2 2 0 0 0 18 10H14V6a2 2 0 0 0-2-2l-2 6.6V22z"/></svg>`;
+// Reutiliza el mismo dibujo outline del Like de game-detail, reducido para el contador de cada card.
+const ICON_LIKE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></svg>`;
 
 // 15000 -> "15K"
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact" });

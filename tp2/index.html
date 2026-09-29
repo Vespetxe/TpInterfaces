@@ -35,7 +35,10 @@
                 <label for="loginPassword">Password</label>
                 <div class="input-wrap">
                     <input type="password" id="loginPassword" required placeholder="Placeholder">
-                    <span class="toggle-password" id="togglePwd">👁</span>
+                    <button type="button" class="toggle-password" id="togglePwd" data-target="loginPassword" aria-label="Show password" aria-controls="loginPassword" aria-pressed="false">
+                        <svg class="eye-icon eye-icon--open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-icon eye-icon--closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a15.6 15.6 0 0 1-3.1 3.9M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 4-.8"/></svg>
+                    </button>
                 </div>
             </div>
 
@@ -90,7 +93,10 @@
                 <label for="regPassword">Password <span class="required">*</span><span class="valid-check" id="passwordCheck">✓</span></label>
                 <div class="input-wrap">
                     <input type="password" id="regPassword" required placeholder="Placeholder">
-                    <span class="toggle-password" id="toggleRegPwd">👁</span>
+                    <button type="button" class="toggle-password" id="toggleRegPwd" data-target="regPassword" aria-label="Show password" aria-controls="regPassword" aria-pressed="false">
+                        <svg class="eye-icon eye-icon--open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-icon eye-icon--closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a15.6 15.6 0 0 1-3.1 3.9M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 4-.8"/></svg>
+                    </button>
                 </div>
             </div>
 
@@ -98,7 +104,10 @@
                 <label for="confirmPassword">Confirm password <span class="required">*</span><span class="valid-check" id="confirmCheck">✓</span></label>
                 <div class="input-wrap">
                     <input type="password" id="confirmPassword" required placeholder="Placeholder">
-                    <span class="toggle-password" id="toggleConfirmPwd">👁</span>
+                    <button type="button" class="toggle-password" id="toggleConfirmPwd" data-target="confirmPassword" aria-label="Show password" aria-controls="confirmPassword" aria-pressed="false">
+                        <svg class="eye-icon eye-icon--open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-icon eye-icon--closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 3 18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a15.6 15.6 0 0 1-3.1 3.9M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10.7 10.7 0 0 0 4-.8"/></svg>
+                    </button>
                 </div>
                 <span class="field-error" id="passwordError">Passwords do not match.</span>
             </div>

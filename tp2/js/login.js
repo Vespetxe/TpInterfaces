@@ -11,6 +11,19 @@ const confirmPassword = document.getElementById('confirmPassword');
 const passwordError = document.getElementById('passwordError');
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Alterna la visibilidad de cada contraseña y sincroniza el icono y el estado accesible.
+document.querySelectorAll('.toggle-password').forEach((button) => {
+    const input = document.getElementById(button.dataset.target);
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+        const showPassword = input.type === 'password';
+        input.type = showPassword ? 'text' : 'password';
+        button.setAttribute('aria-pressed', String(showPassword));
+        button.setAttribute('aria-label', showPassword ? 'Hide password' : 'Show password');
+    });
+});
+
 // Muestra el aviso correspondiente y redirige a Home cuando termina su animación.
 function showSuccessAndRedirect(title, message) {
     successTitle.textContent = title;
@@ -21,6 +34,13 @@ function showSuccessAndRedirect(title, message) {
         window.location.href = 'home.html';
     }, 2000);
 }
+
+// Simula el acceso con un proveedor social y usa la misma confirmación que Sign in.
+document.querySelectorAll('.btn-social').forEach((button) => {
+    button.addEventListener('click', () => {
+        showSuccessAndRedirect('Welcome back!', 'Taking you to Home...');
+    });
+});
 
 // Cambia del formulario de inicio de sesión al de registro.
 showRegister.addEventListener('click', () => {
@@ -41,6 +61,7 @@ loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     showSuccessAndRedirect('Welcome back!', 'Taking you to Home...');
 });
+
 // --- Poblar los selects de fecha de nacimiento ---
 const dobYear = document.getElementById('dobYear');
 const dobMonth = document.getElementById('dobMonth');
@@ -106,17 +127,6 @@ function checkDobComplete() {
 dobYear.addEventListener('change', checkDobComplete);
 dobMonth.addEventListener('change', checkDobComplete);
 dobDay.addEventListener('change', checkDobComplete);
-
-// --- Toggle mostrar/ocultar para los dos campos de contraseña del registro ---
-document.getElementById('toggleRegPwd').addEventListener('click', () => {
-    const input = document.getElementById('regPassword');
-    input.type = input.type === 'password' ? 'text' : 'password';
-});
-document.getElementById('toggleConfirmPwd').addEventListener('click', () => {
-    const input = document.getElementById('confirmPassword');
-    input.type = input.type === 'password' ? 'text' : 'password';
-});
-
 
 function checkPasswordMatch() {
     const mismatch = confirmPassword.value.length > 0 && regPassword.value !== confirmPassword.value;

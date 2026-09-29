@@ -51,6 +51,7 @@
 .field-row .field { flex: 1; }
 
 .input-wrap { position: relative; }
+.field .input-wrap input { padding-right: 54px; }
 
 .field input {
     width: 100%;
@@ -86,10 +87,45 @@
 
 .toggle-password {
     position: absolute;
-    right: 18px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: #8a8a8a;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #777;
+    cursor: pointer;
+    transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+/* Alinea el SVG dentro del campo y cambia el icono según el estado visible. */
+.toggle-password .eye-icon {
+    display: block;
+    width: 19px;
+    height: 19px;
+}
+
+.toggle-password .eye-icon--closed,
+.toggle-password[aria-pressed="true"] .eye-icon--open {
+    display: none;
+}
+
+.toggle-password[aria-pressed="true"] .eye-icon--closed {
+    display: block;
+}
+
+.toggle-password:hover {
+    color: var(--color-primary);
+    background-color: rgba(0, 0, 0, .06);
+}
+
+.toggle-password:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }
 
 .switch-text {

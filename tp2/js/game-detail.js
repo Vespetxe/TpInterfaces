@@ -1,10 +1,11 @@
 const detailMount = document.getElementById("game-detail");
 const requestedId = Number(new URLSearchParams(window.location.search).get("id")) || RECOMMENDED_GAME.id;
-const ICON_LIKE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 22V11m0 11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3m0 11h9.5a2 2 0 0 0 2-1.6l1.4-7A2 2 0 0 0 18 10H14V6a2 2 0 0 0-2-2l-2 6.6V22z"/></svg>`;
-const ICON_DISLIKE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 2v11m0-11h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3m0-11H7.5a2 2 0 0 0-2 1.6L4.1 21.6A2 2 0 0 0 6 24h4V17.4L12 11H17z"/></svg>`;
-const ICON_BOOKMARK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`;
-const ICON_SHARE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>`;
-const ICON_FULLSCREEN = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
+// Mantiene los iconos del toolbar en el mismo estilo outline; el Like también se usa en comentarios.
+const ICON_LIKE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></svg>`;
+const ICON_DISLIKE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(180 12 12)"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></g></svg>`;
+const ICON_BOOKMARK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z"/></svg>`;
+const ICON_SHARE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.1M8.7 13.3l6.6 4.1"/></svg>`;
+const ICON_FULLSCREEN = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
 const GAME_COMMENTS = [
     { user: "PixelVex", time: "12 min ago", text: "Surprisingly addictive. I thought I'd solve it in a few moves, but that last clone always gets me.", likes: 3, avatar: "assets/img/pixelvex.png" },
     { user: "NeonGamer", time: "1 hour ago", text: "Okay, this is WAY harder than it looks. Finally got down to one clone after ten attempts.", likes: 123, avatar: "assets/img/neongamer.png" },
@@ -25,67 +26,67 @@ function escapeDetailText(value = "") {
 }
 
 // Dibuja la página de detalle para un juego recibido desde la API.
-function renderApiGameDetail(game) {
-    const title = escapeDetailText(game.title);
-    const image = escapeDetailText(game.fullImage || game.image || "");
-    const description = escapeDetailText(game.description || "No description is available for this game yet.");
-    const category = escapeDetailText(game.genres?.join(", ") || game.category || "Game");
-    const release = escapeDetailText(game.released || "Not listed");
-    const platforms = escapeDetailText(game.platforms?.join(", ") || "Not listed");
+    /*function renderApiGameDetail(game) {
+        const title = escapeDetailText(game.title);
+        const image = escapeDetailText(game.fullImage || game.image || "");
+        const description = escapeDetailText(game.description || "No description is available for this game yet.");
+        const category = escapeDetailText(game.genres?.join(", ") || game.category || "Game");
+        const release = escapeDetailText(game.released || "Not listed");
+        const platforms = escapeDetailText(game.platforms?.join(", ") || "Not listed");
 
-    document.title = `${title} | Nexus Games`;
-    detailMount.innerHTML = `
-        <nav class="breadcrumb" aria-label="Breadcrumb">
-            <a href="home.html">Home</a>
-            <span class="breadcrumb__sep">›</span>
-            <span class="breadcrumb__current">${title}</span>
-        </nav>
-        <div class="game-hero">
-            <img class="game-hero__image" src="${image}" alt="${title}">
-        </div>
-        <div class="game-hero__toolbar">
-            <span class="game-hero__name">${title}</span>
-            <span class="api-game-detail__rating">★ ${Number(game.rating || 0).toFixed(1)}</span>
-        </div>
-        <article class="api-game-detail">
-            <h1>${title}</h1>
-            <p>${description}</p>
-            <dl>
-                <div><dt>Genres</dt><dd>${category}</dd></div>
-                <div><dt>Release date</dt><dd>${release}</dd></div>
-                <div><dt>Platforms</dt><dd>${platforms}</dd></div>
-            </dl>
-            <a class="game-detail__back" href="home.html">Back to Home</a>
-        </article>
-    `;
-}
+        document.title = `${title} | Nexus Games`;
+        detailMount.innerHTML = `
+            <nav class="breadcrumb" aria-label="Breadcrumb">
+                <a href="home.html">Home</a>
+                <span class="breadcrumb__sep">›</span>
+                <span class="breadcrumb__current">${title}</span>
+            </nav>
+            <div class="game-hero">
+                <img class="game-hero__image" src="${image}" alt="${title}">
+            </div>
+            <div class="game-hero__toolbar">
+                <span class="game-hero__name">${title}</span>
+                <span class="api-game-detail__rating">★ ${Number(game.rating || 0).toFixed(1)}</span>
+            </div>
+            <article class="api-game-detail">
+                <h1>${title}</h1>
+                <p>${description}</p>
+                <dl>
+                    <div><dt>Genres</dt><dd>${category}</dd></div>
+                    <div><dt>Release date</dt><dd>${release}</dd></div>
+                    <div><dt>Platforms</dt><dd>${platforms}</dd></div>
+                </dl>
+                <a class="game-detail__back" href="home.html">Back to Home</a>
+            </article>
+        `;
+        }
 
-if (requestedId !== RECOMMENDED_GAME.id) {
-    detailMount.innerHTML = `<p class="game-detail__message">Loading game...</p>`;
-    // Busca en la API el juego indicado por la URL y dibuja su detalle si existe.
-    fetchGames()
-        .then((apiGames) => {
-            // Encuentra el juego cuyo identificador coincide con el parámetro de la URL.
-            const game = apiGames.find((item) => item.id === requestedId);
-            if (game) {
-                renderApiGameDetail(game);
-            } else {
+    if (requestedId !== RECOMMENDED_GAME.id) {
+        detailMount.innerHTML = `<p class="game-detail__message">Loading game...</p>`;
+        // Busca en la API el juego indicado por la URL y dibuja su detalle si existe.
+        fetchGames()
+            .then((apiGames) => {
+                // Encuentra el juego cuyo identificador coincide con el parámetro de la URL.
+                const game = apiGames.find((item) => item.id === requestedId);
+                if (game) {
+                    renderApiGameDetail(game);
+                } else {
+                    detailMount.innerHTML = `
+                        <p class="game-detail__message">Game not found.</p>
+                        <a class="game-detail__back" href="home.html">Back to games</a>
+                    `;
+                }
+            })
+            // Muestra un mensaje alternativo si falla la carga de la API.
+            .catch(() => {
                 detailMount.innerHTML = `
-                    <p class="game-detail__message">Game not found.</p>
+                    <p class="game-detail__message">The game could not be loaded.</p>
                     <a class="game-detail__back" href="home.html">Back to games</a>
                 `;
-            }
-        })
-        // Muestra un mensaje alternativo si falla la carga de la API.
-        .catch(() => {
-            detailMount.innerHTML = `
-                <p class="game-detail__message">The game could not be loaded.</p>
-                <a class="game-detail__back" href="home.html">Back to games</a>
-            `;
-        });
-} else {
-    const game = RECOMMENDED_GAME;
-    document.title = `${game.title} | Nexus Games`;
+            });
+    } else {*/
+        const game = RECOMMENDED_GAME;
+        document.title = `${game.title} | Nexus Games`;
 
     // Renderiza el detalle local y convierte sus listas en secciones HTML.
     detailMount.innerHTML = `
@@ -97,7 +98,6 @@ if (requestedId !== RECOMMENDED_GAME.id) {
             <span class="breadcrumb__current">${game.title}</span>
         </nav>
 
-       
         <div class="game-hero">
             <img class="game-hero__image" src="${game.fullImage}" alt="${game.title}">
             <button class="game-hero__play" type="button">Play</button>
@@ -105,11 +105,11 @@ if (requestedId !== RECOMMENDED_GAME.id) {
         <div class="game-hero__toolbar">
             <span class="game-hero__name">${game.title}</span>
             <div class="game-hero__actions">
-                <button aria-label="Like">${ICON_LIKE}</button>
-                <button aria-label="Dislike">${ICON_DISLIKE}</button>
-                <button aria-label="Save">${ICON_BOOKMARK}</button>
-                <button aria-label="Share">${ICON_SHARE}</button>
-                <button aria-label="Fullscreen" id="fullscreenBtn">${ICON_FULLSCREEN}</button>
+                <button type="button" data-action="like" aria-label="Like" aria-pressed="false" title="Like">${ICON_LIKE}</button>
+                <button type="button" data-action="dislike" aria-label="Dislike" aria-pressed="false" title="Dislike">${ICON_DISLIKE}</button>
+                <button type="button" data-action="save" aria-label="Save" aria-pressed="false" title="Save">${ICON_BOOKMARK}</button>
+                <button type="button" aria-label="Share" title="Share">${ICON_SHARE}</button>
+                <button type="button" aria-label="Fullscreen" id="fullscreenBtn" title="Fullscreen">${ICON_FULLSCREEN}</button>
             </div>
         </div>
         <section class="game-gallery">
@@ -191,6 +191,23 @@ if (requestedId !== RECOMMENDED_GAME.id) {
         input.value = "";
     });
 
+    // Like y Dislike son excluyentes; Save alterna de forma independiente en esta página.
+    document.querySelector(".game-hero__actions").addEventListener("click", (event) => {
+        const button = event.target.closest('button[aria-pressed]');
+        if (!button) return;
+
+        const nextState = button.getAttribute("aria-pressed") !== "true";
+        const action = button.dataset.action;
+
+        if (action === "like" || action === "dislike") {
+            document.querySelectorAll('[data-action="like"], [data-action="dislike"]').forEach((reaction) => {
+                reaction.setAttribute("aria-pressed", "false");
+            });
+        }
+
+        button.setAttribute("aria-pressed", String(nextState));
+    });
+
     // Al pulsar Play, quita el aspecto atenuado de la imagen principal.
     document.querySelector(".game-hero__play").addEventListener("click", () => {
         document.querySelector(".game-hero").classList.add("game-hero--enabled");
@@ -204,4 +221,4 @@ if (requestedId !== RECOMMENDED_GAME.id) {
             document.exitFullscreen();
         }
     });
-}
+

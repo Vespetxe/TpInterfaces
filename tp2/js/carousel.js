@@ -28,7 +28,7 @@ function renderCarousel(mount, title, list) {
     list.forEach((game) => track.appendChild(createGameCard(game)));
     mount.appendChild(section);
 
-  let index = 0; // índice de la primera card visible
+    let index = 0; // índice de la primera card visible
 
     // Lee del CSS cuántas cards deben verse según el ancho actual.
     function getCardsPerView() {

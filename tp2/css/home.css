@@ -86,7 +86,7 @@ main {
     width: 0;
     height: 100%;
     border-radius: inherit;
-    background: linear-gradient(90deg, var(--color-secondary, #a151ff), var(--color-primary, #fe8d41));
+    background: var(--color-primary, #fe8d41);
     transition: width .06s linear;
 }
 
@@ -102,7 +102,7 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .home-loader__logo { animation-duration: 8s; }
+    .home-loader__logo { animation-duration: 5s; }
 }
 
 #carousels {
