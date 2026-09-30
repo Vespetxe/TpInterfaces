@@ -1,8 +1,10 @@
+// ===== Íconos del carrusel =====
 // Íconos de flecha en SVG (stroke="currentColor" hereda el color del botón,
 // así el hover del botón también pinta el ícono sin tocar el SVG).
 const ICON_CHEVRON_LEFT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 const ICON_CHEVRON_RIGHT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
+// ===== Renderizado y navegación =====
 // Crea el carrusel dentro de `mount`, agrega sus cards y configura navegación y animaciones.
 function renderCarousel(mount, title, list) {
     const section = document.createElement("section");

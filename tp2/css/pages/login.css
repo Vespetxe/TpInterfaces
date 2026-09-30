@@ -1,5 +1,6 @@
-@import url('variables.css');
+@import url('../base/variables.css');
 
+/* ===== Estructura de los formularios ===== */
 .auth-wrapper {
     min-height: 100vh;
     display: flex;
@@ -153,6 +154,7 @@
 
 #registerForm { display: none; }
 
+/* ===== Confirmación de acceso o registro ===== */
 /* Overlay de éxito */
 .success-overlay {
     position: fixed;

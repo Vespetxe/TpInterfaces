@@ -1,10 +1,12 @@
-@import url('variables.css');
+@import url('../base/variables.css');
 
+/* ===== Contenedor y navegación del detalle ===== */
 .game-detail-main {
     width: min(1180px, calc(100% - 40px));
     margin: 40px auto 80px;
 }
 
+/* ===== Navegación y reproductor del juego ===== */
 /* Breadcrumb */
 .breadcrumb {
     font-size: 13px;
@@ -16,6 +18,7 @@
 .breadcrumb__sep { margin: 0 6px; color: var(--color-text-secondary); }
 .breadcrumb__current { color: var(--color-text-secondary); }
 
+/* ===== Imagen principal y acciones del juego ===== */
 .game-hero {
     position: relative;
     width: 100%;
@@ -105,6 +108,7 @@
     outline-offset: 3px;
 }
 
+/* ===== Galería, información y comentarios ===== */
 /* Gallery — sin animación, solo cambia la imagen grande al click */
 .game-gallery { margin-bottom: 40px; }
 .game-gallery__title { font-size: 18px; margin-bottom: 12px; }

@@ -11,6 +11,7 @@ const confirmPassword = document.getElementById('confirmPassword');
 const passwordError = document.getElementById('passwordError');
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// ===== Inicio de sesión y confirmación =====
 // Alterna la visibilidad de cada contraseña y sincroniza el icono y el estado accesible.
 document.querySelectorAll('.toggle-password').forEach((button) => {
     const input = document.getElementById(button.dataset.target);
@@ -62,7 +63,7 @@ loginForm.addEventListener('submit', (e) => {
     showSuccessAndRedirect('Welcome back!', 'Taking you to Home...');
 });
 
-// --- Poblar los selects de fecha de nacimiento ---
+// ===== Registro: fecha de nacimiento =====
 const dobYear = document.getElementById('dobYear');
 const dobMonth = document.getElementById('dobMonth');
 const dobDay = document.getElementById('dobDay');
@@ -78,7 +79,7 @@ fillSelect(dobYear, 'Year', years);
 fillSelect(dobMonth, 'Month', ['January','February','March','April','May','June','July','August','September','October','November','December']);
 fillSelect(dobDay, 'Day', Array.from({ length: 31 }, (_, i) => i + 1));
 
-// --- Checkmarks de validación para todos los campos requeridos ---
+// ===== Registro: validación visual =====
 function toggleCheck(id, condition) {
     const check = document.getElementById(id);
     if (check) check.classList.toggle('show', condition);
@@ -137,6 +138,7 @@ function checkPasswordMatch() {
 regPassword.addEventListener('input', checkPasswordMatch);
 confirmPassword.addEventListener('input', checkPasswordMatch);
 
+// ===== Envío del registro =====
 // Comprueba que ambas contraseñas coincidan y muestra la confirmación de registro.
 registerForm.addEventListener('submit', (e) => {
     e.preventDefault();

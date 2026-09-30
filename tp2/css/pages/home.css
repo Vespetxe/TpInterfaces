@@ -1,10 +1,13 @@
 
+/* ===== Estructura de la página ===== */
 main {
     width: 100%;
     min-width: 0;
 }
 
+/* ===== Loading inicial de Home ===== */
 /* Cubre la Home mientras corre el loading simulado de cinco segundos. */
+/* ===== Loading inicial de Home ===== */
 .home-loader {
     position: fixed;
     z-index: 2000;
@@ -112,6 +115,7 @@ main {
 }
 
 /* Presenta en la Home los juegos agregados y el total acumulado del carrito. */
+/* ===== Panel desplegable del carrito ===== */
 .shopping-cart {
     position: fixed;
     inset: var(--navbar-height, 57px) 0 0 auto;
@@ -124,6 +128,10 @@ main {
     background: #242424;
     color: #f4f4f4;
     box-shadow: -8px 0 28px rgba(0, 0, 0, .3);
+    /* Iguala la letra y el interlineado de los enlaces del perfil y categorías. */
+    font-family: var(--font-main);
+    font-size: 14px;
+    line-height: 1.35;
 }
 
 .shopping-cart[hidden] {
@@ -139,10 +147,10 @@ main {
 }
 
 .shopping-cart__heading { margin-bottom: 0; }
-.shopping-cart__heading h2 { font-size: 1.2rem; }
-.shopping-cart__count { color: var(--color-text-secondary, #aaa); font-size: .9rem; }
+.shopping-cart__heading h2 { font-size: 14px; font-weight: 600; }
+.shopping-cart__count { color: var(--color-text-secondary, #aaa); font-size: 14px; }
 .shopping-cart__divider { height: 1px; margin: 12px 0; background: rgba(255, 255, 255, .22); }
-.shopping-cart__empty { padding: 12px 0; color: var(--color-text-secondary, #aaa); text-align: center; }
+.shopping-cart__empty { padding: 12px 0; color: var(--color-text-secondary, #aaa); font-size: 13px; text-align: center; }
 .shopping-cart__empty[hidden],
 .shopping-cart__summary[hidden] { display: none; }
 .shopping-cart__items { display: grid; gap: 10px; list-style: none; }
@@ -159,9 +167,8 @@ main {
 
 .shopping-cart__image { width: 76px; height: 58px; flex: 0 0 76px; border-radius: 8px; object-fit: cover; }
 .shopping-cart__details { flex: 1; min-width: 0; }
-.shopping-cart__title { overflow: hidden; font-size: .95rem; text-overflow: ellipsis; white-space: nowrap; }
-.shopping-cart__price { margin-top: 4px; color: var(--color-text-secondary, #aaa); font-size: .84rem; }
-.shopping-cart__quantity { color: var(--color-text-secondary, #aaa); font-size: .86rem; white-space: nowrap; }
+.shopping-cart__title { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.shopping-cart__price { margin-top: 4px; color: var(--color-text-secondary, #aaa); font-size: 14px; }
 .shopping-cart__remove { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; padding: 0; border: 1px solid var(--color-border, #4d4f56); border-radius: 50%; color: var(--color-text-secondary, #aaa); line-height: 1; transition: color .2s ease, border-color .2s ease, background-color .2s ease; }
 .shopping-cart__remove svg { display: block; width: 14px; height: 14px; }
 .shopping-cart__remove:hover { border-color: #ff7777; background: rgba(255, 119, 119, .12); color: #ff7777; }
@@ -170,13 +177,27 @@ main {
     margin-top: 18px;
     padding-top: 16px;
     border-top: 1px solid var(--color-border, #3c3c3c);
-    font-size: 1rem;
+    font-size: 14px;
 }
-.shopping-cart__summary strong { color: var(--color-primary, #fe8d41); font-size: 1.1rem; }
+.shopping-cart__total { display: flex; align-items: center; gap: 12px; }
+.shopping-cart__summary strong { color: var(--color-primary, #fe8d41); font-size: 14px; font-weight: 600; }
+/* El CTA de compra reutiliza el color y la forma de píldora de Play Free. */
+#shopping-cart .shopping-cart__buy {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background-color: var(--color-primary, #ff8a3d);
+    color: #1a1a1a;
+    font-size: 14px;
+    transition: transform .2s cubic-bezier(.22, 1.2, .36, 1);
+}
+#shopping-cart .shopping-cart__buy:hover {
+    background-color: var(--color-primary, #ff8a3d);
+    transform: scale(1.08);
+}
 
 @media (max-width: 560px) {
     .shopping-cart { width: min(300px, 86vw); padding: 18px 14px 24px; }
     .shopping-cart__item { gap: 10px; padding: 8px; }
     .shopping-cart__image { width: 62px; height: 54px; flex-basis: 62px; }
-    .shopping-cart__title { font-size: .84rem; }
+    .shopping-cart__title { font-size: 14px; }
 }

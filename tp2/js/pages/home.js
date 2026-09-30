@@ -1,17 +1,16 @@
 const carouselsMount = document.getElementById("carousels");
 
-// Se guarda el catálogo recibido para que el listener pueda buscar juegos.
-let games = [];
+// ===== Carrito =====
 const CART_STORAGE_KEY = "nexus-games-cart";
 const cartMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
 
-// Recupera los productos guardados para conservar el carrito al recargar la Home.
+// Recupera los juegos guardados y elimina duplicados al recargar la Home.
 function loadCart() {
     try {
         const savedItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
         if (!Array.isArray(savedItems)) return [];
 
-        // Deduplica los datos previos y fuerza una sola unidad por juego.
+        // Deduplica los registros guardados y conserva una entrada por juego.
         const uniqueItems = new Map();
         savedItems.forEach((item) => {
             if (!item || !Number.isFinite(Number(item.id)) || !item.title) return;
@@ -24,7 +23,6 @@ function loadCart() {
                 image: String(item.image || ""),
                 price: Math.max(0, Number(item.price) || 0),
                 discount: Math.min(100, Math.max(0, Number(item.discount) || 0)),
-                quantity: 1,
             });
         });
         return [...uniqueItems.values()];
@@ -36,6 +34,11 @@ function loadCart() {
 
 let cartItems = loadCart();
 
+// ===== Estado compartido de Home =====
+// Se guarda el catálogo recibido para que el listener pueda buscar juegos.
+let games = [];
+
+// ===== Mensajes y loading de Home =====
 // Muestra un mensaje de carga, error o ausencia de juegos en el contenedor.
 function showMessage(text) {
     carouselsMount.innerHTML = `<p class="carousels__message">${text}</p>`;
@@ -83,7 +86,7 @@ function hideHomeLoader() {
     loader.setAttribute("aria-hidden", "true");
 }
 
-// Dibuja los productos, las cantidades y el total en la sección del carrito.
+// Dibuja los juegos y el total en la sección del carrito.
 function renderCart() {
     const itemsMount = document.getElementById("cart-items");
     const emptyMessage = document.getElementById("cart-empty");
@@ -92,7 +95,7 @@ function renderCart() {
     const totalMount = document.getElementById("cart-total");
     if (!itemsMount || !emptyMessage || !countMount || !summary || !totalMount) return;
 
-    const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+    const itemCount = cartItems.length;
     countMount.textContent = `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
     emptyMessage.hidden = itemCount > 0;
     summary.hidden = itemCount === 0;
@@ -118,12 +121,8 @@ function renderCart() {
         const unitPrice = item.price * (1 - item.discount / 100);
         const price = document.createElement("p");
         price.className = "shopping-cart__price";
-        price.textContent = `${cartMoney.format(unitPrice)} each`;
+        price.textContent = `${cartMoney.format(unitPrice)} `;
         details.append(title, price);
-
-        const quantity = document.createElement("span");
-        quantity.className = "shopping-cart__quantity";
-        quantity.textContent = `Qty: ${item.quantity}`;
 
         const removeButton = document.createElement("button");
         removeButton.className = "shopping-cart__remove";
@@ -133,12 +132,12 @@ function renderCart() {
         // El SVG mantiene la X centrada sin depender de la métrica de una fuente.
         removeButton.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>';
 
-        row.append(image, details, quantity, removeButton);
+        row.append(image, details, removeButton);
         itemsMount.appendChild(row);
     });
 
     const total = cartItems.reduce((sum, item) => {
-        return sum + item.price * (1 - item.discount / 100) * item.quantity;
+        return sum + item.price * (1 - item.discount / 100);
     }, 0);
     totalMount.textContent = cartMoney.format(total);
 
@@ -181,7 +180,7 @@ function setCartOpen(isOpen) {
     }
 }
 
-// Agrega el juego, suma cantidad si ya estaba y abre el panel del carrito.
+// Agrega el juego solo si no existe y abre el panel del carrito.
 function addGameToCart(game) {
     const existingItem = cartItems.find((item) => item.id === game.id);
     if (existingItem) return;
@@ -192,7 +191,6 @@ function addGameToCart(game) {
         image: game.image,
         price: Number(game.price) || 0,
         discount: Number(game.discount) || 0,
-        quantity: 1,
     });
 
     saveCart();
@@ -253,6 +251,7 @@ document.addEventListener("keydown", (event) => {
     document.querySelector(".cart-btn")?.focus();
 });
 
+// ===== Carga del catálogo y armado de carruseles =====
 // Evita iniciar la Home antes de que el header, el footer y la navegación estén listos.
 const layoutReady = window.siteLayoutReady
     ? Promise.resolve()
@@ -319,6 +318,7 @@ async function init() {
 
 init();
 
+// ===== Acciones de las cards =====
 // Contrae la etiqueta del botón y deja el ícono visible por un momento al hacer clic.
 function animateBadgeClick(button) {
     if (button.classList.contains("is-clicked")) return false;
@@ -354,6 +354,7 @@ document.querySelector("main").addEventListener("click", (e) => {
 
     const game = games.find((g) => g.id === id);
 
+    // La card conecta su acción de carrito con el estado persistido de Home.
     if (btn.dataset.action === "add-to-cart") {
         if (game) addGameToCart(game);
     } else if (btn.dataset.action === "play") {

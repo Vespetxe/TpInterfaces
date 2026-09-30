@@ -1,3 +1,4 @@
+// ===== Íconos y formato de datos =====
 // Reutiliza el mismo dibujo outline del Like de game-detail, reducido para el contador de cada card.
 const ICON_LIKE = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></svg>`;
 // Íconos que se revelan al interactuar con las acciones de cada card.
@@ -7,6 +8,7 @@ const ICON_CART = `<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" strok
 // 15000 -> "15K"
 const compactNumber = new Intl.NumberFormat("en", { notation: "compact" });
 
+// ===== Etiquetas y acciones =====
 // Devuelve las etiquetas y el botón que corresponden según el juego sea gratis o pago.
 function createBadges(game) {
     if (game.type === "free") {
@@ -24,6 +26,7 @@ function createBadges(game) {
     `;
 }
 
+// ===== Construcción de cards =====
 // Construye el HTML de una card con portada, etiquetas, título, género y likes.
 function createGameCard(game) {
     const card = document.createElement("article");

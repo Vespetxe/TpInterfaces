@@ -1,5 +1,6 @@
 const API_URL = "https://vj.interfaces.jima.com.ar/api/v2";
 
+// ===== Adaptación de datos de la API =====
 /**
  * La API NO trae precio ni si el juego es free/paid (solo id, name, released,
  * background_image, background_image_low_res, rating, platforms, genres,
@@ -48,6 +49,7 @@ function adaptGame(raw) {
     };
 }
 
+// ===== Consulta del catálogo =====
 // Pide los juegos a la API y devuelve la lista ya adaptada.
 // Se usa async/await + try/catch para poder mostrar un error prolijo
 // si la API no responde, en vez de que la página quede rota en silencio.

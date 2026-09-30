@@ -3,6 +3,7 @@ const categoryMenu = document.getElementById('category-menu');
 const categoryMenuBackdrop = document.querySelector('.category-menu-backdrop');
 const categoryMenuList = document.getElementById('category-menu-list');
 
+// ===== Menú de categorías (hamburguesa) =====
 // Abre o cierra el menú de categorías y sincroniza su estado visual y accesible.
 function setCategoryMenuOpen(isOpen) {
     if (!categoryMenu || !categoryMenuBackdrop || !hamburgerBtn) return;
@@ -71,6 +72,7 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
+// ===== Enlaces dinámicos de categorías =====
 // Arma los enlaces del menú desde los carruseles visibles para no ofrecer géneros vacíos.
 function refreshCategoryMenu() {
     if (!categoryMenuList) return;
@@ -96,7 +98,7 @@ function refreshCategoryMenu() {
         }).join('');
     }
 }
-// barra lateral desplegable menu perfil
+// ===== Menú del perfil =====
 // Configura el menú del perfil: lo abre con el avatar y lo cierra al salir o con Escape.
 (() => {
     const avatarBtn = document.querySelector('.avatar-btn');

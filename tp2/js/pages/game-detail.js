@@ -1,5 +1,6 @@
 const detailMount = document.getElementById("game-detail");
 const requestedId = Number(new URLSearchParams(window.location.search).get("id")) || RECOMMENDED_GAME.id;
+// ===== Íconos y contenido de ejemplo =====
 // Mantiene los iconos del toolbar en el mismo estilo outline; el Like también se usa en comentarios.
 const ICON_LIKE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></svg>`;
 const ICON_DISLIKE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(180 12 12)"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></g></svg>`;
@@ -13,6 +14,7 @@ const GAME_COMMENTS = [
     { user: "VoidRunner", time: "5 hours ago", text: "Simple rules, but surprisingly deep. I kept making moves that looked right and completely ruined the board.", likes: 29, avatar: "assets/img/voidrunner.png" }
 ];
 
+// ===== Renderizado del detalle =====
 // Escapa caracteres HTML para mostrar texto externo sin que se interprete como etiquetas.
 function escapeDetailText(value = "") {
     // Convierte cada carácter especial en su entidad HTML segura.
@@ -171,6 +173,7 @@ function escapeDetailText(value = "") {
         </div>
     `;
 
+    // ===== Comentarios =====
     // Agrega el comentario enviado al inicio de la lista; queda solo en memoria.
     document.getElementById("commentForm").addEventListener("submit", (e) => {
         e.preventDefault();
@@ -199,6 +202,7 @@ function escapeDetailText(value = "") {
         window.setTimeout(() => submitButton.classList.remove("is-posted"), 450);
     });
 
+    // ===== Acciones del juego =====
     // Like y Dislike son excluyentes; Save alterna de forma independiente en esta página.
     document.querySelector(".game-hero__actions").addEventListener("click", (event) => {
         const button = event.target.closest('button[aria-pressed]');

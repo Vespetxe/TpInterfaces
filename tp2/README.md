@@ -92,3 +92,46 @@ La Home deberá estar desarrollada para:
 El resto de las páginas deberán desarrollarse para:
 
 * 🖥️ Desktop
+
+---
+
+## 📂 Cómo está organizado el código
+
+Las páginas HTML se mantienen en la raíz de `tp2` para que sus enlaces entre sí sean directos:
+
+* `index.html`: acceso y registro.
+* `home.html`: portada, destacados, carruseles y carrito.
+* `game.html`: detalle y ejecución del juego.
+
+### Estilos (`css/`)
+
+* `base/`: variables de diseño, fuentes y reglas globales.
+  * `base/variables.css`: colores, fuentes y medidas globales.
+  * `base/base.css`: reglas comunes de página y botones.
+* `components/`: estilos compartidos de la interfaz.
+  * `components/components.css`: botones de acceso y redes sociales.
+  * `components/cards.css`: cards normales y carruseles horizontales.
+  * `components/hero-carousel.css`: cards destacadas grandes.
+  * `components/header.css`: header, menú hamburguesa y perfil.
+  * `components/fatfooter.css`: footer compartido.
+* `pages/`: estilos específicos de cada pantalla: `login.css`, `home.css` y `game.css`.
+
+### JavaScript (`js/`)
+
+* `data/`: consulta a la API (`api.js`) y datos de categorías (`categories.js`) y del juego destacado (`recommendation.js`).
+* `components/`: funciones reutilizables: `layout.js` inserta los partials; `nav.js` controla los menús; `cards.js`, `carousel.js` y `hero-carousel.js` construyen las cards y carruseles.
+* `pages/`: comportamiento propio de cada pantalla: `login.js`, `home.js` y `game-detail.js`.
+
+### Recursos compartidos
+
+* `partials/`: HTML reutilizable del header y footer, insertado por `js/components/layout.js`.
+* `assets/`: imágenes y tipografías utilizadas por el sitio.
+* `api-vj-interfaces-main/`: carpeta entregada por la cátedra; se conserva separada del código de la interfaz.
+
+### Orden recomendado para estudiar la Home
+
+1. `home.html` muestra la estructura y el orden de carga.
+2. `js/data/api.js` transforma los datos de la API al formato de las cards.
+3. `js/components/cards.js` construye cada card y `carousel.js` / `hero-carousel.js` las organizan.
+4. `js/pages/home.js` coordina la carga, los carruseles y el carrito.
+5. En `css/`, empezar por `base/variables.css`, seguir con `components/` y terminar con `pages/home.css`.
