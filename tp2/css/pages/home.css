@@ -146,8 +146,18 @@ main {
     gap: 16px;
 }
 
-.shopping-cart__heading { margin-bottom: 0; }
-.shopping-cart__heading h2 { font-size: 14px; font-weight: 600; }
+.shopping-cart__heading {
+    margin-bottom: 0;
+    padding-top: 6px; /* Empareja el texto con el padding superior de los items de menú. */
+}
+/* Igualo Your Cart a los enlaces de los menús: tipografía heredada y peso regular. */
+.shopping-cart__heading h2 {
+    color: inherit;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.35;
+}
 .shopping-cart__count { color: var(--color-text-secondary, #aaa); font-size: 14px; }
 .shopping-cart__divider { height: 1px; margin: 12px 0; background: rgba(255, 255, 255, .22); }
 .shopping-cart__empty { padding: 12px 0; color: var(--color-text-secondary, #aaa); font-size: 13px; text-align: center; }
