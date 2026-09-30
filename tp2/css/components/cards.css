@@ -165,10 +165,10 @@
 
 /* HOVER: borde naranja con glow + se muestra la meta */
 .game-card:hover {
-    /* Escala la tarjeta completa, además del borde y el brillo del hover. */
-    transform: scale(1.04);
     box-shadow: 0 0 0 1.5px var(--card-accent), 0 0 14px rgba(255, 138, 61, .55);
 }
+/* Escala las cards normales; las hero previews conservan su tamaño lateral. */
+.game-card:not(.hero-card):hover { transform: scale(1.04); }
 .game-card:hover .game-card__meta {
     max-height: 24px;
     opacity: 1;

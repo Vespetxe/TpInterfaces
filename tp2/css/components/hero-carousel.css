@@ -1,7 +1,7 @@
 /* ===== Contenedor y navegación del carrusel destacado ===== */
 .hero-carousel {
-    /* Reduce espacios y altura para acercar la primera fila al hero en la vista inicial. */
-    margin: clamp(12px, 2.2vh, 24px) auto clamp(12px, 2vh, 20px);
+    /* Mantiene una separación equilibrada entre la navegación, el destacado y la grilla. */
+    margin: 24px auto clamp(12px, 2vh, 20px);
     width: calc(100% - 80px);
     max-width: none;
     padding-inline: 0;
@@ -59,8 +59,11 @@
     opacity: 1;
 }
 
-/* La card activa del destacado también aumenta de escala con claridad al pasar el cursor. */
-.hero-card.is-active:hover { transform: scale(1.05); }
+/* La card activa crece apenas al pasar el cursor para mantener un hover sutil. */
+.hero-card.is-active:hover { transform: scale(1.02); }
+
+/* Las previews laterales reciben el mismo incremento proporcional desde su escala base. */
+.hero-card:not(.is-active):hover { transform: scale(.98); }
 
 /* Hero Card Media and Badges */
 .hero-card .game-card__media {
