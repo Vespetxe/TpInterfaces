@@ -1,5 +1,6 @@
 .hero-carousel {
-    margin: 40px auto 36px;
+    /* Reduce espacios y altura para acercar la primera fila al hero en la vista inicial. */
+    margin: clamp(12px, 2.2vh, 24px) auto clamp(12px, 2vh, 20px);
     width: calc(100% - 80px);
     max-width: none;
     padding-inline: 0;
@@ -41,7 +42,7 @@
 .hero-card {
     flex: 0 0 var(--hero-card-width);
     width: var(--hero-card-width);
-    height: 480px;
+    height: clamp(260px, calc(48vh + 20px), 490px);
     aspect-ratio: auto;
     border-radius: 18px;
     transform: scale(.96);
@@ -93,6 +94,9 @@
     padding-inline: 20px;
     font-weight: 700;
 }
+/* Conserva el tamaño final del botón con ícono al contraerse dentro del hero. */
+.hero-card .badge--free.is-clicked,
+.hero-card .badge--cart.is-clicked { padding-inline: 10px; }
 
 .hero-card .game-card__footer { display: none; }
 
@@ -128,7 +132,10 @@
 }
 
 @media (max-width: 700px) {
-    .hero-carousel { width: calc(100% - 40px); }
+    .hero-carousel {
+        width: calc(100% - 40px);
+        margin-block: 14px 12px;
+    }
 
     .hero-carousel__body {
         --hero-card-width: calc(100% - 64px);
@@ -136,7 +143,7 @@
     }
 
     .hero-card {
-        height: 360px;
+        height: clamp(220px, calc(42vh + 20px), 340px);
     }
 
     /* En móvil, las flechas quedan a los costados de la card y centradas en altura. */

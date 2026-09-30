@@ -114,6 +114,23 @@ async function init() {
 
 init();
 
+// Contrae la etiqueta del botón y deja el ícono visible por un momento al hacer clic.
+function animateBadgeClick(button) {
+    if (button.classList.contains("is-clicked")) return false;
+
+    button.style.setProperty("--badge-start-width", `${button.getBoundingClientRect().width}px`);
+    void button.offsetWidth; // Registra el ancho inicial para que CSS pueda animar el cambio.
+    button.classList.add("is-clicked");
+
+    window.setTimeout(() => {
+        button.classList.remove("is-clicked");
+        // Deja terminar la expansión de vuelta antes de restaurar el ancho automático.
+        window.setTimeout(() => button.style.removeProperty("--badge-start-width"), 300);
+    }, 950);
+
+    return true;
+}
+
 // Atiende los botones de todas las cards desde un único listener en el elemento main.
 document.querySelector("main").addEventListener("click", (e) => {
     const btn = e.target.closest("[data-action]");
@@ -127,13 +144,19 @@ document.querySelector("main").addEventListener("click", (e) => {
     }
     if (!btn) return;
 
+    // Anima solo las acciones que muestran un botón de Play o carrito.
+    if ((btn.dataset.action === "play" || btn.dataset.action === "add-to-cart") && !animateBadgeClick(btn)) return;
+
     const game = games.find((g) => g.id === id);
 
     if (btn.dataset.action === "add-to-cart") {
         console.log("Agregar al carrito:", game.title); // acá va tu lógica del carrito
     } else if (btn.dataset.action === "play") {
         if (id === RECOMMENDED_GAME.id) {
-            window.location.href = `game.html?id=${id}`;
+            // Da tiempo a ver el ícono antes de navegar al juego.
+            window.setTimeout(() => {
+                window.location.href = `game.html?id=${id}`;
+            }, 320);
         } else {
             console.log("Jugar:", game.title);
         }

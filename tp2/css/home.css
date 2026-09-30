@@ -102,7 +102,7 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .home-loader__logo { animation-duration: 5s; }
+    .home-loader__logo { animation-duration: 8s; }
 }
 
 #carousels {
