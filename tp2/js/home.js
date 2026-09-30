@@ -2,6 +2,39 @@ const carouselsMount = document.getElementById("carousels");
 
 // Se guarda el catálogo recibido para que el listener pueda buscar juegos.
 let games = [];
+const CART_STORAGE_KEY = "nexus-games-cart";
+const cartMoney = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+
+// Recupera los productos guardados para conservar el carrito al recargar la Home.
+function loadCart() {
+    try {
+        const savedItems = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || "[]");
+        if (!Array.isArray(savedItems)) return [];
+
+        // Deduplica los datos previos y fuerza una sola unidad por juego.
+        const uniqueItems = new Map();
+        savedItems.forEach((item) => {
+            if (!item || !Number.isFinite(Number(item.id)) || !item.title) return;
+            const id = Number(item.id);
+            if (uniqueItems.has(id)) return;
+
+            uniqueItems.set(id, {
+                id,
+                title: String(item.title),
+                image: String(item.image || ""),
+                price: Math.max(0, Number(item.price) || 0),
+                discount: Math.min(100, Math.max(0, Number(item.discount) || 0)),
+                quantity: 1,
+            });
+        });
+        return [...uniqueItems.values()];
+    } catch (error) {
+        console.warn("No se pudo recuperar el carrito guardado:", error);
+        return [];
+    }
+}
+
+let cartItems = loadCart();
 
 // Muestra un mensaje de carga, error o ausencia de juegos en el contenedor.
 function showMessage(text) {
@@ -49,6 +82,176 @@ function hideHomeLoader() {
     loader.classList.add("is-hidden");
     loader.setAttribute("aria-hidden", "true");
 }
+
+// Dibuja los productos, las cantidades y el total en la sección del carrito.
+function renderCart() {
+    const itemsMount = document.getElementById("cart-items");
+    const emptyMessage = document.getElementById("cart-empty");
+    const countMount = document.getElementById("cart-count");
+    const summary = document.getElementById("cart-summary");
+    const totalMount = document.getElementById("cart-total");
+    if (!itemsMount || !emptyMessage || !countMount || !summary || !totalMount) return;
+
+    const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+    countMount.textContent = `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
+    emptyMessage.hidden = itemCount > 0;
+    summary.hidden = itemCount === 0;
+    itemsMount.replaceChildren();
+
+    cartItems.forEach((item) => {
+        const row = document.createElement("li");
+        row.className = "shopping-cart__item";
+
+        const image = document.createElement("img");
+        image.className = "shopping-cart__image";
+        image.src = item.image;
+        image.alt = "";
+        image.loading = "lazy";
+
+        const details = document.createElement("div");
+        details.className = "shopping-cart__details";
+
+        const title = document.createElement("h3");
+        title.className = "shopping-cart__title";
+        title.textContent = item.title;
+
+        const unitPrice = item.price * (1 - item.discount / 100);
+        const price = document.createElement("p");
+        price.className = "shopping-cart__price";
+        price.textContent = `${cartMoney.format(unitPrice)} each`;
+        details.append(title, price);
+
+        const quantity = document.createElement("span");
+        quantity.className = "shopping-cart__quantity";
+        quantity.textContent = `Qty: ${item.quantity}`;
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "shopping-cart__remove";
+        removeButton.type = "button";
+        removeButton.dataset.cartId = String(item.id);
+        removeButton.setAttribute("aria-label", `Remove ${item.title} from cart`);
+        // El SVG mantiene la X centrada sin depender de la métrica de una fuente.
+        removeButton.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>';
+
+        row.append(image, details, quantity, removeButton);
+        itemsMount.appendChild(row);
+    });
+
+    const total = cartItems.reduce((sum, item) => {
+        return sum + item.price * (1 - item.discount / 100) * item.quantity;
+    }, 0);
+    totalMount.textContent = cartMoney.format(total);
+
+    // Marca y desactiva todas las copias de un juego que ya está en el carrito.
+    const cartIds = new Set(cartItems.map((item) => item.id));
+    document.querySelectorAll(".game-card").forEach((card) => {
+        const addButton = card.querySelector('[data-action="add-to-cart"]');
+        if (!addButton) return;
+
+        const isInCart = cartIds.has(Number(card.dataset.id));
+        addButton.disabled = isInCart;
+        addButton.setAttribute("aria-pressed", String(isInCart));
+        addButton.setAttribute("aria-label", isInCart ? "Already in cart" : "Add to cart");
+        addButton.querySelector(".badge__label-full").textContent = isInCart ? "Added to cart" : "Add to cart";
+        addButton.querySelector(".badge__label-short").textContent = isInCart ? "Added" : "Cart";
+    });
+}
+
+// Guarda una versión pequeña del catálogo y actualiza la sección visible.
+function saveCart() {
+    try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch (error) {
+        console.warn("No se pudo guardar el carrito:", error);
+    }
+    renderCart();
+}
+
+// Abre/cierra el panel junto al botón y lo ubica para que no salga de la pantalla.
+function setCartOpen(isOpen) {
+    const panel = document.getElementById("shopping-cart");
+    const trigger = document.querySelector(".cart-btn");
+    if (!panel) return;
+
+    panel.hidden = !isOpen;
+    panel.setAttribute("aria-hidden", String(!isOpen));
+    trigger?.setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) {
+        document.dispatchEvent(new CustomEvent("site:dropdown-open", { detail: { name: "cart" } }));
+    }
+}
+
+// Agrega el juego, suma cantidad si ya estaba y abre el panel del carrito.
+function addGameToCart(game) {
+    const existingItem = cartItems.find((item) => item.id === game.id);
+    if (existingItem) return;
+
+    cartItems.push({
+        id: game.id,
+        title: game.title,
+        image: game.image,
+        price: Number(game.price) || 0,
+        discount: Number(game.discount) || 0,
+        quantity: 1,
+    });
+
+    saveCart();
+    setCartOpen(true);
+}
+
+renderCart();
+
+// Relaciona el botón inyectado del header con el panel desplegable del carrito.
+function configureCartButton() {
+    const trigger = document.querySelector(".cart-btn");
+    if (!trigger) return;
+    trigger.setAttribute("aria-controls", "shopping-cart");
+    trigger.setAttribute("aria-expanded", "false");
+}
+
+configureCartButton();
+document.addEventListener("site:layout-ready", configureCartButton, { once: true });
+
+// Quita un producto entero de la lista cuando se pulsa su botón de eliminar.
+document.getElementById("cart-items")?.addEventListener("click", (event) => {
+    const removeButton = event.target.closest("[data-cart-id]");
+    if (!removeButton) return;
+
+    const removedId = Number(removeButton.dataset.cartId);
+    cartItems = cartItems.filter((item) => item.id !== removedId);
+    saveCart();
+});
+
+// El icono del header alterna el panel y los clics externos lo cierran.
+document.addEventListener("click", (event) => {
+    const trigger = event.target.closest(".cart-btn");
+    const panel = document.getElementById("shopping-cart");
+    if (!panel) return;
+
+    if (trigger) {
+        event.preventDefault();
+        setCartOpen(panel.hidden);
+        return;
+    }
+
+    // El clic de agregar actualiza y abre el panel durante el mismo evento.
+    if (event.target.closest('[data-action="add-to-cart"]')) return;
+    if (!panel.hidden && !panel.contains(event.target)) setCartOpen(false);
+});
+
+// Cierra el carrito cuando se abre otro panel desplegable del sitio.
+document.addEventListener("site:dropdown-open", (event) => {
+    if (event.detail?.name !== "cart") setCartOpen(false);
+});
+
+// Permite cerrar el panel con Escape y devolver el foco al botón del header.
+document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    const panel = document.getElementById("shopping-cart");
+    if (!panel || panel.hidden) return;
+    setCartOpen(false);
+    document.querySelector(".cart-btn")?.focus();
+});
 
 // Evita iniciar la Home antes de que el header, el footer y la navegación estén listos.
 const layoutReady = window.siteLayoutReady
@@ -109,6 +312,8 @@ async function init() {
         }
     });
 
+    // Sincroniza los botones recién creados con los productos ya guardados.
+    renderCart();
     refreshCategoryMenu();
 }
 
@@ -150,7 +355,7 @@ document.querySelector("main").addEventListener("click", (e) => {
     const game = games.find((g) => g.id === id);
 
     if (btn.dataset.action === "add-to-cart") {
-        console.log("Agregar al carrito:", game.title); // acá va tu lógica del carrito
+        if (game) addGameToCart(game);
     } else if (btn.dataset.action === "play") {
         if (id === RECOMMENDED_GAME.id) {
             // Da tiempo a ver el ícono antes de navegar al juego.

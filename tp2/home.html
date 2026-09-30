@@ -33,6 +33,20 @@
     <main>
         <div id="hero-carousel"></div>
         <div id="carousels"></div>
+        <!-- El carrito se completa desde home.js cuando el usuario agrega juegos. -->
+        <section class="shopping-cart" id="shopping-cart" aria-labelledby="shopping-cart-title" aria-hidden="true" hidden>
+            <div class="shopping-cart__heading">
+                <h2 id="shopping-cart-title">Your Cart</h2>
+                <span class="shopping-cart__count" id="cart-count" aria-live="polite">0 items</span>
+            </div>
+            <div class="shopping-cart__divider" aria-hidden="true"></div>
+            <p class="shopping-cart__empty" id="cart-empty">Your cart is empty.</p>
+            <ul class="shopping-cart__items" id="cart-items" aria-label="Games in your cart"></ul>
+            <div class="shopping-cart__summary" id="cart-summary" hidden>
+                <span>Total</span>
+                <strong id="cart-total">USD 0</strong>
+            </div>
+        </section>
     </main>
     
     <div id="site-footer"></div>

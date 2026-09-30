@@ -13,7 +13,23 @@ function setCategoryMenuOpen(isOpen) {
     hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
     hamburgerBtn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
     document.body.classList.toggle('category-menu-open', isOpen);
+
+    // Coordina el menú lateral con los demás desplegables del header.
+    if (isOpen) {
+        document.dispatchEvent(new CustomEvent('site:dropdown-open', { detail: { name: 'categories' } }));
+    }
 }
+
+// Al abrir un panel, cierra los otros para evitar que queden superpuestos.
+document.addEventListener('site:dropdown-open', (event) => {
+    const openedMenu = event.detail?.name;
+    if (openedMenu !== 'categories' && categoryMenu && !categoryMenu.hidden) {
+        setCategoryMenuOpen(false);
+    }
+
+    const profileMenu = document.getElementById('profileMenu');
+    if (openedMenu !== 'profile' && profileMenu) profileMenu.hidden = true;
+});
 
 if (hamburgerBtn) {
     hamburgerBtn.setAttribute('aria-expanded', 'false');
@@ -77,7 +93,11 @@ function refreshCategoryMenu() {
     // Evita que el clic en el avatar se interprete también como clic fuera del menú.
     avatarBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        profileMenu.hidden = !profileMenu.hidden;
+        const shouldOpen = profileMenu.hidden;
+        if (shouldOpen) {
+            document.dispatchEvent(new CustomEvent('site:dropdown-open', { detail: { name: 'profile' } }));
+        }
+        profileMenu.hidden = shouldOpen ? false : true;
     });
 
     // Cierra el menú cuando se pulsa fuera de él.
