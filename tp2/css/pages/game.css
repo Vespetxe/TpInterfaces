@@ -193,20 +193,14 @@
     font-size: 13px;
 }
 .game-comments__form button {
-<<<<<<< HEAD
-    /* La capa naranja crece desde la izquierda cuando el usuario pasa el cursor. */
-    background-color: var(--color-surface-light, #444);
-    background-image: linear-gradient(var(--color-primary), var(--color-primary));
+    /* El relleno cambia de tono desde la izquierda y el botón conserva su base naranja. */
+    background-color: var(--color-primary);
+    background-image: linear-gradient(var(--color-primary-hover), var(--color-primary-hover));
     background-repeat: no-repeat;
     background-position: left center;
     background-size: 0 100%;
-    color: var(--color-text, #fff);
-    font-weight: 600;
-=======
-    background-color: var(--color-primary);
     color: var(--fondo-900);
     font-weight: 700;
->>>>>>> gh-pages
     font-size: 13px;
     padding: 0 16px;
     height: 36px;
@@ -216,11 +210,12 @@
     align-items: center;
     justify-content: center;
     gap: 0;
-    transition: background-color .2s ease, gap .25s ease;
+    transition: background-size .35s ease, transform .25s cubic-bezier(.22, 1.45, .36, 1), gap .25s ease;
 }
 .game-comments__form button:hover,
 .game-comments__form button:focus-visible {
-    background-color: var(--color-primary-hover);
+    background-size: 100% 100%;
+    transform: scale(1.05);
 }
 
 /* Revela el sobre a la izquierda al pasar el cursor y lo conserva al publicar. */
