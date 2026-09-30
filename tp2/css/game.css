@@ -189,6 +189,7 @@
     font-size: 13px;
 }
 .game-comments__form button {
+<<<<<<< HEAD
     /* La capa naranja crece desde la izquierda cuando el usuario pasa el cursor. */
     background-color: var(--color-surface-light, #444);
     background-image: linear-gradient(var(--color-primary), var(--color-primary));
@@ -197,16 +198,61 @@
     background-size: 0 100%;
     color: var(--color-text, #fff);
     font-weight: 600;
+=======
+    background-color: var(--color-primary);
+    color: var(--fondo-900);
+    font-weight: 700;
+>>>>>>> gh-pages
     font-size: 13px;
     padding: 0 16px;
     height: 36px;
     border-radius: var(--radius-pill);
-    transition: background-size .45s ease, color .25s ease;
+    display: inline-flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    transition: background-color .2s ease, gap .25s ease;
 }
 .game-comments__form button:hover,
 .game-comments__form button:focus-visible {
-    background-size: 100% 100%;
-    color: var(--fondo-900, #1a1a1a);
+    background-color: var(--color-primary-hover);
+}
+
+/* Revela el sobre a la izquierda al pasar el cursor y lo conserva al publicar. */
+.comment-submit__text {
+    max-width: 100px;
+    opacity: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width .35s ease, opacity .3s ease;
+}
+.comment-submit__icon {
+    width: 0;
+    height: 17px;
+    flex: 0 0 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: flex-basis .35s ease, opacity .25s ease;
+}
+.game-comments__form button:hover,
+.game-comments__form button:focus-visible {
+    gap: 7px;
+}
+.game-comments__form button:hover .comment-submit__icon,
+.game-comments__form button:focus-visible .comment-submit__icon,
+.game-comments__form button.is-posted .comment-submit__icon {
+    flex-basis: 17px;
+    opacity: 1;
+}
+.game-comments__form button.is-posted {
+    gap: 0;
+    width: 44px;
+    padding: 0;
+}
+.game-comments__form button.is-posted .comment-submit__text {
+    max-width: 0;
+    opacity: 0;
 }
 .game-comments__form {
     display: flex;

@@ -147,7 +147,10 @@ function escapeDetailText(value = "") {
                 <form class="game-comments__form" id="commentForm">
                     <img class="comment__avatar" src="assets/img/foto-perfil.png" alt="Your avatar">
                     <input type="text" placeholder="Write a comment..." required>
-                    <button type="submit">Post Comment</button>
+                    <button class="comment-submit" type="submit" aria-label="Post comment">
+                        <span class="comment-submit__text">Post Comment</span>
+                        <svg class="comment-submit__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                    </button>
                 </form>
                 <ul class="game-comments__list" id="commentsList">
                     ${/* Genera un bloque visual por cada comentario de ejemplo. */ GAME_COMMENTS.map(c => `
@@ -174,6 +177,10 @@ function escapeDetailText(value = "") {
         const input = e.target.querySelector("input");
         if (!input.value.trim()) return;
 
+        // Contrae el botón a un sobre al enviar y lo restablece después de insertar el comentario.
+        const submitButton = e.target.querySelector(".comment-submit");
+        submitButton.classList.add("is-posted");
+
         const li = document.createElement("li");
         li.className = "comment";
         li.innerHTML = `
@@ -189,6 +196,7 @@ function escapeDetailText(value = "") {
     `;
         document.getElementById("commentsList").prepend(li);
         input.value = "";
+        window.setTimeout(() => submitButton.classList.remove("is-posted"), 450);
     });
 
     // Like y Dislike son excluyentes; Save alterna de forma independiente en esta página.
@@ -221,4 +229,3 @@ function escapeDetailText(value = "") {
             document.exitFullscreen();
         }
     });
-

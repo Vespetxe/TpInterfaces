@@ -76,12 +76,25 @@ function refreshCategoryMenu() {
     if (!categoryMenuList) return;
 
     const sections = document.querySelectorAll('#carousels .carousel');
-    // Convierte cada carrusel con título e ID en un enlace del menú.
-    categoryMenuList.innerHTML = [...sections].map((section) => {
-        const title = section.querySelector('.carousel__title')?.textContent?.trim();
-        if (!title || !section.id) return '';
-        return `<li><a href="#${section.id}">${title}</a></li>`;
-    }).join('');
+    if (sections.length) {
+        // En Home, enlaza a los carruseles de categorías que realmente se muestran.
+        categoryMenuList.innerHTML = [...sections].map((section) => {
+            const title = section.querySelector('.carousel__title')?.textContent?.trim();
+            if (!title || !section.id) return '';
+            return `<li><a href="#${section.id}">${title}</a></li>`;
+        }).join('');
+        return;
+    }
+
+    // En otras páginas, reutiliza las categorías comunes y las dirige a Home.
+    if (typeof CATEGORIES !== 'undefined') {
+        categoryMenuList.innerHTML = CATEGORIES.map((category) => {
+            const slug = category.toLocaleLowerCase().normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+            return `<li><a href="home.html#carousel-${slug}">${category}</a></li>`;
+        }).join('');
+    }
 }
 // barra lateral desplegable menu perfil
 // Configura el menú del perfil: lo abre con el avatar y lo cierra al salir o con Escape.
@@ -111,4 +124,3 @@ function refreshCategoryMenu() {
 })();
 
 document.addEventListener('site:layout-ready', refreshCategoryMenu);
-
