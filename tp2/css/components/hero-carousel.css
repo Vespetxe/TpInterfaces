@@ -59,14 +59,17 @@
     opacity: 1;
 }
 
+/* La card activa del destacado también aumenta de escala con claridad al pasar el cursor. */
+.hero-card.is-active:hover { transform: scale(1.05); }
+
 /* Hero Card Media and Badges */
 .hero-card .game-card__media {
     position: absolute;
     inset: 0;
 }
 
-/* Hero Card Image Positioning */
-.hero-card .game-card__img { object-position: center 30%; }
+/* Alinea la imagen al borde superior para conservar el título y recortar más desde abajo. */
+.hero-card .game-card__img { object-position: center top; }
 
 /* Hero Card Badges and Highlight */
 .hero-card .game-card__badges {

@@ -24,8 +24,18 @@
     justify-content: space-between;
     gap: 16px;
 }
-.shopping-cart__heading { margin-bottom: 0; }
-.shopping-cart__heading h2 { font-size: 14px; font-weight: 600; }
+.shopping-cart__heading {
+    margin-bottom: 0;
+    padding-top: 6px; /* Alinea Your Cart con el texto del primer item de los menús. */
+}
+/* Mantiene Your Cart con el peso regular y la tipografía de los items del perfil y Home. */
+.shopping-cart__heading h2 {
+    color: inherit;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.35;
+}
 .shopping-cart__count { color: var(--color-text-secondary, #aaa); font-size: 14px; }
 .shopping-cart__divider { height: 1px; margin: 12px 0; background: rgba(255, 255, 255, .22); }
 .shopping-cart__empty { padding: 12px 0; color: var(--color-text-secondary, #aaa); font-size: 13px; text-align: center; }

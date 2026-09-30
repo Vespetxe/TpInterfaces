@@ -114,7 +114,6 @@
     outline-offset: 3px;
 }
 
-<<<<<<< HEAD:tp2/css/game.css
 /* Imita los paneles de perfil y categorías, anclando las instrucciones al toolbar del juego. */
 .game-instructions[hidden] { display: none; }
 .game-instructions {
@@ -138,10 +137,8 @@
     .game-instructions { right: 0; }
 }
 
-=======
 /* ===== Galería, información y comentarios ===== */
->>>>>>> gh-pages:tp2/css/pages/game.css
-/* Gallery — sin animación, solo cambia la imagen grande al click */
+/* Gallery — reutiliza el borde naranja y el glow de las game cards al pasar el cursor. */
 .game-gallery { margin-bottom: 40px; }
 .game-gallery__title { font-size: 18px; margin-bottom: 12px; }
 .game-gallery__grid {
@@ -155,6 +152,12 @@
     padding: 0;
     border: 2px solid transparent;
     cursor: pointer;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.game-gallery__thumb:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1.5px var(--color-primary), 0 0 14px rgba(255, 138, 61, .55);
+    transform: translateY(-2px);
 }
 .game-gallery__thumb img {
     width: 100%;
@@ -168,7 +171,7 @@
 .game-body {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
-    gap: 40px;
+    gap: 56px;
     align-items: start;
 }
 .game-info__title { font-size: 28px; margin-bottom: 16px; }
@@ -199,6 +202,8 @@
 
 @media (max-width: 640px) {
     .api-game-detail dl { grid-template-columns: 1fr; gap: 14px; }
+    /* En móvil, apila la información y los comentarios manteniendo una separación cómoda. */
+    .game-body { grid-template-columns: 1fr; gap: 28px; }
 
     /* En móvil, separa el título de la fila de acciones para que no se amontonen. */
     .game-hero__toolbar { flex-direction: column; align-items: flex-start; gap: 12px; }

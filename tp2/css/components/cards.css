@@ -20,7 +20,7 @@
     border-radius: var(--card-radius);
     overflow: hidden;
     box-shadow: 0 0 0 0 transparent;
-    transition: box-shadow .2s ease;
+    transition: transform .2s ease, box-shadow .2s ease;
 }
 
 /* Imagen: ocupa todo el espacio que deja el footer */
@@ -35,6 +35,8 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Prioriza la parte superior y deja que el recorte de la card caiga abajo. */
+    object-position: center top;
 }
 
 /* Badges arriba de la imagen */
@@ -163,6 +165,8 @@
 
 /* HOVER: borde naranja con glow + se muestra la meta */
 .game-card:hover {
+    /* Escala la tarjeta completa, además del borde y el brillo del hover. */
+    transform: scale(1.04);
     box-shadow: 0 0 0 1.5px var(--card-accent), 0 0 14px rgba(255, 138, 61, .55);
 }
 .game-card:hover .game-card__meta {
