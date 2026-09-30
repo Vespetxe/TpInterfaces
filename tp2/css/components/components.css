@@ -1,8 +1,9 @@
+/* ===== Botones y acciones reutilizables ===== */
 /* Conserva el color y combina el leve crecimiento con el reflejo del hover. */
 .btn-signin {
     background-color: var(--color-secondary);
     color: #1a1a1a;
-    font-weight: 700;
+    font-weight: 600;
     padding: 14px 24px;
     border-radius: var(--radius-pill);
     width: 100%;
@@ -13,7 +14,7 @@
 .btn-create {
     background-color: var(--color-primary);
     color: #1a1a1a;
-    font-weight: 700;
+    font-weight: 600;
     padding: 14px 24px;
     border-radius: var(--radius-pill);
     width: 100%;

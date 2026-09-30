@@ -1,6 +1,7 @@
 const HERO_CHEVRON_LEFT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
 const HERO_CHEVRON_RIGHT = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
 
+// ===== Card destacada =====
 // Crea una card destacada usando la estructura común y su imagen de alta resolución.
 function createHeroCard(game) {
     const card = createGameCard(game);
@@ -18,6 +19,7 @@ function createHeroCard(game) {
     return card;
 }
 
+// ===== Carrusel destacado =====
 // Construye el hero carousel, sus copias de borde y los controles de navegación.
 function renderHeroCarousel(mount, games) {
     if (!mount || games.length === 0) return;

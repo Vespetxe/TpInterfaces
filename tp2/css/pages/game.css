@@ -1,10 +1,12 @@
-@import url('variables.css');
+@import url('../base/variables.css');
 
+/* ===== Contenedor y navegación del detalle ===== */
 .game-detail-main {
     width: min(1180px, calc(100% - 40px));
     margin: 40px auto 80px;
 }
 
+/* ===== Navegación y reproductor del juego ===== */
 /* Breadcrumb */
 .breadcrumb {
     font-size: 13px;
@@ -16,6 +18,7 @@
 .breadcrumb__sep { margin: 0 6px; color: var(--color-text-secondary); }
 .breadcrumb__current { color: var(--color-text-secondary); }
 
+/* ===== Imagen principal y acciones del juego ===== */
 .game-hero {
     position: relative;
     width: 100%;
@@ -40,7 +43,7 @@
     transform: translate(-50%, -50%);
     background-color: var(--color-primary);
     color: #1a1a1a;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 16px;
     padding: 14px 40px;
     border-radius: var(--radius-pill);
@@ -111,6 +114,7 @@
     outline-offset: 3px;
 }
 
+<<<<<<< HEAD:tp2/css/game.css
 /* Imita los paneles de perfil y categorías, anclando las instrucciones al toolbar del juego. */
 .game-instructions[hidden] { display: none; }
 .game-instructions {
@@ -134,6 +138,9 @@
     .game-instructions { right: 0; }
 }
 
+=======
+/* ===== Galería, información y comentarios ===== */
+>>>>>>> gh-pages:tp2/css/pages/game.css
 /* Gallery — sin animación, solo cambia la imagen grande al click */
 .game-gallery { margin-bottom: 40px; }
 .game-gallery__title { font-size: 18px; margin-bottom: 12px; }
@@ -218,7 +225,12 @@
     font-size: 13px;
 }
 .game-comments__form button {
+    /* El relleno cambia de tono desde la izquierda y el botón conserva su base naranja. */
     background-color: var(--color-primary);
+    background-image: linear-gradient(var(--color-primary-hover), var(--color-primary-hover));
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 0 100%;
     color: var(--fondo-900);
     font-weight: 700;
     font-size: 13px;
@@ -230,11 +242,12 @@
     align-items: center;
     justify-content: center;
     gap: 0;
-    transition: background-color .2s ease, gap .25s ease;
+    transition: background-size .35s ease, transform .25s cubic-bezier(.22, 1.45, .36, 1), gap .25s ease;
 }
 .game-comments__form button:hover,
 .game-comments__form button:focus-visible {
-    background-color: var(--color-primary-hover);
+    background-size: 100% 100%;
+    transform: scale(1.05);
 }
 
 /* Revela el sobre a la izquierda al pasar el cursor y lo conserva al publicar. */

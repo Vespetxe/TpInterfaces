@@ -1,5 +1,6 @@
+// ===== Categorías del sitio =====
 // Categorías fijas del sitio. Se usan para armar los carouseles del home
-// y deberían ser las mismas que se listan en el menú hamburguesa (nav.js),
+// y deberían ser las mismas que se listan en el menú hamburguesa (components/nav.js),
 // para que todo el sitio muestre siempre el mismo conjunto de secciones.
 //
 // Géneros del catálogo de la API. La Home muestra cada juego en sus géneros.

@@ -1,3 +1,4 @@
+/* ===== Cards de juegos ===== */
 /* ========== GAME CARD ==========
     Los valores con var(--x, fallback) usan tu variables.css si existe la variable;
     si no, usan el valor de la derecha. Cambiá los nombres por los tuyos. */
@@ -14,7 +15,7 @@
     flex-direction: column;
     flex: 0 0 var(--card-w, 216px);
     /* Mantiene el formato de portada, con menos altura para mostrar más Home en pantalla. */
-    aspect-ratio: 4 / 6;
+    aspect-ratio: 4 / 5;
     background: var(--card-bg);
     border-radius: var(--card-radius);
     overflow: hidden;

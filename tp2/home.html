@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus Games — Home</title>
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/cards.css">
-    <link rel="stylesheet" href="css/hero-carousel.css">
-    <link rel="stylesheet" href="css/fatfooter.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/pages/home.css">
+    <link rel="stylesheet" href="css/base/variables.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/hero-carousel.css">
+    <link rel="stylesheet" href="css/components/cart.css">
+    <link rel="stylesheet" href="css/components/fatfooter.css">
+    <link rel="stylesheet" href="css/components/header.css">
+    <link rel="stylesheet" href="css/base/base.css">
 
 </head>
 <body>
@@ -29,11 +30,12 @@
         </div>
     </div>
 
+    <!-- ===== Estructura principal y carruseles ===== -->
     <div id="site-header"></div>
     <main>
         <div id="hero-carousel"></div>
         <div id="carousels"></div>
-        <!-- El carrito se completa desde home.js cuando el usuario agrega juegos. -->
+        <!-- ===== Carrito desplegable: cart.js comparte y actualiza su contenido. ===== -->
         <section class="shopping-cart" id="shopping-cart" aria-labelledby="shopping-cart-title" aria-hidden="true" hidden>
             <div class="shopping-cart__heading">
                 <h2 id="shopping-cart-title">Your Cart</h2>
@@ -43,21 +45,26 @@
             <p class="shopping-cart__empty" id="cart-empty">Your cart is empty.</p>
             <ul class="shopping-cart__items" id="cart-items" aria-label="Games in your cart"></ul>
             <div class="shopping-cart__summary" id="cart-summary" hidden>
-                <span>Total</span>
-                <strong id="cart-total">USD 0</strong>
+                <div class="shopping-cart__total">
+                    <span>Total</span>
+                    <strong id="cart-total">USD 0</strong>
+                </div>
+                <button class="badge badge--free shopping-cart__buy" id="cart-buy" type="button">Buy</button>
             </div>
         </section>
     </main>
     
+    <!-- ===== Pie de página y scripts de Home ===== -->
     <div id="site-footer"></div>
-    <script src="js/layout.js"></script>
-    <script src="js/recommendation.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/categories.js"></script>
-    <script src="js/cards.js"></script>
-    <script src="js/carousel.js"></script>
-    <script src="js/hero-carousel.js"></script>
-    <script src="js/home.js"></script>
+    <script src="js/components/layout.js"></script>
+    <script src="js/components/cart.js"></script>
+    <script src="js/data/recommendation.js"></script>
+    <script src="js/data/api.js"></script>
+    <script src="js/data/categories.js"></script>
+    <script src="js/components/cards.js"></script>
+    <script src="js/components/carousel.js"></script>
+    <script src="js/components/hero-carousel.js"></script>
+    <script src="js/pages/home.js"></script>
 </body>
 </html>
 

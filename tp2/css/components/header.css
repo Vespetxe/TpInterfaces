@@ -1,5 +1,6 @@
-@import url('variables.css');
+@import url('../base/variables.css');
 
+/* ===== Header, navegación y menús ===== */
 /* ==========================================
     1. ESTILOS GENERALES DEL HEADER / NAV
    ========================================== */

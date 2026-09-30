@@ -1,3 +1,4 @@
+// ===== Juego curado y datos de detalle =====
 // Juego destacado curado para la sección Recommended For You / página de detalle.
 // Se mantiene en el frontend porque la API de la cátedra es de solo lectura.
 const RECOMMENDED_GAME = {

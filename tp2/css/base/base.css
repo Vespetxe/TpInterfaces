@@ -1,3 +1,4 @@
+/* ===== Reglas base del sitio ===== */
 * {
     margin: 0;
     padding: 0;
@@ -22,6 +23,12 @@ button {
     border: none;
     background: none;
     color: inherit;
+}
+
+/* Unifica la tipografía de todos los botones salvo los proveedores sociales. */
+button:not(.btn-social) {
+    font-family: var(--font-main);
+    font-weight: 600;
 }
 
 input {
