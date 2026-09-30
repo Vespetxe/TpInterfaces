@@ -126,7 +126,19 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-create">Create account</button>
+            <div class="captcha-wrap">
+                <label class="captcha" for="captchaCheck">
+                    <input type="checkbox" id="captchaCheck" required>
+                    <span class="captcha-box" aria-hidden="true"></span>
+                    <span class="captcha-label">I'm not a robot</span>
+                    <span class="captcha-brand" aria-hidden="true">
+                        <svg viewBox="0 0 32 32" class="captcha-logo"><path fill="#4285f4" d="M16 3a13 13 0 0 1 11.2 6.4l-5 2.8A7.2 7.2 0 0 0 16 8.6V3Z"/><path fill="#34a853" d="M27.2 9.4A13 13 0 0 1 16 29v-5.6a7.4 7.4 0 0 0 6.2-11.2l5-2.8Z"/><path fill="#fbbc05" d="M16 29A13 13 0 0 1 4.8 9.4l5 2.8A7.4 7.4 0 0 0 16 23.4V29Z"/><path fill="#ea4335" d="M4.8 9.4A13 13 0 0 1 16 3v5.6a7.4 7.4 0 0 0-6.2 3.6l-5-2.8Z"/><path fill="#fff" d="m13.3 16 1.8 1.8 4-4 1.4 1.4-5.4 5.4-3.2-3.2 1.4-1.4Z"/></svg>
+                        <span>reCAPTCHA</span>
+                    </span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-create">Register</button>
 
             <!-- Reutiliza las mismas opciones de acceso social disponibles en el login. -->
             <div class="divider">or</div>
