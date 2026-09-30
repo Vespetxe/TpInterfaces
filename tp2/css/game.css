@@ -53,6 +53,7 @@
 
 /* Barra inferior tipo reproductor */
 .game-hero__toolbar {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -95,6 +96,11 @@
     border-color: var(--color-primary);
     background-color: rgba(254, 141, 65, .16);
 }
+.game-hero__actions .game-instructions-toggle[aria-expanded="true"] {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: var(--color-surface);
+}
 .game-hero__actions [data-action="dislike"][aria-pressed="true"] {
     color: #ff7777;
     border-color: #ff7777;
@@ -103,6 +109,29 @@
 .game-hero__actions button:focus-visible {
     outline: 2px solid var(--color-primary);
     outline-offset: 3px;
+}
+
+/* Imita los paneles de perfil y categorías, anclando las instrucciones al toolbar del juego. */
+.game-instructions[hidden] { display: none; }
+.game-instructions {
+    position: absolute;
+    z-index: 1002;
+    right: 64px;
+    bottom: calc(100% - 6px);
+    width: min(300px, calc(100vw - 36px));
+    padding: 12px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: 8px 0 28px rgba(0, 0, 0, 0.3);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: left;
+}
+.game-instructions p { margin: 0; }
+
+@media (max-width: 640px) {
+    .game-instructions { right: 0; }
 }
 
 /* Gallery — sin animación, solo cambia la imagen grande al click */

@@ -5,6 +5,7 @@ const ICON_LIKE = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" s
 const ICON_DISLIKE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(180 12 12)"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3.27a2 2 0 0 0 1.8-1.1l2.04-4.08A2 2 0 0 1 16 5.7c0 .23-.02.45-.08.67Z"/></g></svg>`;
 const ICON_BOOKMARK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z"/></svg>`;
 const ICON_SHARE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.1M8.7 13.3l6.6 4.1"/></svg>`;
+const ICON_INSTRUCTIONS = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.75h14A1.75 1.75 0 0 1 20.75 5.5v11A1.75 1.75 0 0 1 19 18.25H9l-5.75 3V5.5A1.75 1.75 0 0 1 5 3.75Z"/><path d="M12 7v5m0 3h.01"/></svg>`;
 const ICON_FULLSCREEN = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
 const GAME_COMMENTS = [
     { user: "PixelVex", time: "12 min ago", text: "Surprisingly addictive. I thought I'd solve it in a few moves, but that last clone always gets me.", likes: 3, avatar: "assets/img/pixelvex.png" },
@@ -109,7 +110,19 @@ function escapeDetailText(value = "") {
                 <button type="button" data-action="dislike" aria-label="Dislike" aria-pressed="false" title="Dislike">${ICON_DISLIKE}</button>
                 <button type="button" data-action="save" aria-label="Save" aria-pressed="false" title="Save">${ICON_BOOKMARK}</button>
                 <button type="button" aria-label="Share" title="Share">${ICON_SHARE}</button>
+                <!-- Este botón abre las instrucciones del juego sin alterar la acción Share. -->
+                <button type="button" class="game-instructions-toggle" id="gameInstructionsToggle" aria-label="Game instructions" aria-controls="gameInstructions" aria-expanded="false" title="Game instructions">${ICON_INSTRUCTIONS}</button>
                 <button type="button" aria-label="Fullscreen" id="fullscreenBtn" title="Fullscreen">${ICON_FULLSCREEN}</button>
+            </div>
+            <!-- Desplegable con los controles del juego, con el mismo panel oscuro que los menús del sitio. -->
+            <div class="game-instructions" id="gameInstructions" role="region" aria-label="Game instructions" hidden>
+                <p>Arrow keys = move selector across the board</p>
+                <p>Enter / Spacebar = select a clone</p>
+                <p>Arrow keys (again) = choose jump direction</p>
+                <p>Backspace = undo last move</p>
+                <p>R = restart board</p>
+                <p>Tab = pause</p>
+                <p>Esc = exit to Home</p>
             </div>
         </div>
         <section class="game-gallery">
@@ -214,6 +227,36 @@ function escapeDetailText(value = "") {
         }
 
         button.setAttribute("aria-pressed", String(nextState));
+    });
+
+    // Abre el panel de instrucciones y lo coordina con los menús compartidos del encabezado.
+    const instructionsToggle = document.getElementById("gameInstructionsToggle");
+    const instructionsPanel = document.getElementById("gameInstructions");
+    instructionsToggle.addEventListener("click", () => {
+        const shouldOpen = instructionsPanel.hidden;
+        if (shouldOpen) {
+            document.dispatchEvent(new CustomEvent("site:dropdown-open", { detail: { name: "game-instructions" } }));
+        }
+        instructionsPanel.hidden = !shouldOpen;
+        instructionsToggle.setAttribute("aria-expanded", String(shouldOpen));
+    });
+
+    // Cierra las instrucciones al abrir otro menú o al hacer clic fuera del panel.
+    document.addEventListener("site:dropdown-open", (event) => {
+        if (event.detail?.name === "game-instructions") return;
+        instructionsPanel.hidden = true;
+        instructionsToggle.setAttribute("aria-expanded", "false");
+    });
+    document.addEventListener("click", (event) => {
+        if (instructionsPanel.hidden || instructionsPanel.contains(event.target) || instructionsToggle.contains(event.target)) return;
+        instructionsPanel.hidden = true;
+        instructionsToggle.setAttribute("aria-expanded", "false");
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || instructionsPanel.hidden) return;
+        instructionsPanel.hidden = true;
+        instructionsToggle.setAttribute("aria-expanded", "false");
+        instructionsToggle.focus();
     });
 
     // Al pulsar Play, quita el aspecto atenuado de la imagen principal.
