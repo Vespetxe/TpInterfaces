@@ -24,6 +24,12 @@ button {
     color: inherit;
 }
 
+/* Unifica la tipografía de todos los botones salvo los proveedores sociales. */
+button:not(.btn-social) {
+    font-family: var(--font-main);
+    font-weight: 600;
+}
+
 input {
     font-family: inherit;
     color: var(--color-text);

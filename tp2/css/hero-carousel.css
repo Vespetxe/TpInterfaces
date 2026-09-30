@@ -42,7 +42,7 @@
 .hero-card {
     flex: 0 0 var(--hero-card-width);
     width: var(--hero-card-width);
-    height: clamp(260px, calc(48vh + 20px), 490px);
+    height: clamp(260px, calc(44vh + 20px), 490px);
     aspect-ratio: auto;
     border-radius: 18px;
     transform: scale(.96);
@@ -70,8 +70,8 @@
 /* Hero Card Badges and Highlight */
 .hero-card .game-card__badges {
     z-index: 1;
-    top: 24px;
-    right: 24px;
+    top: 10px;
+    right: 14px;
     left: auto;
     gap: 10px;
 }
@@ -92,7 +92,7 @@
 .hero-card .badge--cart {
     margin-left: 0;
     padding-inline: 20px;
-    font-weight: 700;
+    font-weight: 600;
 }
 /* Conserva el tamaño final del botón con ícono al contraerse dentro del hero. */
 .hero-card .badge--free.is-clicked,
@@ -103,8 +103,8 @@
 .hero-card__highlight {
     position: absolute;
     z-index: 2;
-    top: 24px;
-    left: 24px;
+    top: 10px;
+    left: 14px;
     padding: 10px 16px;
     border-radius: 999px;
     background: rgba(24, 24, 24, .82);
