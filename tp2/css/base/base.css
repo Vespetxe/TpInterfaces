@@ -35,3 +35,7 @@ input {
     font-family: inherit;
     color: var(--color-text);
 }
+
+#site-header{
+    margin-top: 80px;
+}

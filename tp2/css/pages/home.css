@@ -101,7 +101,7 @@ main {
 }
 
 @keyframes home-loader-spin {
-    to { transform: rotate(360deg); }
+    to { transform: rotate(-200deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -113,7 +113,6 @@ main {
     margin-inline: 0;
     padding-inline: 0;
 }
-<<<<<<< HEAD
 
 /* Presenta en la Home los juegos agregados y el total acumulado del carrito. */
 /* ===== Panel desplegable del carrito ===== */
@@ -212,5 +211,3 @@ main {
     .shopping-cart__image { width: 62px; height: 54px; flex-basis: 62px; }
     .shopping-cart__title { font-size: 14px; }
 }
-=======
->>>>>>> 90d873c (Cart en game)
