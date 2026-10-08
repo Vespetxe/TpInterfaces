@@ -3,48 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Games — Game Details</title>
-    <link rel="stylesheet" href="css/base/variables.css">
-    <link rel="stylesheet" href="css/base/base.css">
-    <link rel="stylesheet" href="css/components/fatfooter.css">
-    <link rel="stylesheet" href="css/components/header.css">
-    <link rel="stylesheet" href="css/components/cart.css">
-    <link rel="stylesheet" href="css/pages/game.css">
-
+    <title>Document</title>
 </head>
 <body>
-<!-- ===== Layout compartido y punto de montaje del detalle ===== -->
-<div id="site-header"></div>
-<main class="game-detail-main" id="game-detail">
-    <!-- Contenido inyectado por game-detail.js -->
-</main>
-
-<!-- ===== Carrito desplegable compartido: conserva los productos guardados desde Home. ===== -->
-<section class="shopping-cart" id="shopping-cart" aria-labelledby="shopping-cart-title" aria-hidden="true" hidden>
-    <div class="shopping-cart__heading">
-        <h2 id="shopping-cart-title">Your Cart</h2>
-        <span class="shopping-cart__count" id="cart-count" aria-live="polite">0 items</span>
-    </div>
-    <div class="shopping-cart__divider" aria-hidden="true"></div>
-    <p class="shopping-cart__empty" id="cart-empty">Your cart is empty.</p>
-    <ul class="shopping-cart__items" id="cart-items" aria-label="Games in your cart"></ul>
-    <div class="shopping-cart__summary" id="cart-summary" hidden>
-        <div class="shopping-cart__total">
-            <span>Total</span>
-            <strong id="cart-total">USD 0</strong>
-        </div>
-        <button class="badge badge--free shopping-cart__buy" id="cart-buy" type="button">Buy</button>
-    </div>
-</section>
-
-<div id="site-footer"></div>
-<!-- ===== Scripts de datos, layout y detalle ===== -->
-<!-- Carga el listado compartido para que la navegación también muestre categorías fuera del Home. -->
-<script src="js/data/categories.js"></script>
-<script src="js/components/layout.js"></script>
-<script src="js/components/cart.js"></script>
-<script src="js/data/recommendation.js" defer></script>
-<script src="js/data/api.js" defer></script>
-<script src="js/pages/game-detail.js" defer></script>
+    <canvas id="myCanvas" width="800" height="800">
+        
+    </canvas>
 </body>
 </html>

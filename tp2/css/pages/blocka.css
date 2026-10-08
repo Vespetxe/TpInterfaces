@@ -1,0 +1,262 @@
+/* El hero es el punto de referencia de la capa del juego */
+.game-hero {
+    position: relative;
+}
+
+/* ===== Identidad propia del juego: paleta y tipografía ===== */
+.blocka {
+    --bk-bg: #12102b;
+    --bk-surface: #1d1a42;
+    --bk-text: #f2f0ff;
+    --bk-accent: #3df5d0;
+    --bk-accent-2: #ff4fd8;
+    --bk-glow: rgba(61, 245, 208, 0.35);
+
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    color: var(--bk-text);
+    font-family: "Sora", "Segoe UI", system-ui, sans-serif;
+    /* Grilla sutil sobre el fondo */
+    background-color: var(--bk-bg);
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    container-type: size; /* permite medir las miniaturas según el alto del juego */
+}
+
+/* ===== Selección de imagen ===== */
+.blocka__menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2cqh;
+}
+
+.blocka__logo {
+    margin: 0;
+    font-size: clamp(1.5rem, 6cqh, 2.5rem);
+    font-weight: 800;
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+    background: linear-gradient(90deg, var(--bk-accent), var(--bk-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.blocka__thumbs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    /* Cada miniatura mide lo que permita el menor entre el alto y el ancho del juego */
+    grid-template-columns: repeat(3, min(27cqh, 22cqw));
+    gap: 2cqh;
+}
+
+.blocka__thumb {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    transition: opacity 0.15s, transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Solo durante el sorteo se atenúan las miniaturas no resaltadas */
+.blocka__thumbs.is-drawing .blocka__thumb {
+    opacity: 0.45;
+}
+
+.blocka__thumbs.is-drawing .blocka__thumb.is-active {
+    opacity: 1;
+    transform: scale(1.06);
+    border-color: var(--bk-accent);
+    box-shadow: 0 0 22px var(--bk-glow);
+}
+
+.blocka__heading {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+}
+
+
+
+.blocka__thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Miniatura resaltada durante el sorteo */
+.blocka__thumb.is-active {
+    opacity: 1;
+    transform: scale(1.06);
+    border-color: var(--bk-accent);
+    box-shadow: 0 0 22px var(--bk-glow);
+}
+
+/* ===== Botones ===== */
+.blocka__btn {
+    padding: 12px 40px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--bk-accent), var(--bk-accent-2));
+    color: var(--bk-bg);
+    font: inherit;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.blocka__btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px var(--bk-glow);
+}
+
+.blocka__btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.blocka__btn:focus-visible {
+    outline: 3px solid var(--bk-text);
+    outline-offset: 3px;
+}
+
+.blocka__btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* ===== Tablero ===== */
+.blocka__timer {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    padding: 8px 16px;
+    border: 1px solid var(--bk-accent);
+    border-radius: 999px;
+    background: rgba(18, 16, 43, 0.85);
+    color: var(--bk-accent);
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+}
+
+.blocka__board {
+    box-sizing: border-box;
+    height: 100%;
+    max-height: calc(100% - 32px); /* deja aire arriba y abajo */
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 18px;
+    background: var(--bk-surface);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08), 0 0 40px rgba(61, 245, 208, 0.12);
+    transition: gap 0.3s, padding 0.3s, box-shadow 0.3s;
+}
+
+.blocka__piece {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.25s ease, border-radius 0.3s, filter 0.15s;
+}
+
+.blocka__piece:hover {
+    filter: brightness(1.15);
+    outline: 2px solid var(--bk-accent);
+    outline-offset: -2px;
+}
+
+/* Imagen completa: las piezas se unen */
+.blocka__board.is-solved {
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0 0 0 3px var(--bk-accent), 0 0 50px var(--bk-glow);
+}
+
+.blocka__board.is-solved .blocka__piece {
+    border-radius: 0;
+    pointer-events: none;
+    outline: none;
+    filter: none;
+}
+
+/* ===== Resultado ===== */
+.blocka__result {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: rgba(18, 16, 43, 0.82);
+    animation: blockaFade 0.35s ease;
+}
+
+/* Sin esta regla, display:flex anularía el atributo hidden */
+.blocka__result[hidden] {
+    display: none;
+}
+
+.blocka__result-title {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: linear-gradient(90deg, var(--bk-accent), var(--bk-accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.blocka__result-time {
+    margin: 0;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 1.25rem;
+    color: var(--bk-accent);
+}
+
+/* Últimos 10 segundos */
+.blocka__timer.is-low {
+    border-color: var(--bk-accent-2);
+    color: var(--bk-accent-2);
+    animation: blockaPulse 1s ease-in-out infinite;
+}
+
+@keyframes blockaPulse {
+    50% { opacity: 0.55; }
+}
+
+@keyframes blockaFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .blocka * {
+        transition: none !important;
+        animation: none !important;
+    }
+}

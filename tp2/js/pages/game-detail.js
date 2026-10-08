@@ -88,7 +88,7 @@ function escapeDetailText(value = "") {
                 `;
             });
     } else {*/
-        const game = RECOMMENDED_GAME;
+        const game = CURATED_GAMES.find((item) => item.id === requestedId) || RECOMMENDED_GAME;
         document.title = `${game.title} | Nexus Games`;
 
     // Renderiza el detalle local y convierte sus listas en secciones HTML.
@@ -118,13 +118,17 @@ function escapeDetailText(value = "") {
             </div>
             <!-- Desplegable con los controles del juego, con el mismo panel oscuro que los menús del sitio. -->
             <div class="game-instructions" id="gameInstructions" role="region" aria-label="Game instructions" hidden>
-                <p>Arrow keys = move selector across the board</p>
-                <p>Enter / Spacebar = select a clone</p>
-                <p>Arrow keys (again) = choose jump direction</p>
-                <p>Backspace = undo last move</p>
-                <p>R = restart board</p>
-                <p>Tab = pause</p>
-                <p>Esc = exit to Home</p>
+                <div class="game-instructions" id="gameInstructions" role="region" aria-label="Game instructions" hidden>
+                    ${(game.controls || [
+                        "Arrow keys = move selector across the board",
+                        "Enter / Spacebar = select a clone",
+                        "Arrow keys (again) = choose jump direction",
+                        "Backspace = undo last move",
+                        "R = restart board",
+                        "Tab = pause",
+                        "Esc = exit to Home"
+                    ]).map((line) => `<p>${line}</p>`).join("")}
+                </div>
             </div>
         </div>
         <section class="game-gallery">
@@ -263,9 +267,15 @@ function escapeDetailText(value = "") {
         instructionsToggle.focus();
     });
 
-    // Al pulsar Play, quita el aspecto atenuado de la imagen principal.
-    document.querySelector(".game-hero__play").addEventListener("click", () => {
-        document.querySelector(".game-hero").classList.add("game-hero--enabled");
+    // Al pulsar Play, quita el aspecto atenuado y, si es Blocka, arranca el juego.
+    document.querySelector(".game-hero__play").addEventListener("click", (event) => {
+        const hero = document.querySelector(".game-hero");
+        hero.classList.add("game-hero--enabled");
+
+        if (game.id === BLOCKA_GAME.id) {
+            event.currentTarget.style.display = "none"; // el botón Play desaparece
+            initBlocka(hero);
+        }
     });
     // Alterna el modo de pantalla completa para la imagen principal del juego.
     document.getElementById("fullscreenBtn").addEventListener("click", () => {

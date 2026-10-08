@@ -80,7 +80,7 @@ async function init() {
         return;
     }
 
-    games = [RECOMMENDED_GAME, ...result.apiGames];
+    games = [...CURATED_GAMES, ...result.apiGames];
 
     if (games.length === 0) {
         showMessage("No hay juegos para mostrar.");
@@ -93,11 +93,11 @@ async function init() {
     // Sin historial de usuario, recomendamos los juegos con mejor rating de la API.
     const recommendedGames = games
         // Descarta el juego curado y los registros sin imagen o sin calificación.
-        .filter((game) => game.id !== RECOMMENDED_GAME.id && game.image && game.rating > 0)
+        .filter((game) => !CURATED_IDS.includes(game.id) && game.image && game.rating > 0)
         // Ordena de mayor a menor rating y toma los primeros once resultados.
         .sort((a, b) => b.rating - a.rating)
         .slice(0, 11);
-    renderCarousel(carouselsMount, "Recommended For You", [RECOMMENDED_GAME, ...recommendedGames]);
+    renderCarousel(carouselsMount, "Recommended For You", [...CURATED_GAMES, ...recommendedGames]);
 
     CATEGORIES.forEach((category) => {
         // Selecciona los juegos que pertenecen a este género y los muestra en su carrusel.
@@ -145,8 +145,8 @@ document.querySelector("main").addEventListener("click", (e) => {
     if (!card) return;
 
     const id = Number(card.dataset.id);
-    if (!btn && id === RECOMMENDED_GAME.id) {
-        window.location.href = `game.html?id=${RECOMMENDED_GAME.id}`;
+    if (!btn && CURATED_IDS.includes(id)) {
+        window.location.href = `game.html?id=${id}`;
         return;
     }
     if (!btn) return;
@@ -160,7 +160,7 @@ document.querySelector("main").addEventListener("click", (e) => {
     if (btn.dataset.action === "add-to-cart") {
         if (game) window.siteCart?.addGameToCart(game);
     } else if (btn.dataset.action === "play") {
-        if (id === RECOMMENDED_GAME.id) {
+        if (CURATED_IDS.includes(id)) {
             // Da tiempo a ver el ícono antes de navegar al juego.
             window.setTimeout(() => {
                 window.location.href = `game.html?id=${id}`;

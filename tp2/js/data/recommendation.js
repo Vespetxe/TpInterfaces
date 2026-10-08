@@ -36,3 +36,34 @@ const RECOMMENDED_GAME = {
         "assets/img/gallery-5.jpg"
     ]
 };
+
+// Segundo juego curado: usa la misma forma que RECOMMENDED_GAME
+const BLOCKA_GAME = {
+    id: 900001, // numérico y distinto al de RECOMMENDED_GAME y a los de la API
+    title: "Blocka",
+    category: "Puzzle",
+    genres: ["Puzzle"],
+    image: "assets/img/blocka-cover.jpg",
+    fullImage: "assets/img/blocka-cover.jpg",
+    gallery: ["assets/img/blocka-1.jpg", "assets/img/blocka-2.jpg", "assets/img/blocka-3.jpg"],
+    likes: 0,
+    rating: 4,
+    type: "free",
+    longDescription: "Blocka is an image puzzle. Each picture is split into four pieces that start rotated. Turn every piece until the full image is restored.",
+    howToPlay: "Left click rotates a piece to the left and right click rotates it to the right. Press Play to start the timer and finish before it runs out.",
+    features: ["Three levels with different filters", "Random image on every level", "Timer with best time per level"],
+    faq: [
+        { q: "How do I rotate a piece?", a: "Left click turns it left, right click turns it right." },
+        { q: "When does the timer start?", a: "When you press Play." }
+    ],
+    // Controles que se muestran en el panel de instrucciones
+    controls: [
+        "Left click = rotate piece to the left",
+        "Right click = rotate piece to the right",
+        "Play = start the level and the timer"
+    ]
+};
+
+// Lista de juegos con página de detalle propia
+const CURATED_GAMES = [RECOMMENDED_GAME, BLOCKA_GAME];
+const CURATED_IDS = CURATED_GAMES.map((game) => game.id);
