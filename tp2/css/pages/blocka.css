@@ -34,7 +34,67 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2cqh;
+    gap: clamp(8px, 1.2cqh, 12px);
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    padding: 18px;
+    box-sizing: border-box;
+}
+
+.blocka__menu--setup {
+    width: min(760px, 100%);
+}
+
+.blocka__modes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: min(680px, 100%);
+}
+
+.blocka__mode-card {
+    display: flex;
+    min-height: 150px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: 22px;
+    border: 1px solid rgba(61, 245, 208, 0.45);
+    border-radius: 16px;
+    background: var(--bk-surface);
+    color: var(--bk-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.blocka__mode-card:hover:not(:disabled) {
+    transform: translateY(-3px);
+    border-color: var(--bk-accent);
+    box-shadow: 0 0 24px var(--bk-glow);
+}
+
+.blocka__mode-card:focus-visible {
+    outline: 3px solid var(--bk-text);
+    outline-offset: 3px;
+}
+
+.blocka__mode-card.is-coming-soon {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.blocka__mode-title {
+    color: var(--bk-accent);
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.blocka__mode-description {
+    line-height: 1.5;
+    opacity: 0.8;
 }
 
 .blocka__logo {
@@ -54,17 +114,49 @@
     margin: 0;
     padding: 0;
     display: grid;
+    justify-content: center;
     /* Cada miniatura mide lo que permita el menor entre el alto y el ancho del juego */
-    grid-template-columns: repeat(3, min(27cqh, 22cqw));
-    gap: 2cqh;
+    /* Miniaturas compactas para que la configuración completa entre en el hero. */
+    grid-template-columns: repeat(3, clamp(58px, min(17cqh, 16cqw), 132px));
+    gap: clamp(6px, 1.2cqh, 10px);
 }
 
 .blocka__thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    padding: 0;
     aspect-ratio: 1;
     overflow: hidden;
     border: 3px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
+    background: transparent;
+    cursor: pointer;
     transition: opacity 0.15s, transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.blocka__thumb.is-selected {
+    border-color: var(--bk-accent);
+    box-shadow: 0 0 18px var(--bk-glow);
+}
+
+.blocka__thumb:focus-visible {
+    outline: 3px solid var(--bk-text);
+    outline-offset: 3px;
+}
+
+.blocka__image-picker {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.blocka__image-picker legend {
+    margin: 0 auto 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 /* Solo durante el sorteo se atenúan las miniaturas no resaltadas */
@@ -87,7 +179,58 @@
     opacity: 0.8;
 }
 
+.blocka__filter-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    opacity: 0.85;
+}
 
+.blocka__filter-select {
+    min-width: 210px;
+    padding: 10px 14px;
+    border: 1px solid rgba(61, 245, 208, 0.55);
+    border-radius: 10px;
+    background: var(--bk-surface);
+    color: var(--bk-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.blocka__filter-select:focus-visible {
+    outline: 3px solid var(--bk-accent);
+    outline-offset: 3px;
+}
+
+.blocka__settings-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.blocka__setting {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.blocka__hint {
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.75;
+    text-align: center;
+}
+
+.blocka__menu-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
 
 .blocka__thumb img {
     display: block;
@@ -138,11 +281,17 @@
     cursor: default;
 }
 
+.blocka__btn--secondary {
+    border: 1px solid rgba(242, 240, 255, 0.45);
+    background: var(--bk-surface);
+    color: var(--bk-text);
+}
+
 /* ===== Tablero ===== */
 .blocka__timer {
     position: absolute;
     top: 18px;
-    left: 18px;
+    right: 18px;
     padding: 8px 16px;
     border: 1px solid var(--bk-accent);
     border-radius: 999px;
@@ -155,13 +304,67 @@
     letter-spacing: 0.08em;
 }
 
+.blocka__level-label {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    padding: 8px 14px;
+    border: 1px solid rgba(242, 240, 255, 0.25);
+    border-radius: 999px;
+    background: rgba(18, 16, 43, 0.85);
+    color: var(--bk-text);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.blocka__help-button {
+    position: absolute;
+    z-index: 1;
+    bottom: 16px;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 1px solid rgba(61, 245, 208, 0.65);
+    border-radius: 999px;
+    background: rgba(29, 26, 66, 0.96);
+    color: var(--bk-text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transform: translateX(-50%);
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+
+.blocka__help-button span {
+    color: var(--bk-accent);
+    font-size: 0.8rem;
+}
+
+.blocka__help-button:hover:not(:disabled) {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 0 18px var(--bk-glow);
+}
+
+.blocka__help-button:focus-visible {
+    outline: 3px solid var(--bk-text);
+    outline-offset: 3px;
+}
+
+.blocka__help-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
 .blocka__board {
     box-sizing: border-box;
-    height: 100%;
-    max-height: calc(100% - 32px); /* deja aire arriba y abajo */
-    aspect-ratio: 1;
+    width: max-content;
+    height: max-content;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(var(--board-columns, 2), var(--piece-display-size, min(30vw, 30vh)));
+    grid-template-rows: repeat(2, var(--piece-display-size, min(30vw, 30vh)));
     gap: 6px;
     padding: 6px;
     border-radius: 18px;
@@ -183,6 +386,14 @@
     filter: brightness(1.15);
     outline: 2px solid var(--bk-accent);
     outline-offset: -2px;
+}
+
+.blocka__piece.is-locked,
+.blocka__piece.is-locked:hover {
+    cursor: not-allowed;
+    outline: 2px solid var(--bk-accent);
+    outline-offset: -2px;
+    filter: none;
 }
 
 /* Imagen completa: las piezas se unen */
@@ -258,5 +469,23 @@
     .blocka * {
         transition: none !important;
         animation: none !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .blocka__modes {
+        grid-template-columns: 1fr;
+    }
+
+    .blocka__mode-card {
+        min-height: 110px;
+    }
+
+    .blocka__thumbs {
+        grid-template-columns: repeat(3, clamp(52px, min(17cqh, 24cqw), 105px));
+    }
+
+    .blocka__filter-select {
+        min-width: 170px;
     }
 }

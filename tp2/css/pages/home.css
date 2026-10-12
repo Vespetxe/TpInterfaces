@@ -101,7 +101,7 @@ main {
 }
 
 @keyframes home-loader-spin {
-    to { transform: rotate(-200deg); }
+    to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
