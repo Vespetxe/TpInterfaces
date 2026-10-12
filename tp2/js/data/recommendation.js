@@ -43,9 +43,11 @@ const BLOCKA_GAME = {
     title: "Blocka",
     category: "Puzzle",
     genres: ["Puzzle"],
-    image: "assets/img/blocka-cover.jpg",
-    fullImage: "assets/img/blocka-cover.jpg",
-    gallery: ["assets/img/blocka-1.jpg", "assets/img/blocka-2.jpg", "assets/img/blocka-3.jpg"],
+    // Usa la segunda portada como fondo del hero detrás del botón Play.
+    image: "assets/img/blocka-portada.png",
+    fullImage: "assets/img/blocka-portada2.png",
+    // La galería usa las mismas versiones PNG que el banco del juego.
+    gallery: ["assets/img/blocka-1.png", "assets/img/blocka-2.png", "assets/img/blocka-3.png"],
     likes: 0,
     rating: 4,
     type: "free",

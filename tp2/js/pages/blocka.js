@@ -1,11 +1,12 @@
 // ===== Banco de imágenes =====
+// El banco completo usa imágenes PNG para el menú, los niveles y las miniaturas.
 const BLOCKA_IMAGES = [
-    "assets/img/blocka-1.jpg",
-    "assets/img/blocka-2.jpg",
-    "assets/img/blocka-3.jpg",
-    "assets/img/blocka-4.jpg",
-    "assets/img/blocka-5.jpg",
-    "assets/img/blocka-6.jpg"
+    "assets/img/blocka-1.png",
+    "assets/img/blocka-2.png",
+    "assets/img/blocka-3.png",
+    "assets/img/blocka-4.png",
+    "assets/img/blocka-5.png",
+    "assets/img/blocka-6.png"
 ];
 // Los filtros se procesan sobre píxeles con ImageData antes de cortar las piezas.
 const BLOCKA_FILTERS = {
@@ -48,7 +49,8 @@ function initBlocka(hero) {
 function showModeMenu(root) {
     root.innerHTML = `
         <div class="blocka__menu">
-            <p class="blocka__logo">BLOCKA</p>
+            <!-- Marca del juego: reemplaza el título de texto en el menú de modos. -->
+            <div class="blocka__logo"><img src="assets/img/blocka-logo.png" alt="Blocka"></div>
             <h2 class="blocka__heading">Choose a game mode</h2>
             <div class="blocka__modes">
                 <button type="button" class="blocka__mode-card" id="blockaFreeMode">
@@ -78,7 +80,8 @@ function startCompetitiveLevel(root, levelIndex, previousImageIndex = -1) {
     // Reemplaza la pantalla anterior enseguida y evita iniciar el mismo nivel varias veces.
     root.innerHTML = `
         <div class="blocka__menu">
-            <p class="blocka__logo">BLOCKA</p>
+            <!-- Mantiene la identidad visual al preparar cada nivel competitivo. -->
+            <div class="blocka__logo"><img src="assets/img/blocka-logo.png" alt="Blocka"></div>
             <h2 class="blocka__heading">Preparing level ${levelIndex + 1}…</h2>
         </div>
     `;
@@ -98,7 +101,7 @@ function startCompetitiveLevel(root, levelIndex, previousImageIndex = -1) {
 function showFreeSetup(root) {
     root.innerHTML = `
         <div class="blocka__menu blocka__menu--setup">
-            <p class="blocka__logo">BLOCKA</p>
+            <!-- La configuración prioriza los controles y deja el logo para la pantalla de modos. -->
             <h2 class="blocka__heading">Free mode</h2>
             <fieldset class="blocka__image-picker">
                 <legend>Choose an image</legend>
@@ -303,8 +306,8 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         const gap = 6;
         const padding = 12;
         const availableWidth = root.clientWidth - 32;
-        // Reserva espacio arriba para que el tablero no quede debajo del cronómetro.
-        const availableHeight = root.clientHeight - 130;
+        // Reserva espacio para los controles y aprovecha más alto para agrandar el tablero.
+        const availableHeight = root.clientHeight - 90;
         const widthBasedSize = (availableWidth - padding - gap * (columns - 1)) / columns;
         const heightBasedSize = (availableHeight - padding - gap) / rows;
         const displaySize = Math.max(1, Math.floor(Math.min(widthBasedSize, heightBasedSize)));

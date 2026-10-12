@@ -8,11 +8,16 @@ const ICON_BOOKMARK = `<svg width="16" height="16" viewBox="0 0 24 24" fill="non
 const ICON_SHARE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.1M8.7 13.3l6.6 4.1"/></svg>`;
 const ICON_INSTRUCTIONS = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.75h14A1.75 1.75 0 0 1 20.75 5.5v11A1.75 1.75 0 0 1 19 18.25H9l-5.75 3V5.5A1.75 1.75 0 0 1 5 3.75Z"/><path d="M12 7v5m0 3h.01"/></svg>`;
 const ICON_FULLSCREEN = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
-const GAME_COMMENTS = [
+// Blocka muestra solo el comentario del nuevo perfil de TurboKnight.
+const BLOCKA_COMMENTS = [
+    { user: "TurboKnight", time: "25 min ago", text: "The rotating picture puzzle is a clever twist. I like how each image makes the challenge feel different!", likes: 8, avatar: "assets/img/turboknight.png" },
+];
+// Plankton conserva sus comentarios de muestra originales.
+const PLANKTON_COMMENTS = [
     { user: "PixelVex", time: "12 min ago", text: "Surprisingly addictive. I thought I'd solve it in a few moves, but that last clone always gets me.", likes: 3, avatar: "assets/img/pixelvex.png" },
     { user: "NeonGamer", time: "1 hour ago", text: "Okay, this is WAY harder than it looks. Finally got down to one clone after ten attempts.", likes: 123, avatar: "assets/img/neongamer.png" },
     { user: "ByteWitch", time: "3 hours ago", text: "The petri dish theme is such a fun twist on a classic puzzle. The little clone animations make every move feel satisfying.", likes: 37, avatar: "assets/img/bytewitch.png" },
-    { user: "VoidRunner", time: "5 hours ago", text: "Simple rules, but surprisingly deep. I kept making moves that looked right and completely ruined the board.", likes: 29, avatar: "assets/img/voidrunner.png" }
+    { user: "VoidRunner", time: "5 hours ago", text: "Simple rules, but surprisingly deep. I kept making moves that looked right and completely ruined the board.", likes: 29, avatar: "assets/img/voidrunner.png" },
 ];
 
 // ===== Renderizado del detalle =====
@@ -89,7 +94,11 @@ function escapeDetailText(value = "") {
             });
     } else {*/
         const game = CURATED_GAMES.find((item) => item.id === requestedId) || RECOMMENDED_GAME;
+        // Selecciona comentarios propios para que cada juego muestre solo los de su perfil.
+        const gameComments = game.id === BLOCKA_GAME.id ? BLOCKA_COMMENTS : PLANKTON_COMMENTS;
         document.title = `${game.title} | Nexus Games`;
+        // Amplía Blocka desde que carga la página para que no dependa del modo fullscreen.
+        detailMount.classList.toggle("game-detail-main--blocka", game.id === BLOCKA_GAME.id);
 
     // Renderiza el detalle local y convierte sus listas en secciones HTML.
     detailMount.innerHTML = `
@@ -162,7 +171,7 @@ function escapeDetailText(value = "") {
             </article>
 
             <aside class="game-comments">
-                <h2 class="game-comments__title">${GAME_COMMENTS.length} comments</h2>
+                <h2 class="game-comments__title">${gameComments.length} comments</h2>
                 <form class="game-comments__form" id="commentForm">
                     <img class="comment__avatar" src="assets/img/foto-perfil.png" alt="Your avatar">
                     <input type="text" placeholder="Write a comment..." required>
@@ -172,7 +181,7 @@ function escapeDetailText(value = "") {
                     </button>
                 </form>
                 <ul class="game-comments__list" id="commentsList">
-                    ${/* Genera un bloque visual por cada comentario de ejemplo. */ GAME_COMMENTS.map(c => `
+                    ${/* Genera un bloque visual por cada comentario del juego actual. */ gameComments.map(c => `
                         <li class="comment">
                             <img class="comment__avatar" src="${c.avatar}" alt="${c.user}">
                             <div class="comment__body">
@@ -274,6 +283,8 @@ function escapeDetailText(value = "") {
 
         if (game.id === BLOCKA_GAME.id) {
             event.currentTarget.style.display = "none"; // el botón Play desaparece
+            // Quita la portada del fondo mientras Blocka muestra su propia pantalla.
+            hero.classList.add("game-hero--blocka-started");
             initBlocka(hero);
         }
     });
