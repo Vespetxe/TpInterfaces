@@ -5,36 +5,41 @@
 
 /* ===== Identidad propia del juego: paleta y tipografía ===== */
 .blocka {
-    --bk-bg: #12102b;
-    --bk-surface: #1d1a42;
-    --bk-text: #f2f0ff;
-    --bk-accent: #3df5d0;
-    --bk-accent-2: #ff4fd8;
-    --bk-glow: rgba(61, 245, 208, 0.35);
+    /* Paleta inspirada en la referencia y en el celeste de la K del logo. */
+    --bk-bg: #fff;
+    --bk-surface: #fff;
+    --bk-text: #111;
+    --bk-accent: #55d9e8;
+    --bk-accent-2: #f1dd38;
+    --bk-glow: rgba(85, 217, 232, 0.48);
+    --bk-line: #151515;
 
     position: absolute;
     inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    /* Centra cada pantalla del juego usando la misma lógica de grilla. */
+    display: grid;
+    place-items: center;
     border-radius: inherit;
     color: var(--bk-text);
     font-family: "Sora", "Segoe UI", system-ui, sans-serif;
-    /* Grilla sutil sobre el fondo */
-    background-color: var(--bk-bg);
+    /* Deja ver la portada del hero atenuada detrás de la grilla del juego. */
+    background-color: rgba(255, 255, 255, 0.72);
     background-image:
-        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 32px 32px;
+        linear-gradient(to right, var(--bk-line) 2px, transparent 2px),
+        linear-gradient(to bottom, var(--bk-line) 2px, transparent 2px);
+    background-size: 48px 48px;
     container-type: size; /* permite medir las miniaturas según el alto del juego */
 }
 
 /* ===== Selección de imagen ===== */
 .blocka__menu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(8px, 1.2cqh, 12px);
+    /* Ordena logo, título y controles en una columna alineada con el fondo cuadriculado. */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    align-content: center;
+    gap: clamp(14px, 2.2cqh, 24px);
+    width: 100%;
     max-width: 100%;
     max-height: 100%;
     overflow: auto;
@@ -43,37 +48,44 @@
 }
 
 .blocka__menu--setup {
-    width: min(760px, 100%);
+    /* Evita un marco blanco gigante y permite que la portada siga asomando detrás. */
+    --blocka-thumb-size: clamp(58px, min(17cqh, 16cqw), 132px);
+    --blocka-thumb-gap: clamp(6px, 1.2cqh, 10px);
+    width: min(1080px, 100%);
 }
 
 .blocka__modes {
+    /* Los dos modos ocupan columnas iguales dentro de la grilla principal. */
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-    width: min(680px, 100%);
+    gap: clamp(12px, 2cqw, 24px);
+    width: min(760px, 100%);
 }
 
 .blocka__mode-card {
-    display: flex;
-    min-height: 150px;
-    flex-direction: column;
-    justify-content: center;
+    /* Las opciones de modo se muestran blancas, con contorno negro y sombra marcada. */
+    display: grid;
+    min-height: 132px;
+    align-content: center;
+    justify-items: start;
     gap: 12px;
     padding: 22px;
-    border: 1px solid rgba(61, 245, 208, 0.45);
-    border-radius: 16px;
-    background: var(--bk-surface);
+    border: 2px solid var(--bk-line);
+    border-radius: 3px;
+    background: #fff;
     color: var(--bk-text);
+    box-shadow: 5px 5px 0 var(--bk-line);
     font: inherit;
     text-align: left;
     cursor: pointer;
-    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    transition: transform 0.15s, background-color 0.15s, box-shadow 0.15s;
 }
 
 .blocka__mode-card:hover:not(:disabled) {
-    transform: translateY(-3px);
-    border-color: var(--bk-accent);
-    box-shadow: 0 0 24px var(--bk-glow);
+    /* El hover celeste retoma el fondo de la K y eleva la tarjeta sobre la grilla. */
+    transform: translate(-3px, -3px);
+    background: var(--bk-accent);
+    box-shadow: 8px 8px 0 var(--bk-line);
 }
 
 .blocka__mode-card:focus-visible {
@@ -87,7 +99,7 @@
 }
 
 .blocka__mode-title {
-    color: var(--bk-accent);
+    color: var(--bk-text);
     font-size: 1.2rem;
     font-weight: 800;
 }
@@ -98,15 +110,24 @@
 }
 
 .blocka__logo {
-    margin: 0;
-    font-size: clamp(1.5rem, 6cqh, 2.5rem);
-    font-weight: 800;
-    letter-spacing: 0.35em;
-    text-indent: 0.35em;
-    background: linear-gradient(90deg, var(--bk-accent), var(--bk-accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    /* Marco ancho que recorta el margen blanco del PNG y destaca el logo sobre la grilla. */
+    width: min(76cqw, 620px);
+    height: auto;
+    aspect-ratio: 4.2 / 1;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.48));
+}
+
+.blocka__logo img {
+    /* El recorte centrado deja visible la franja horizontal del logo dentro del marco. */
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 46%;
 }
 
 .blocka__thumbs {
@@ -117,8 +138,8 @@
     justify-content: center;
     /* Cada miniatura mide lo que permita el menor entre el alto y el ancho del juego */
     /* Miniaturas compactas para que la configuración completa entre en el hero. */
-    grid-template-columns: repeat(3, clamp(58px, min(17cqh, 16cqw), 132px));
-    gap: clamp(6px, 1.2cqh, 10px);
+    grid-template-columns: repeat(3, var(--blocka-thumb-size, clamp(58px, min(17cqh, 16cqw), 132px)));
+    gap: var(--blocka-thumb-gap, clamp(6px, 1.2cqh, 10px));
 }
 
 .blocka__thumb {
@@ -129,8 +150,8 @@
     padding: 0;
     aspect-ratio: 1;
     overflow: hidden;
-    border: 3px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
+    border: 2px solid var(--bk-line);
+    border-radius: 2px;
     background: transparent;
     cursor: pointer;
     transition: opacity 0.15s, transform 0.15s, border-color 0.15s, box-shadow 0.15s;
@@ -147,14 +168,24 @@
 }
 
 .blocka__image-picker {
+    /* Mantiene las miniaturas ordenadas sin sumar otro bloque blanco al fondo. */
+    display: grid;
+    justify-items: center;
+    gap: 8px;
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 8px 0;
     border: 0;
+    background: transparent;
+    box-sizing: border-box;
 }
 
 .blocka__image-picker legend {
     margin: 0 auto 10px;
+    padding: 6px 12px;
+    border: 2px solid var(--bk-line);
+    background: #000;
+    color: #fff;
     font-size: 0.9rem;
     font-weight: 600;
 }
@@ -172,11 +203,17 @@
 }
 
 .blocka__heading {
+    /* Franja negra con texto blanco, como el rótulo de la referencia. */
     margin: 0;
-    font-size: 1rem;
-    font-weight: 400;
+    padding: 8px 20px;
+    background: #000;
+    color: #fff;
+    font-size: clamp(1rem, 2.4cqh, 1.5rem);
+    font-weight: 500;
     letter-spacing: 0.04em;
-    opacity: 0.8;
+    text-align: center;
+    text-transform: lowercase;
+    opacity: 1;
 }
 
 .blocka__filter-label {
@@ -187,10 +224,12 @@
 }
 
 .blocka__filter-select {
-    min-width: 210px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     padding: 10px 14px;
-    border: 1px solid rgba(61, 245, 208, 0.55);
-    border-radius: 10px;
+    border: 2px solid var(--bk-line);
+    border-radius: 3px;
     background: var(--bk-surface);
     color: var(--bk-text);
     font: inherit;
@@ -203,32 +242,48 @@
 }
 
 .blocka__settings-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    /* Los dos selectores juntos miden lo mismo que las tres miniaturas de arriba. */
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
-    width: 100%;
+    width: min(100%, calc(3 * var(--blocka-thumb-size) + 2 * var(--blocka-thumb-gap)));
+    margin-inline: auto;
 }
 
 .blocka__setting {
-    display: flex;
-    flex-direction: column;
+    /* Etiqueta y selector forman una columna de la grilla de ajustes. */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 7px;
     font-size: 0.85rem;
     font-weight: 600;
 }
 
+.blocka__setting > span {
+    /* Da a cada selector un rótulo propio, visible sobre las líneas del fondo. */
+    justify-self: start;
+    padding: 6px 10px;
+    border: 2px solid var(--bk-line);
+    background: #000;
+    color: #fff;
+}
+
 .blocka__hint {
+    /* Encierra la ayuda en una placa blanca con borde y sombra de la misma grilla. */
     margin: 0;
+    padding: 8px 12px;
+    border: 2px solid var(--bk-line);
+    background: #fff;
+    color: var(--bk-text);
+    box-shadow: 4px 4px 0 var(--bk-line);
     font-size: 0.8rem;
-    opacity: 0.75;
     text-align: center;
 }
 
 .blocka__menu-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    /* Alinea las acciones de volver y comenzar en celdas iguales. */
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
     gap: 12px;
 }
 
@@ -250,21 +305,24 @@
 /* ===== Botones ===== */
 .blocka__btn {
     padding: 12px 40px;
-    border: 0;
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--bk-accent), var(--bk-accent-2));
-    color: var(--bk-bg);
+    border: 2px solid var(--bk-line);
+    border-radius: 3px;
+    background: #fff;
+    color: var(--bk-text);
+    box-shadow: 4px 4px 0 var(--bk-line);
     font: inherit;
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition: transform 0.15s, background-color 0.15s, box-shadow 0.15s;
 }
 
 .blocka__btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px var(--bk-glow);
+    /* Los botones secundarios comparten el hover celeste de las tarjetas de modo. */
+    transform: translate(-2px, -2px);
+    background: var(--bk-accent);
+    box-shadow: 6px 6px 0 var(--bk-line);
 }
 
 .blocka__btn:active:not(:disabled) {
@@ -282,20 +340,21 @@
 }
 
 .blocka__btn--secondary {
-    border: 1px solid rgba(242, 240, 255, 0.45);
+    border: 2px solid var(--bk-line);
     background: var(--bk-surface);
     color: var(--bk-text);
 }
 
 /* ===== Tablero ===== */
 .blocka__timer {
+    /* La placa negra mantiene legible el cronómetro sobre la grilla clara. */
     position: absolute;
     top: 18px;
     right: 18px;
     padding: 8px 16px;
-    border: 1px solid var(--bk-accent);
-    border-radius: 999px;
-    background: rgba(18, 16, 43, 0.85);
+    border: 2px solid #000;
+    border-radius: 3px;
+    background: #000;
     color: var(--bk-accent);
     font-family: "Consolas", "Courier New", monospace;
     font-size: 1.25rem;
@@ -309,9 +368,9 @@
     top: 18px;
     left: 18px;
     padding: 8px 14px;
-    border: 1px solid rgba(242, 240, 255, 0.25);
+    border: 2px solid var(--bk-line);
     border-radius: 999px;
-    background: rgba(18, 16, 43, 0.85);
+    background: #fff;
     color: var(--bk-text);
     font-size: 0.9rem;
     font-weight: 700;
@@ -319,17 +378,19 @@
 }
 
 .blocka__help-button {
+    /* La ayuda usa el acento celeste del collage para distinguirse del resto de las acciones. */
     position: absolute;
     z-index: 1;
     bottom: 16px;
     left: 50%;
-    display: inline-flex;
+    display: grid;
+    grid-auto-flow: column;
     align-items: center;
     gap: 8px;
     padding: 9px 16px;
-    border: 1px solid rgba(61, 245, 208, 0.65);
-    border-radius: 999px;
-    background: rgba(29, 26, 66, 0.96);
+    border: 2px solid var(--bk-line);
+    border-radius: 3px;
+    background: #fff;
     color: var(--bk-text);
     font: inherit;
     font-weight: 700;
@@ -344,8 +405,10 @@
 }
 
 .blocka__help-button:hover:not(:disabled) {
+    /* La ayuda también responde al pasar el cursor con el celeste de la K. */
     transform: translateX(-50%) translateY(-2px);
-    box-shadow: 0 0 18px var(--bk-glow);
+    background: var(--bk-accent);
+    box-shadow: 5px 5px 0 var(--bk-line);
 }
 
 .blocka__help-button:focus-visible {
@@ -359,6 +422,7 @@
 }
 
 .blocka__board {
+    /* El brillo celeste separa el tablero del fondo y enlaza sus bordes con el logo. */
     box-sizing: border-box;
     width: max-content;
     height: max-content;
@@ -369,7 +433,7 @@
     padding: 6px;
     border-radius: 18px;
     background: var(--bk-surface);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08), 0 0 40px rgba(61, 245, 208, 0.12);
+    box-shadow: 0 0 0 2px rgba(21, 21, 21, 0.12), 0 0 40px var(--bk-glow);
     transition: gap 0.3s, padding 0.3s, box-shadow 0.3s;
 }
 
@@ -413,32 +477,34 @@
 
 /* ===== Resultado ===== */
 .blocka__result {
+    /* Presenta el resultado como una superposición centrada y ordenada en grilla. */
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    align-content: center;
+    justify-items: center;
     gap: 14px;
-    background: rgba(18, 16, 43, 0.82);
+    background: rgba(255, 255, 255, 0.92);
     animation: blockaFade 0.35s ease;
 }
 
-/* Sin esta regla, display:flex anularía el atributo hidden */
+/* Sin esta regla, display:grid anularía el atributo hidden */
 .blocka__result[hidden] {
     display: none;
 }
 
 .blocka__result-title {
+    /* Reemplaza el degradado por el celeste del logo sobre una placa negra enmarcada. */
     margin: 0;
+    padding: 8px 18px;
+    border: 2px solid var(--bk-line);
+    background: var(--bk-accent);
+    color: var(--bk-text);
+    box-shadow: 4px 4px 0 var(--bk-line);
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    background: linear-gradient(90deg, var(--bk-accent), var(--bk-accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
 }
 
 .blocka__result-time {
@@ -473,6 +539,12 @@
 }
 
 @media (max-width: 640px) {
+    .blocka__menu--setup {
+        /* Recalcula el mismo ancho compartido cuando las miniaturas se achican en móvil. */
+        --blocka-thumb-size: clamp(52px, min(17cqh, 24cqw), 105px);
+        --blocka-thumb-gap: clamp(6px, 1.2cqh, 10px);
+    }
+
     .blocka__modes {
         grid-template-columns: 1fr;
     }
@@ -481,11 +553,21 @@
         min-height: 110px;
     }
 
-    .blocka__thumbs {
-        grid-template-columns: repeat(3, clamp(52px, min(17cqh, 24cqw), 105px));
+    .blocka__settings-row {
+        grid-template-columns: 1fr;
     }
 
-    .blocka__filter-select {
-        min-width: 170px;
+    .blocka__menu-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
     }
+
+    .blocka__menu-actions .blocka__btn {
+        padding-inline: 16px;
+    }
+
+    .blocka__thumbs {
+        grid-template-columns: repeat(3, var(--blocka-thumb-size));
+    }
+
 }

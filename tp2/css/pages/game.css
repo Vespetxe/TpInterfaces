@@ -6,6 +6,9 @@
     margin: 40px auto 80px;
 }
 
+/* Blocka necesita más área que la ficha de juego para que el puzzle sea cómodo sin fullscreen. */
+.game-detail-main--blocka { width: min(1440px, calc(100% - 40px)); }
+
 /* ===== Navegación y reproductor del juego ===== */
 /* Breadcrumb */
 .breadcrumb {
@@ -36,6 +39,8 @@
     transition: filter .5s ease;
 }
 .game-hero--enabled .game-hero__image { filter: brightness(1) saturate(1); }
+/* Al abrir Blocka se retira la portada para evitar que se duplique detrás de la interfaz. */
+.game-hero--blocka-started .game-hero__image { opacity: 0; }
 .game-hero__play {
     position: absolute;
     top: 50%;

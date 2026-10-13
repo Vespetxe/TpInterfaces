@@ -1,11 +1,11 @@
 // ===== Banco de imágenes =====
 const BLOCKA_IMAGES = [
-    "assets/img/blocka-1.jpg",
-    "assets/img/blocka-2.jpg",
-    "assets/img/blocka-3.jpg",
-    "assets/img/blocka-4.jpg",
-    "assets/img/blocka-5.jpg",
-    "assets/img/blocka-6.jpg"
+    "assets/img/blocka-1.png",
+    "assets/img/blocka-2.png",
+    "assets/img/blocka-3.png",
+    "assets/img/blocka-4.png",
+    "assets/img/blocka-5.png",
+    "assets/img/blocka-6.png"
 ];
 // Los filtros se procesan sobre píxeles con ImageData antes de cortar las piezas.
 const BLOCKA_FILTERS = {
@@ -31,8 +31,9 @@ const BLOCKA_FILTERS = {
 // La dificultad competitiva crece con más piezas y menos tiempo disponible.
 const BLOCKA_LEVELS = [
     { pieceCount: 4, filter: "grayscale", timeLimitMs: 30000 },
-    { pieceCount: 6, filter: "brightness", timeLimitMs: 30000 },
-    { pieceCount: 8, filter: "negative", timeLimitMs: 30000 }
+    { pieceCount: 6, filter: "brightness", timeLimitMs: 20000 },
+    { pieceCount: 8, filter: "negative", timeLimitMs: 10000 }
+
 ];
 
 // ===== Inicio =====
@@ -49,7 +50,8 @@ function initBlocka(hero) {
 function showModeMenu(root) {
     root.innerHTML = `
         <div class="blocka__menu">
-            <p class="blocka__logo">BLOCKA</p>
+            <!-- Carga el logo del juego desde la carpeta de imágenes. -->
+            <div class="blocka__logo"><img src="assets/img/blocka-logo.png" alt="Blocka"></div>
             <h2 class="blocka__heading">Choose a game mode</h2>
             <div class="blocka__modes">
                 <button type="button" class="blocka__mode-card" id="blockaFreeMode">
@@ -79,7 +81,8 @@ function startCompetitiveLevel(root, levelIndex, previousImageIndex = -1) {
     // Reemplaza la pantalla anterior enseguida y evita iniciar el mismo nivel varias veces.
     root.innerHTML = `
         <div class="blocka__menu">
-            <p class="blocka__logo">BLOCKA</p>
+            <!-- Conserva el logo visible mientras se prepara cada nivel competitivo. -->
+            <div class="blocka__logo"><img src="assets/img/blocka-logo.png" alt="Blocka"></div>
             <h2 class="blocka__heading">Preparing level ${levelIndex + 1}…</h2>
         </div>
     `;
@@ -99,7 +102,7 @@ function startCompetitiveLevel(root, levelIndex, previousImageIndex = -1) {
 function showFreeSetup(root) {
     root.innerHTML = `
         <div class="blocka__menu blocka__menu--setup">
-            <p class="blocka__logo">BLOCKA</p>
+            <!-- En Free mode se omite el logo para dar más espacio a la configuración. -->
             <h2 class="blocka__heading">Free mode</h2>
             <fieldset class="blocka__image-picker">
                 <legend>Choose an image</legend>
@@ -337,7 +340,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         timerEl.classList.toggle("is-low", remaining <= 10000);
     }, 200);
 
-        // ===== Resultado =====
+    // ===== Resultado =====
     // Presenta acciones distintas según se haya ganado o perdido el nivel.
     function showResult(title, detail, resultType) {
         let actionButtons = `
