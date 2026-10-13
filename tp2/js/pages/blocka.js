@@ -27,11 +27,12 @@ const BLOCKA_FILTERS = {
         apply: (red, green, blue) => [255 - red, 255 - green, 255 - blue]
     }
 };
+
 // La dificultad competitiva crece con más piezas y menos tiempo disponible.
 const BLOCKA_LEVELS = [
-    { pieceCount: 4, filter: "grayscale", timeLimitMs: 60000 },
-    { pieceCount: 6, filter: "brightness", timeLimitMs: 50000 },
-    { pieceCount: 8, filter: "negative", timeLimitMs: 40000 }
+    { pieceCount: 4, filter: "grayscale", timeLimitMs: 30000 },
+    { pieceCount: 6, filter: "brightness", timeLimitMs: 30000 },
+    { pieceCount: 8, filter: "negative", timeLimitMs: 30000 }
 ];
 
 // ===== Inicio =====
@@ -140,13 +141,10 @@ function showFreeSetup(root) {
         </div>
     `;
 
-    // Guarda la miniatura elegida; el índice inicial corresponde a la primera imagen.
     let selectedImageIndex = 0;
     root.querySelectorAll(".blocka__thumb").forEach((button) => {
         button.addEventListener("click", () => {
-            // Lee el índice guardado en el botón que se acaba de pulsar.
             selectedImageIndex = Number(button.dataset.imageIndex);
-            // Actualiza el resaltado y el estado accesible de todas las miniaturas.
             root.querySelectorAll(".blocka__thumb").forEach((thumb) => {
                 const selected = thumb === button;
                 thumb.classList.toggle("is-selected", selected);
@@ -155,15 +153,12 @@ function showFreeSetup(root) {
         });
     });
 
-    // Vuelve desde la configuración al menú donde se elige el modo.
     root.querySelector("#blockaBack").addEventListener("click", () => showModeMenu(root));
     root.querySelector("#blockaStart").addEventListener("click", (event) => {
-        // Evita que un clic repetido inicie más de una partida.
         event.currentTarget.disabled = true;
-        // Lee las opciones que eligió el jugador.
         const filter = root.querySelector("#blockaFilter").value;
         const pieceCount = Number(root.querySelector("#blockaPieceCount").value);
-        // Inicia el reloj y pasa la imagen, el filtro y la cantidad de piezas al nivel.
+        // El reloj libre empieza al pulsar Start y continúa durante la carga del tablero.
         startLevel(root, BLOCKA_IMAGES[selectedImageIndex], filter, performance.now(), {
             mode: "free",
             pieceCount,
@@ -324,7 +319,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         const elapsed = performance.now() - startedAt + penaltyMs;
 
         if (mode === "free") {
-            // El modo libre muestra el tiempo transcurrido más las ayudas, sin límite de tiempo.
+            // En modo libre el cronómetro cuenta hacia arriba y no limita la partida.
             timerEl.textContent = formatTime(elapsed);
             return;
         }
@@ -375,7 +370,6 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         helpButton.disabled = true;
         resultEl.querySelector("#blockaMenu").addEventListener("click", () => showModeMenu(root));
         resultEl.querySelector("#blockaAgain")?.addEventListener("click", () => {
-            // Repite la misma imagen y configuración, pero inicia un cronómetro nuevo.
             startLevel(root, options.imageSrc, filterName, performance.now(), options);
         });
         resultEl.querySelector("#blockaRetryLevel")?.addEventListener("click", () => {
