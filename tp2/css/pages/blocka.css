@@ -6,11 +6,12 @@
 /* ===== Identidad propia del juego: paleta y tipografía ===== */
 .blocka {
     /* Paleta inspirada en la referencia y en el celeste de la K del logo. */
-    --bk-bg: #fff;
+    --bk-bg: #f1f0e8;
     --bk-surface: #fff;
     --bk-text: #111;
     --bk-accent: #55d9e8;
-    --bk-accent-2: #f1dd38;
+    /* El rosa funciona como color secundario junto al celeste primario. */
+    --bk-accent-2: #c578e1;
     --bk-glow: rgba(85, 217, 232, 0.48);
     --bk-line: #151515;
 
@@ -21,24 +22,21 @@
     place-items: center;
     border-radius: inherit;
     color: var(--bk-text);
-    font-family: "Sora", "Segoe UI", system-ui, sans-serif;
-    /* Deja ver la portada del hero atenuada detrás de la grilla del juego. */
-    background-color: rgba(255, 255, 255, 0.72);
-    background-image:
-        linear-gradient(to right, var(--bk-line) 2px, transparent 2px),
-        linear-gradient(to bottom, var(--bk-line) 2px, transparent 2px);
-    background-size: 48px 48px;
+    /* Mantiene la tipografía global del sitio: Radio Canada. */
+    font-family: var(--font-main);
+    /* Usa el tono crema de las nuevas portadas en lugar del fondo cuadriculado. */
+    background-color: var(--bk-bg);
     container-type: size; /* permite medir las miniaturas según el alto del juego */
 }
 
 /* ===== Selección de imagen ===== */
 .blocka__menu {
-    /* Ordena logo, título y controles en una columna alineada con el fondo cuadriculado. */
+    /* Centra el logo, el título y las opciones con el mismo eje visual. */
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     align-content: center;
-    gap: clamp(14px, 2.2cqh, 24px);
+    gap: clamp(18px, 3cqh, 30px);
     width: 100%;
     max-width: 100%;
     max-height: 100%;
@@ -48,24 +46,25 @@
 }
 
 .blocka__menu--setup {
-    /* Evita un marco blanco gigante y permite que la portada siga asomando detrás. */
+    /* Compacta y alinea la configuración del modo libre sobre el fondo crema. */
     --blocka-thumb-size: clamp(58px, min(17cqh, 16cqw), 132px);
     --blocka-thumb-gap: clamp(6px, 1.2cqh, 10px);
     width: min(1080px, 100%);
+    gap: clamp(12px, 1.8cqh, 20px);
 }
 
 .blocka__modes {
-    /* Los dos modos ocupan columnas iguales dentro de la grilla principal. */
+    /* Amplía las dos tarjetas y las alinea en columnas iguales como en la referencia. */
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(12px, 2cqw, 24px);
-    width: min(760px, 100%);
+    gap: clamp(16px, 2cqw, 28px);
+    width: min(900px, 100%);
 }
 
 .blocka__mode-card {
     /* Las opciones de modo se muestran blancas, con contorno negro y sombra marcada. */
     display: grid;
-    min-height: 132px;
+    min-height: clamp(142px, 19cqh, 180px);
     align-content: center;
     justify-items: start;
     gap: 12px;
@@ -82,7 +81,7 @@
 }
 
 .blocka__mode-card:hover:not(:disabled) {
-    /* El hover celeste retoma el fondo de la K y eleva la tarjeta sobre la grilla. */
+    /* El hover celeste retoma el fondo de la K y eleva la tarjeta. */
     transform: translate(-3px, -3px);
     background: var(--bk-accent);
     box-shadow: 8px 8px 0 var(--bk-line);
@@ -110,8 +109,8 @@
 }
 
 .blocka__logo {
-    /* Marco ancho que recorta el margen blanco del PNG y destaca el logo sobre la grilla. */
-    width: min(76cqw, 620px);
+    /* Amplía el marco y recorta el margen vacío del PNG para que el logo tenga más presencia. */
+    width: min(76cqw, 760px);
     height: auto;
     aspect-ratio: 4.2 / 1;
     overflow: hidden;
@@ -122,12 +121,13 @@
 }
 
 .blocka__logo img {
-    /* El recorte centrado deja visible la franja horizontal del logo dentro del marco. */
+    /* Escala el wordmark dentro del marco y recorta el espacio vacío de la imagen. */
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 46%;
+    transform: scale(1.6);
 }
 
 .blocka__thumbs {
@@ -138,8 +138,10 @@
     justify-content: center;
     /* Cada miniatura mide lo que permita el menor entre el alto y el ancho del juego */
     /* Miniaturas compactas para que la configuración completa entre en el hero. */
-    grid-template-columns: repeat(3, var(--blocka-thumb-size, clamp(58px, min(17cqh, 16cqw), 132px)));
+    /* Presenta las seis opciones en una sola fila horizontal. */
+    grid-template-columns: repeat(6, var(--blocka-thumb-size, clamp(58px, min(17cqh, 16cqw), 132px)));
     gap: var(--blocka-thumb-gap, clamp(6px, 1.2cqh, 10px));
+    width: min(100%, calc(6 * var(--blocka-thumb-size) + 5 * var(--blocka-thumb-gap)));
 }
 
 .blocka__thumb {
@@ -167,6 +169,67 @@
     outline-offset: 3px;
 }
 
+.blocka__menu--competitive {
+    /* Compacta la selección para que el banco y Start entren juntos en el hero. */
+    width: min(1000px, 100%);
+    gap: clamp(10px, 2cqh, 18px);
+    padding: clamp(10px, 2cqh, 18px);
+    overflow: hidden;
+}
+
+.blocka__roulette-list {
+    /* Fuerza las seis miniaturas a compartir una fila horizontal. */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: clamp(8px, 1.2cqw, 16px);
+    width: min(900px, 100%);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style: none;
+}
+
+.blocka__roulette-item {
+    /* Define miniaturas cuadradas que pueden resaltarse sin desordenar la fila. */
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border: 2px solid var(--bk-line);
+    background: #fff;
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.blocka__roulette-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.blocka__roulette-item.is-active {
+    /* El resaltado avanza entre las imágenes y se detiene en la seleccionada. */
+    z-index: 1;
+    transform: scale(1.08);
+    border-color: var(--bk-accent);
+    box-shadow: 0 0 22px var(--bk-glow);
+}
+
+.blocka__roulette-item.is-selected {
+    outline: 3px solid var(--bk-accent-2);
+    outline-offset: 3px;
+}
+
+.blocka__draw-status {
+    /* Reserva espacio para que el estado del sorteo no mueva el botón Start. */
+    min-height: 1.4em;
+    margin: 0;
+    font-weight: 600;
+    text-align: center;
+}
+
 .blocka__image-picker {
     /* Mantiene las miniaturas ordenadas sin sumar otro bloque blanco al fondo. */
     display: grid;
@@ -181,11 +244,12 @@
 }
 
 .blocka__image-picker legend {
+    /* Deja el nombre del selector como texto; solo Free mode usa una placa negra. */
     margin: 0 auto 10px;
-    padding: 6px 12px;
-    border: 2px solid var(--bk-line);
-    background: #000;
-    color: #fff;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--bk-text);
     font-size: 0.9rem;
     font-weight: 600;
 }
@@ -203,17 +267,24 @@
 }
 
 .blocka__heading {
-    /* Franja negra con texto blanco, como el rótulo de la referencia. */
+    /* Presenta el título centrado en texto simple, manteniendo Radio Canada. */
     margin: 0;
-    padding: 8px 20px;
+    padding: 0;
+    color: var(--bk-text);
+    font-size: clamp(1.25rem, 3cqh, 1.8rem);
+    font-weight: 500;
+    letter-spacing: normal;
+    text-align: center;
+    text-transform: none;
+}
+
+.blocka__heading--boxed {
+    /* Resalta únicamente el título de Free mode como en el diseño de referencia. */
+    padding: 6px 12px;
+    border: 2px solid var(--bk-line);
     background: #000;
     color: #fff;
-    font-size: clamp(1rem, 2.4cqh, 1.5rem);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    text-align: center;
-    text-transform: lowercase;
-    opacity: 1;
+    font-weight: 700;
 }
 
 .blocka__filter-label {
@@ -242,11 +313,11 @@
 }
 
 .blocka__settings-row {
-    /* Los dos selectores juntos miden lo mismo que las tres miniaturas de arriba. */
+    /* Los dos selectores juntos se alinean con el ancho de las seis miniaturas. */
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
-    width: min(100%, calc(3 * var(--blocka-thumb-size) + 2 * var(--blocka-thumb-gap)));
+    width: min(100%, calc(6 * var(--blocka-thumb-size) + 5 * var(--blocka-thumb-gap)));
     margin-inline: auto;
 }
 
@@ -260,24 +331,8 @@
 }
 
 .blocka__setting > span {
-    /* Da a cada selector un rótulo propio, visible sobre las líneas del fondo. */
+    /* Mantiene los nombres de los selectores como rótulos de texto simples. */
     justify-self: start;
-    padding: 6px 10px;
-    border: 2px solid var(--bk-line);
-    background: #000;
-    color: #fff;
-}
-
-.blocka__hint {
-    /* Encierra la ayuda en una placa blanca con borde y sombra de la misma grilla. */
-    margin: 0;
-    padding: 8px 12px;
-    border: 2px solid var(--bk-line);
-    background: #fff;
-    color: var(--bk-text);
-    box-shadow: 4px 4px 0 var(--bk-line);
-    font-size: 0.8rem;
-    text-align: center;
 }
 
 .blocka__menu-actions {
@@ -285,6 +340,13 @@
     display: grid;
     grid-template-columns: repeat(2, max-content);
     gap: 12px;
+}
+
+.blocka__menu--setup .blocka__menu-actions,
+.blocka__menu--competitive .blocka__menu-actions {
+    /* Da el mismo ancho a Back y Start en los dos modos y evita agrandar solo Start. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: min(100%, 340px);
 }
 
 .blocka__thumb img {
@@ -345,9 +407,22 @@
     color: var(--bk-text);
 }
 
+#blockaBack,
+#blockaCompetitiveBack {
+    /* Mantiene Back con el mismo fondo claro que el resto de botones en reposo. */
+    background: var(--bk-surface);
+    color: var(--bk-text);
+}
+
+#blockaBack:hover:not(:disabled),
+#blockaCompetitiveBack:hover:not(:disabled) {
+    /* Muestra el color secundario solo mientras el cursor está sobre Back. */
+    background: var(--bk-accent-2);
+}
+
 /* ===== Tablero ===== */
 .blocka__timer {
-    /* La placa negra mantiene legible el cronómetro sobre la grilla clara. */
+    /* La placa negra mantiene legible el cronómetro sobre el fondo claro. */
     position: absolute;
     top: 18px;
     right: 18px;
@@ -375,6 +450,34 @@
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.05em;
+}
+
+.blocka__exit-button {
+    /* Mantiene la salida de ambos modos en la esquina inferior izquierda del juego. */
+    position: absolute;
+    bottom: 16px;
+    left: 18px;
+    padding: 8px 14px;
+    border: 2px solid var(--bk-line);
+    border-radius: 3px;
+    background: var(--bk-surface);
+    color: var(--bk-text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.blocka__exit-button:hover {
+    /* Usa el rosa secundario al señalar la acción de abandonar la partida. */
+    transform: translate(-2px, -2px);
+    background: var(--bk-accent-2);
+    box-shadow: 4px 4px 0 var(--bk-line);
+}
+
+.blocka__exit-button:focus-visible {
+    outline: 3px solid var(--bk-text);
+    outline-offset: 3px;
 }
 
 .blocka__help-button {
@@ -419,6 +522,31 @@
 .blocka__help-button:disabled {
     opacity: 0.5;
     cursor: default;
+}
+
+.blocka__piece-tip {
+    /* Mantiene la regla breve junto a la pieza señalada sin cubrir el tablero. */
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    gap: 3px;
+    max-width: 240px;
+    margin: 0;
+    padding: 8px 10px;
+    border: 2px solid var(--bk-line);
+    background: var(--bk-surface);
+    color: var(--bk-text);
+    box-shadow: 4px 4px 0 var(--bk-line);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.35;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.blocka__piece-tip[hidden] {
+    /* Asegura que el atributo hidden oculte el mensaje aunque tenga estilo propio. */
+    display: none;
 }
 
 .blocka__board {
@@ -508,10 +636,13 @@
 }
 
 .blocka__result-time {
+    /* Usa el violeta solicitado para dar contraste al nivel y al tiempo del resultado. */
     margin: 0;
     font-family: "Consolas", "Courier New", monospace;
     font-size: 1.25rem;
-    color: var(--bk-accent);
+    /* Resalta la línea con el nivel completado y el tiempo obtenido. */
+    font-weight: 700;
+    color: var(--bk-accent-2);
 }
 
 /* Últimos 10 segundos */
@@ -540,8 +671,8 @@
 
 @media (max-width: 640px) {
     .blocka__menu--setup {
-        /* Recalcula el mismo ancho compartido cuando las miniaturas se achican en móvil. */
-        --blocka-thumb-size: clamp(52px, min(17cqh, 24cqw), 105px);
+        /* Achica las seis miniaturas para mantenerlas en una sola fila en móvil. */
+        --blocka-thumb-size: clamp(36px, 13cqw, 64px);
         --blocka-thumb-gap: clamp(6px, 1.2cqh, 10px);
     }
 
@@ -549,12 +680,38 @@
         grid-template-columns: 1fr;
     }
 
+    .blocka__roulette-list {
+        /* Conserva la fila horizontal y las seis miniaturas dentro del ancho móvil. */
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 4px;
+        width: 100%;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .blocka__roulette-item {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .blocka__menu--competitive {
+        /* En móviles bajos se priorizan la fila de imágenes y el botón Start. */
+        gap: 8px;
+        padding: 8px 10px;
+    }
+
+    .blocka__menu--competitive .blocka__heading {
+        font-size: clamp(1rem, 4cqh, 1.25rem);
+    }
+
     .blocka__mode-card {
-        min-height: 110px;
+        min-height: 120px;
     }
 
     .blocka__settings-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .blocka__menu-actions {
@@ -567,7 +724,7 @@
     }
 
     .blocka__thumbs {
-        grid-template-columns: repeat(3, var(--blocka-thumb-size));
+        grid-template-columns: repeat(6, var(--blocka-thumb-size));
     }
 
 }

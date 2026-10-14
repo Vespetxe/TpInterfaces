@@ -17,7 +17,7 @@ function animateHomeLoader() {
     const progress = document.getElementById("homeLoaderProgress");
     const fill = document.getElementById("homeLoaderFill");
     const percentage = document.getElementById("homeLoaderPercent");
-    const duration = 5000;
+    const duration = 1500;
 
     if (!loader || !progress || !fill || !percentage) return Promise.resolve();
 

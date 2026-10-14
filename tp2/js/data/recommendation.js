@@ -46,8 +46,8 @@ const BLOCKA_GAME = {
     // Usa la segunda portada como fondo del hero detrás del botón Play.
     image: "assets/img/blocka-portada.png",
     fullImage: "assets/img/blocka-portada2.png",
-    // La galería usa las mismas versiones PNG que el banco del juego.
-    gallery: ["assets/img/blocka-1.png", "assets/img/blocka-2.png", "assets/img/blocka-3.png"],
+    // Muestra las cinco capturas de ejemplo nuevas en la galería del detalle.
+    gallery: Array.from({ length: 5 }, (_, index) => `assets/img/blocka-example${index + 1}.png`),
     likes: 0,
     rating: 4,
     type: "free",
@@ -58,11 +58,12 @@ const BLOCKA_GAME = {
         { q: "How do I rotate a piece?", a: "Left click turns it left, right click turns it right." },
         { q: "When does the timer start?", a: "When you press Play." }
     ],
-    // Controles que se muestran en el panel de instrucciones
+    // Instrucciones que aparecen al abrir el icono de ayuda del detalle de Blocka.
     controls: [
-        "Left click = rotate piece to the left",
-        "Right click = rotate piece to the right",
-        "Play = start the level and the timer"
+        "Choose an image, filter and number of pieces, then press Start.",
+        "Left click = rotate a piece to the left.",
+        "Right click = rotate a piece to the right.",
+        "Complete the image to finish the level. In Competitive mode, finish all three levels before time runs out."
     ]
 };
 
