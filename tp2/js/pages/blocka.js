@@ -365,8 +365,8 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         const gap = 6;
         const padding = 12;
         const availableWidth = root.clientWidth - 32;
-        // Reserva espacio arriba para que el tablero no quede debajo del cronómetro.
-        const availableHeight = root.clientHeight - 130;
+        // Reserva una franja superior suficiente para que el tablero no toque el cronómetro.
+        const availableHeight = root.clientHeight - 200;
         const widthBasedSize = (availableWidth - padding - gap * (columns - 1)) / columns;
         const heightBasedSize = (availableHeight - padding - gap) / rows;
         const displaySize = Math.max(1, Math.floor(Math.min(widthBasedSize, heightBasedSize)));
@@ -560,6 +560,8 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         const candidates = pieces.filter((piece) => !piece.locked && piece.rotation % 4 !== 0);
         if (candidates.length === 0) return;
 
+        // Limita la ayudita a un solo uso por partida.
+        helpButton.disabled = true;
         const piece = candidates[Math.floor(Math.random() * candidates.length)];
         piece.rotation = 0;
         piece.locked = true;
