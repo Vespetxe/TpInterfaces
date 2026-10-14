@@ -58,12 +58,9 @@ const BLOCKA_GAME = {
         { q: "How do I rotate a piece?", a: "Left click turns it left, right click turns it right." },
         { q: "When does the timer start?", a: "When you press Play." }
     ],
-    // Instrucciones que aparecen al abrir el icono de ayuda del detalle de Blocka.
+    // Resume el objetivo y los controles en una sola instrucción breve para el panel de ayuda.
     controls: [
-        "Choose an image, filter and number of pieces, then press Start.",
-        "Left click = rotate a piece to the left.",
-        "Right click = rotate a piece to the right.",
-        "Complete the image to finish the level. In Competitive mode, finish all three levels before time runs out."
+        "Reassemble the scrambled image by rotating its pieces: left-click turns left; right-click turns right."
     ]
 };
 

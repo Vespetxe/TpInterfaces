@@ -321,7 +321,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         <button type="button" class="blocka__help-button" id="blockaHint" aria-label="Fix one piece; adds five seconds to the clock">
             Hint <span>Fix one piece · +5 sec</span>
         </button>
-        ${mode === "free" ? `<p class="blocka__piece-tip" id="blockaPieceTip" role="status" hidden><span>Left-click: rotate left</span><span>Right-click: rotate right</span></p>` : ""}
+        <p class="blocka__piece-tip" id="blockaPieceTip" role="status" hidden><span>Left-click: rotate left</span><span>Right-click: rotate right</span></p>
         <div class="blocka__board" id="blockaBoard"></div>
         <div class="blocka__result" id="blockaResult" hidden></div>
     `;
@@ -380,7 +380,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
     // ===== Temporizador según el modo =====
     let finished = false;
     let penaltyMs = 0;
-    let freeModeMoves = 0;
+    let instructionMoves = 0;
     timerEl.textContent = formatTime(mode === "free" ? 0 : timeLimitMs);
 
     const timer = setInterval(() => {
@@ -510,11 +510,9 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
 
         const piece = pieces[canvas.dataset.index];
         if (piece.locked) return;
-        if (mode === "free") {
-            // Retira la ayuda después de la primera rotación hecha por el jugador.
-            freeModeMoves += 1;
-            if (freeModeMoves >= 1) pieceTip.hidden = true;
-        }
+        // Retira la ayuda después de la primera rotación hecha por el jugador.
+        instructionMoves += 1;
+        if (instructionMoves >= 1) pieceTip.hidden = true;
         piece.rotation += direction;
         canvas.style.transform = `rotate(${piece.rotation * 90}deg)`;
 
@@ -527,31 +525,29 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         rotatePiece(event, 1);
     });
 
-    if (mode === "free") {
-        // Muestra las reglas junto a la pieza hasta la primera rotación.
-        board.addEventListener("pointerover", (event) => {
-            const canvas = event.target.closest(".blocka__piece");
-            if (!canvas || freeModeMoves >= 1 || pieces[canvas.dataset.index].locked) return;
+    // Muestra las reglas junto a la pieza hasta la primera rotación en cualquiera de los modos.
+    board.addEventListener("pointerover", (event) => {
+        const canvas = event.target.closest(".blocka__piece");
+        if (!canvas || instructionMoves >= 1 || pieces[canvas.dataset.index].locked) return;
 
-            const pieceRect = canvas.getBoundingClientRect();
-            const rootRect = root.getBoundingClientRect();
-            const tipWidth = pieceTip.offsetWidth || 260;
-            const gap = 14;
-            const left = pieceRect.left - rootRect.left - tipWidth - gap >= 0
-                ? pieceRect.left - rootRect.left - tipWidth - gap
-                : pieceRect.right - rootRect.left + gap;
+        const pieceRect = canvas.getBoundingClientRect();
+        const rootRect = root.getBoundingClientRect();
+        const tipWidth = pieceTip.offsetWidth || 260;
+        const gap = 14;
+        const left = pieceRect.left - rootRect.left - tipWidth - gap >= 0
+            ? pieceRect.left - rootRect.left - tipWidth - gap
+            : pieceRect.right - rootRect.left + gap;
 
-            pieceTip.style.left = `${left}px`;
-            pieceTip.style.top = `${pieceRect.top - rootRect.top + pieceRect.height / 2}px`;
-            pieceTip.hidden = false;
-        });
+        pieceTip.style.left = `${left}px`;
+        pieceTip.style.top = `${pieceRect.top - rootRect.top + pieceRect.height / 2}px`;
+        pieceTip.hidden = false;
+    });
 
-        board.addEventListener("pointerout", (event) => {
-            if (event.target.closest(".blocka__piece") && freeModeMoves < 1) {
-                pieceTip.hidden = true;
-            }
-        });
-    }
+    board.addEventListener("pointerout", (event) => {
+        if (event.target.closest(".blocka__piece") && instructionMoves < 1) {
+            pieceTip.hidden = true;
+        }
+    });
 
     // Fija una pieza que sigue girada y aplica la penalización de cinco segundos.
     helpButton.addEventListener("click", () => {
