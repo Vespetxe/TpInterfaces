@@ -25,13 +25,18 @@ const BLOCKA_FILTERS = {
     negative: {
         label: "Negative",
         apply: (red, green, blue) => [255 - red, 255 - green, 255 - blue]
+    },
+    mixed: {
+        label: "Mixed (3 filters)",
+        // Alterna los tres filtros disponibles entre las piezas de la imagen.
+        filters: ["grayscale", "brightness", "negative"]
     }
 };
 // La dificultad competitiva crece con más piezas y menos tiempo disponible.
 const BLOCKA_LEVELS = [
     { pieceCount: 4, filter: "grayscale", timeLimitMs: 30000 },
     { pieceCount: 6, filter: "brightness", timeLimitMs: 20000 },
-    { pieceCount: 8, filter: "negative", timeLimitMs: 10000 }
+    { pieceCount: 8, filter: "mixed", timeLimitMs: 10000 }
 ];
 
 // ===== Inicio =====
@@ -279,13 +284,20 @@ function createFilteredImage(img, filterName, columns, rows) {
     context.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, outputWidth, outputHeight);
 
     const pixels = context.getImageData(0, 0, outputWidth, outputHeight);
-    const transform = BLOCKA_FILTERS[filterName]?.apply || BLOCKA_FILTERS.original.apply;
+    const filter = BLOCKA_FILTERS[filterName] || BLOCKA_FILTERS.original;
+    const mixedTransforms = filter.filters?.map((name) => BLOCKA_FILTERS[name].apply);
 
-    // Recorre la imagen por filas y columnas, igual que en los ejercicios de ImageData.
+    // Prepara todos los filtros durante el setup, antes de dividir la imagen en piezas.
     for (let y = 0; y < outputHeight; y++) {
         for (let x = 0; x < outputWidth; x++) {
             // Cada píxel ocupa cuatro posiciones consecutivas: R, G, B y A.
             const i = (x + y * outputWidth) * 4;
+            const pieceColumn = Math.floor(x / pieceSize);
+            const pieceRow = Math.floor(y / pieceSize);
+            const pieceIndex = pieceRow * columns + pieceColumn;
+            const transform = mixedTransforms
+                ? mixedTransforms[pieceIndex % mixedTransforms.length]
+                : filter.apply;
             const [red, green, blue] = transform(pixels.data[i], pixels.data[i + 1], pixels.data[i + 2]);
             pixels.data[i] = Math.max(0, Math.min(255, Math.round(red)));
             pixels.data[i + 1] = Math.max(0, Math.min(255, Math.round(green)));
