@@ -35,8 +35,9 @@ const BLOCKA_FILTERS = {
 // La dificultad competitiva crece con más piezas y menos tiempo disponible.
 const BLOCKA_LEVELS = [
     { pieceCount: 4, filter: "grayscale", timeLimitMs: 30000 },
-    { pieceCount: 6, filter: "brightness", timeLimitMs: 20000 },
-    { pieceCount: 8, filter: "mixed", timeLimitMs: 10000 }
+    // Escalona los tiempos para dar más margen al nivel intermedio y al último.
+    { pieceCount: 6, filter: "brightness", timeLimitMs: 25000 },
+    { pieceCount: 8, filter: "mixed", timeLimitMs: 15000 }
 ];
 
 // ===== Inicio =====
