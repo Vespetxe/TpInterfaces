@@ -46,8 +46,8 @@ const BLOCKA_GAME = {
     // Usa la segunda portada como fondo del hero detrás del botón Play.
     image: "assets/img/blocka-portada.png",
     fullImage: "assets/img/blocka-portada2.png",
-    // La galería usa las mismas versiones PNG que el banco del juego.
-    gallery: ["assets/img/blocka-1.png", "assets/img/blocka-2.png", "assets/img/blocka-3.png"],
+    // Muestra las cinco capturas de ejemplo nuevas en la galería del detalle.
+    gallery: Array.from({ length: 5 }, (_, index) => `assets/img/blocka-example${index + 1}.png`),
     likes: 0,
     rating: 4,
     type: "free",
@@ -58,11 +58,9 @@ const BLOCKA_GAME = {
         { q: "How do I rotate a piece?", a: "Left click turns it left, right click turns it right." },
         { q: "When does the timer start?", a: "When you press Play." }
     ],
-    // Controles que se muestran en el panel de instrucciones
+    // Resume el objetivo y los controles en una sola instrucción breve para el panel de ayuda.
     controls: [
-        "Left click = rotate piece to the left",
-        "Right click = rotate piece to the right",
-        "Play = start the level and the timer"
+        "Reassemble the scrambled image by rotating its pieces: left-click turns left; right-click turns right."
     ]
 };
 

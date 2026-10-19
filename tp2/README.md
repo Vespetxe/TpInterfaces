@@ -1,137 +1,31 @@
-# 🎮 Nexus Games
+# Nexus Games
 
-## Ejercicio Entregable Nº2 — Desarrollo de Interfaz de Usuario
+Nexus Games es una interfaz web para explorar videojuegos y acceder a sus páginas de detalle y ejecución. El proyecto se desarrolló con **HTML5, CSS3 y JavaScript**, con foco en el diseño visual, la navegación y las interacciones del usuario. No requiere un backend.
 
-### 📋 Descripción
+## Sobre el proyecto
 
-Este proyecto corresponde al **Ejercicio Entregable Nº2**, cuyo objetivo es continuar e implementar el trabajo realizado anteriormente mediante el desarrollo de una interfaz de usuario utilizando **HTML5, JavaScript y CSS3**.
+El sitio reúne las páginas principales de una plataforma de videojuegos: inicio de sesión y registro, página de inicio y detalle de cada juego. La Home permite descubrir títulos destacados; desde la página de un juego se puede consultar información, ver imágenes de ejemplo e iniciar su experiencia interactiva.
 
-Se deberán maquetar y diseñar en alta fidelidad las mismas páginas definidas en el trabajo anterior, implementando únicamente el frontend necesario para representar el flujo del sitio.
+El diseño contempla una experiencia adaptable para la página de inicio, además de animaciones de interfaz, estados hover y transiciones en galerías o carruseles. El contenido utiliza juegos e imágenes variadas para mostrar cómo responde la interfaz ante distintos títulos y estilos visuales.
 
-> **Nota:** No se requiere desarrollar el backend del sitio.
+## Videojuego Blocka
 
-### 🛠️ Tecnologías
+Blocka es un rompecabezas visual integrado en la página de detalle de un juego. El jugador recibe una imagen dividida en piezas rotadas y debe girarlas para reconstruirla. El clic izquierdo rota una pieza hacia la izquierda y el clic derecho hacia la derecha.
 
-* HTML5
-* CSS3
-* JavaScript
+El juego incluye una experiencia libre y un modo competitivo de varios niveles. Cada nivel presenta una imagen elegida al azar y puede aplicar filtros visuales diferentes a sus piezas. Los filtros se procesan durante la preparación del nivel, antes de comenzar a jugar. Al completar el rompecabezas se muestra la imagen original.
 
-> No se recomienda utilizar frameworks de JavaScript como Angular, React o Vue, ni frameworks de CSS como Bootstrap.
+## Requisitos principales
 
----
+- Permitir la navegación e interacción con las páginas principales del sitio.
+- Incluir animaciones de interfaz y estados hover en botones, además de una galería o carrusel con transiciones animadas.
+- Mostrar una carga simulada en la Home con porcentaje de avance e indicador animado, sin utilizar un GIF.
+- Usar contenido e imágenes variados, evitando textos genéricos o de relleno.
+- Diseñar la Home para dispositivos móviles y escritorio.
+- Incluir en Blocka instrucciones, imágenes representativas, un banco de al menos seis imágenes y un mínimo de tres niveles.
+- Incorporar filtros de escala de grises, brillo y negativo, procesados durante la preparación del nivel.
 
-## ✅ Requisitos
+## Funcionalidades adicionales de Blocka
 
-### 1. Interacción con las páginas
+El juego puede incluir una selección animada de imagen antes de cada nivel, opciones para jugar con 4, 6 u 8 piezas, una ayuda que ubica una pieza correctamente y límites de tiempo para aumentar la dificultad.
 
-El usuario deberá poder interactuar con las **3 páginas** descritas en el práctico anterior.
-
-Por ejemplo:
-
-* **Home:** revisar los juegos destacados y acceder a la página de ejecución de un juego, como *Peg Solitaire*.
-* **Login / Registro:** aplicar animaciones en caso de registro correcto.
-
-### 2. Animaciones Hover
-
-Los botones deberán incluir animaciones `hover`.
-
-* Se deberán implementar **al menos 3 animaciones diferentes**.
-
-### 3. Loading de la Home
-
-Al cargar la Home deberá ejecutarse siempre un **loading simulado de 5 segundos**.
-
-El loading deberá:
-
-* No utilizar un GIF.
-* Mostrar un **porcentaje de avance**.
-* Incluir una **animación de carga**, como un cuadrado, círculo o spinner.
-
-### 4. Galería / Carrusel animado
-
-El sitio deberá contener al menos **una galería o carrusel de imágenes animada**.
-
-La transición entre las imágenes deberá contar con animaciones.
-
-> No debe limitarse únicamente al desplazamiento de las imágenes, sino que deberá incluir transiciones animadas.
-
-Puede implementarse, por ejemplo, en la página de descripción de un juego.
-
-### 5. Contenido
-
-Los datos mostrados no deberán ser genéricos ni utilizar **Lorem Ipsum**.
-
-Se deberá:
-
-* Utilizar imágenes diferentes para cada juego mostrado.
-* Utilizar títulos de juegos reales.
-* Utilizar títulos de diferentes longitudes para comprobar su adaptación al diseño.
-* Utilizar imágenes de diferentes colores y variedades para comprobar cómo se adapta el diseño a distintas opciones.
-
-#### ⭐ Plus
-
-Utilizar la API propuesta por la cátedra para obtener datos y utilizarlos en el sitio.
-
-**API:** https://github.com/jimartinezabadias/api-vj-interfaces
-
----
-
-## 📱 Diseño Mobile First
-
-Se deberá desarrollar el sitio siguiendo un enfoque **Mobile First**.
-
-### Home
-
-La Home deberá estar desarrollada para:
-
-* 📱 Mobile
-* 🖥️ Desktop
-
-### Resto de las páginas
-
-El resto de las páginas deberán desarrollarse para:
-
-* 🖥️ Desktop
-
----
-
-## 📂 Cómo está organizado el código
-
-Las páginas HTML se mantienen en la raíz de `tp2` para que sus enlaces entre sí sean directos:
-
-* `index.html`: acceso y registro.
-* `home.html`: portada, destacados, carruseles y carrito.
-* `game.html`: detalle y ejecución del juego.
-
-### Estilos (`css/`)
-
-* `base/`: variables de diseño, fuentes y reglas globales.
-  * `base/variables.css`: colores, fuentes y medidas globales.
-  * `base/base.css`: reglas comunes de página y botones.
-* `components/`: estilos compartidos de la interfaz.
-  * `components/components.css`: botones de acceso y redes sociales.
-  * `components/cards.css`: cards normales y carruseles horizontales.
-  * `components/hero-carousel.css`: cards destacadas grandes.
-  * `components/header.css`: header, menú hamburguesa y perfil.
-  * `components/fatfooter.css`: footer compartido.
-* `pages/`: estilos específicos de cada pantalla: `login.css`, `home.css` y `game.css`.
-
-### JavaScript (`js/`)
-
-* `data/`: consulta a la API (`api.js`) y datos de categorías (`categories.js`) y del juego destacado (`recommendation.js`).
-* `components/`: funciones reutilizables: `layout.js` inserta los partials; `nav.js` controla los menús; `cards.js`, `carousel.js` y `hero-carousel.js` construyen las cards y carruseles.
-* `pages/`: comportamiento propio de cada pantalla: `login.js`, `home.js` y `game-detail.js`.
-
-### Recursos compartidos
-
-* `partials/`: HTML reutilizable del header y footer, insertado por `js/components/layout.js`.
-* `assets/`: imágenes y tipografías utilizadas por el sitio.
-* `api-vj-interfaces-main/`: carpeta entregada por la cátedra; se conserva separada del código de la interfaz.
-
-### Orden recomendado para estudiar la Home
-
-1. `home.html` muestra la estructura y el orden de carga.
-2. `js/data/api.js` transforma los datos de la API al formato de las cards.
-3. `js/components/cards.js` construye cada card y `carousel.js` / `hero-carousel.js` las organizan.
-4. `js/pages/home.js` coordina la carga, los carruseles y el carrito.
-5. En `css/`, empezar por `base/variables.css`, seguir con `components/` y terminar con `pages/home.css`.
+Las animaciones pueden realizarse con CSS y `@keyframes`; no se utilizan spritesheets. El menú hamburguesa no se considera uno de los botones para contabilizar animaciones hover.

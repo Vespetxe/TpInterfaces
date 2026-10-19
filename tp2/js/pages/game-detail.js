@@ -125,19 +125,17 @@ function escapeDetailText(value = "") {
                 <button type="button" class="game-instructions-toggle" id="gameInstructionsToggle" aria-label="Game instructions" aria-controls="gameInstructions" aria-expanded="false" title="Game instructions">${ICON_INSTRUCTIONS}</button>
                 <button type="button" aria-label="Fullscreen" id="fullscreenBtn" title="Fullscreen">${ICON_FULLSCREEN}</button>
             </div>
-            <!-- Desplegable con los controles del juego, con el mismo panel oscuro que los menús del sitio. -->
+            <!-- Panel único para mostrar las instrucciones del juego al activar el icono. -->
             <div class="game-instructions" id="gameInstructions" role="region" aria-label="Game instructions" hidden>
-                <div class="game-instructions" id="gameInstructions" role="region" aria-label="Game instructions" hidden>
-                    ${(game.controls || [
-                        "Arrow keys = move selector across the board",
-                        "Enter / Spacebar = select a clone",
-                        "Arrow keys (again) = choose jump direction",
-                        "Backspace = undo last move",
-                        "R = restart board",
-                        "Tab = pause",
-                        "Esc = exit to Home"
-                    ]).map((line) => `<p>${line}</p>`).join("")}
-                </div>
+                ${(game.controls || [
+                    "Arrow keys = move selector across the board",
+                    "Enter / Spacebar = select a clone",
+                    "Arrow keys (again) = choose jump direction",
+                    "Backspace = undo last move",
+                    "R = restart board",
+                    "Tab = pause",
+                    "Esc = exit to Home"
+                ]).map((line) => `<p>${line}</p>`).join("")}
             </div>
         </div>
         <section class="game-gallery">

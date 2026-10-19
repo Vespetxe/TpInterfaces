@@ -25,15 +25,20 @@ const BLOCKA_FILTERS = {
     negative: {
         label: "Negative",
         apply: (red, green, blue) => [255 - red, 255 - green, 255 - blue]
+    },
+    mixed: {
+        label: "Mixed (3 filters)",
+        // Alterna los tres filtros disponibles entre las piezas de la imagen.
+        filters: ["grayscale", "brightness", "negative"]
     }
 };
 
 // La dificultad competitiva crece con más piezas y menos tiempo disponible.
 const BLOCKA_LEVELS = [
     { pieceCount: 4, filter: "grayscale", timeLimitMs: 30000 },
-    { pieceCount: 6, filter: "brightness", timeLimitMs: 20000 },
-    { pieceCount: 8, filter: "negative", timeLimitMs: 10000 }
-
+    // Escalona los tiempos para dar más margen al nivel intermedio y al último.
+    { pieceCount: 6, filter: "brightness", timeLimitMs: 25000 },
+    { pieceCount: 8, filter: "mixed", timeLimitMs: 15000 }
 ];
 
 // ===== Inicio =====
@@ -70,30 +75,87 @@ function showModeMenu(root) {
     root.querySelector("#blockaCompetitiveMode").addEventListener("click", () => startCompetitiveLevel(root, 0));
 }
 
-// Inicia el nivel indicado y evita repetir la imagen del nivel competitivo anterior.
+// Presenta el sorteo de imágenes para el nivel competitivo seleccionado.
 function startCompetitiveLevel(root, levelIndex, previousImageIndex = -1) {
     const level = BLOCKA_LEVELS[levelIndex];
     const availableImages = BLOCKA_IMAGES
         .map((src, imageIndex) => ({ src, imageIndex }))
         .filter((image) => image.imageIndex !== previousImageIndex);
-    const selectedImage = availableImages[Math.floor(Math.random() * availableImages.length)];
 
-    // Reemplaza la pantalla anterior enseguida y evita iniciar el mismo nivel varias veces.
+    // Muestra todas las imágenes en una fila antes de sortear una para el nivel.
     root.innerHTML = `
-        <div class="blocka__menu">
-            <!-- Conserva el logo visible mientras se prepara cada nivel competitivo. -->
-            <div class="blocka__logo"><img src="assets/img/blocka-logo.png" alt="Blocka"></div>
-            <h2 class="blocka__heading">Preparing level ${levelIndex + 1}…</h2>
+        <div class="blocka__menu blocka__menu--competitive">
+            <!-- Identifica el modo con la misma placa que Free mode y conserva el nivel actual. -->
+            <h2 class="blocka__heading blocka__heading--boxed">Competitive Mode</h2>
+            <h2 class="blocka__heading">Level ${levelIndex + 1}</h2>
+            <ul class="blocka__roulette-list" aria-label="Images available for this level">
+                ${BLOCKA_IMAGES.map((src, imageIndex) => `
+                    <li class="blocka__roulette-item" data-image-index="${imageIndex}">
+                        <img src="${src}" alt="Available puzzle image ${imageIndex + 1}">
+                    </li>
+                `).join("")}
+            </ul>
+            <p class="blocka__draw-status" id="blockaDrawStatus" role="status" aria-live="polite">Press Start to draw an image.</p>
+            <div class="blocka__menu-actions">
+                <button type="button" class="blocka__btn blocka__btn--secondary" id="blockaCompetitiveBack">Back</button>
+                <button type="button" class="blocka__btn" id="blockaDrawStart">Start</button>
+            </div>
         </div>
     `;
 
-    startLevel(root, selectedImage.src, level.filter, performance.now(), {
-        mode: "competitive",
-        levelIndex,
-        pieceCount: level.pieceCount,
-        timeLimitMs: level.timeLimitMs,
-        imageSrc: selectedImage.src,
-        imageIndex: selectedImage.imageIndex
+    const startButton = root.querySelector("#blockaDrawStart");
+    const backButton = root.querySelector("#blockaCompetitiveBack");
+    const status = root.querySelector("#blockaDrawStatus");
+    const imageTiles = [...root.querySelectorAll(".blocka__roulette-item")];
+
+    // Vuelve al selector de modos antes de iniciar el sorteo del nivel.
+    backButton.addEventListener("click", () => showModeMenu(root));
+
+    startButton.addEventListener("click", () => {
+        // Elige una imagen al azar sin repetir la del nivel competitivo anterior.
+        const selectedImage = availableImages[Math.floor(Math.random() * availableImages.length)];
+        // Respeta la preferencia de movimiento reducido y hace el sorteo sin recorrido animado.
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const route = reduceMotion
+            ? [selectedImage.imageIndex]
+            : Array.from({ length: 18 }, (_, step) => step % BLOCKA_IMAGES.length);
+        let nextImageIndex = route[route.length - 1];
+        while (nextImageIndex !== selectedImage.imageIndex) {
+            nextImageIndex = (nextImageIndex + 1) % BLOCKA_IMAGES.length;
+            route.push(nextImageIndex);
+        }
+
+        startButton.disabled = true;
+        backButton.disabled = true;
+        status.textContent = "Choosing an image…";
+
+        // Recorre visualmente las miniaturas y va ralentizando hasta mostrar la elegida.
+        const showSelection = (step = 0) => {
+            imageTiles.forEach((tile) => tile.classList.remove("is-active", "is-selected"));
+            const activeTile = imageTiles[route[step]];
+            activeTile.classList.add("is-active");
+
+            if (step === route.length - 1) {
+                activeTile.classList.add("is-selected");
+                status.textContent = `Image ${selectedImage.imageIndex + 1} selected`;
+                window.setTimeout(() => {
+                    // Arranca el reloj después del sorteo y carga el nivel con su imagen elegida.
+                    startLevel(root, selectedImage.src, level.filter, performance.now(), {
+                        mode: "competitive",
+                        levelIndex,
+                        pieceCount: level.pieceCount,
+                        timeLimitMs: level.timeLimitMs,
+                        imageSrc: selectedImage.src,
+                        imageIndex: selectedImage.imageIndex
+                    });
+                }, 500);
+                return;
+            }
+
+            window.setTimeout(() => showSelection(step + 1), 55 + step * 13);
+        };
+
+        showSelection();
     });
 }
 
@@ -103,7 +165,7 @@ function showFreeSetup(root) {
     root.innerHTML = `
         <div class="blocka__menu blocka__menu--setup">
             <!-- En Free mode se omite el logo para dar más espacio a la configuración. -->
-            <h2 class="blocka__heading">Free mode</h2>
+            <h2 class="blocka__heading blocka__heading--boxed">Free mode</h2>
             <fieldset class="blocka__image-picker">
                 <legend>Choose an image</legend>
                 <ul class="blocka__thumbs">
@@ -136,7 +198,7 @@ function showFreeSetup(root) {
                     </select>
                 </label>
             </div>
-            <p class="blocka__hint">Left click rotates left · Right click rotates right · No time limit</p>
+            <!-- Mantiene el selector despejado; las instrucciones se muestran durante el juego. -->
             <div class="blocka__menu-actions">
                 <button type="button" class="blocka__btn blocka__btn--secondary" id="blockaBack">Back</button>
                 <button type="button" class="blocka__btn" id="blockaStart">Start</button>
@@ -218,13 +280,20 @@ function createFilteredImage(img, filterName, columns, rows) {
     context.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, outputWidth, outputHeight);
 
     const pixels = context.getImageData(0, 0, outputWidth, outputHeight);
-    const transform = BLOCKA_FILTERS[filterName]?.apply || BLOCKA_FILTERS.original.apply;
+    const filter = BLOCKA_FILTERS[filterName] || BLOCKA_FILTERS.original;
+    const mixedTransforms = filter.filters?.map((name) => BLOCKA_FILTERS[name].apply);
 
-    // Recorre la imagen por filas y columnas, igual que en los ejercicios de ImageData.
+    // Prepara todos los filtros durante el setup, antes de dividir la imagen en piezas.
     for (let y = 0; y < outputHeight; y++) {
         for (let x = 0; x < outputWidth; x++) {
             // Cada píxel ocupa cuatro posiciones consecutivas: R, G, B y A.
             const i = (x + y * outputWidth) * 4;
+            const pieceColumn = Math.floor(x / pieceSize);
+            const pieceRow = Math.floor(y / pieceSize);
+            const pieceIndex = pieceRow * columns + pieceColumn;
+            const transform = mixedTransforms
+                ? mixedTransforms[pieceIndex % mixedTransforms.length]
+                : filter.apply;
             const [red, green, blue] = transform(pixels.data[i], pixels.data[i + 1], pixels.data[i + 2]);
             pixels.data[i] = Math.max(0, Math.min(255, Math.round(red)));
             pixels.data[i + 1] = Math.max(0, Math.min(255, Math.round(green)));
@@ -254,11 +323,13 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
     const columns = pieceCount / 2;
     const rows = 2;
     root.innerHTML = `
+        <button type="button" class="blocka__exit-button" id="blockaExitGame">Exit game</button>
         ${mode === "competitive" ? `<span class="blocka__level-label">Level ${levelIndex + 1} / ${BLOCKA_LEVELS.length}</span>` : ""}
         <span class="blocka__timer" id="blockaTimer" role="timer" aria-live="off">00:00</span>
         <button type="button" class="blocka__help-button" id="blockaHint" aria-label="Fix one piece; adds five seconds to the clock">
             Hint <span>Fix one piece · +5 sec</span>
         </button>
+        <p class="blocka__piece-tip" id="blockaPieceTip" role="status" hidden><span>Left-click: rotate left</span><span>Right-click: rotate right</span></p>
         <div class="blocka__board" id="blockaBoard"></div>
         <div class="blocka__result" id="blockaResult" hidden></div>
     `;
@@ -266,6 +337,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
     const board = root.querySelector("#blockaBoard");
     const timerEl = root.querySelector("#blockaTimer");
     const helpButton = root.querySelector("#blockaHint");
+    const pieceTip = root.querySelector("#blockaPieceTip");
     const resultEl = root.querySelector("#blockaResult");
 
     const filteredImage = createFilteredImage(img, filterName, columns, rows);
@@ -301,8 +373,8 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         const gap = 6;
         const padding = 12;
         const availableWidth = root.clientWidth - 32;
-        // Reserva espacio arriba para que el tablero no quede debajo del cronómetro.
-        const availableHeight = root.clientHeight - 130;
+        // Reserva una franja superior suficiente para que el tablero no toque el cronómetro.
+        const availableHeight = root.clientHeight - 200;
         const widthBasedSize = (availableWidth - padding - gap * (columns - 1)) / columns;
         const heightBasedSize = (availableHeight - padding - gap) / rows;
         const displaySize = Math.max(1, Math.floor(Math.min(widthBasedSize, heightBasedSize)));
@@ -316,6 +388,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
     // ===== Temporizador según el modo =====
     let finished = false;
     let penaltyMs = 0;
+    let instructionMoves = 0;
     timerEl.textContent = formatTime(mode === "free" ? 0 : timeLimitMs);
 
     const timer = setInterval(() => {
@@ -339,6 +412,13 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         // En los últimos 10 segundos el contador se marca en alerta
         timerEl.classList.toggle("is-low", remaining <= 10000);
     }, 200);
+
+    // Sale de cualquier modo, detiene sus recursos y vuelve al menú principal de Blocka.
+    root.querySelector("#blockaExitGame").addEventListener("click", () => {
+        clearInterval(timer);
+        boardResizeObserver.disconnect();
+        showModeMenu(root);
+    });
 
     // ===== Resultado =====
     // Presenta acciones distintas según se haya ganado o perdido el nivel.
@@ -437,6 +517,9 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
 
         const piece = pieces[canvas.dataset.index];
         if (piece.locked) return;
+        // Retira la ayuda después de la primera rotación hecha por el jugador.
+        instructionMoves += 1;
+        if (instructionMoves >= 1) pieceTip.hidden = true;
         piece.rotation += direction;
         canvas.style.transform = `rotate(${piece.rotation * 90}deg)`;
 
@@ -449,6 +532,30 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         rotatePiece(event, 1);
     });
 
+    // Muestra las reglas junto a la pieza hasta la primera rotación en cualquiera de los modos.
+    board.addEventListener("pointerover", (event) => {
+        const canvas = event.target.closest(".blocka__piece");
+        if (!canvas || instructionMoves >= 1 || pieces[canvas.dataset.index].locked) return;
+
+        const pieceRect = canvas.getBoundingClientRect();
+        const rootRect = root.getBoundingClientRect();
+        const tipWidth = pieceTip.offsetWidth || 260;
+        const gap = 14;
+        const left = pieceRect.left - rootRect.left - tipWidth - gap >= 0
+            ? pieceRect.left - rootRect.left - tipWidth - gap
+            : pieceRect.right - rootRect.left + gap;
+
+        pieceTip.style.left = `${left}px`;
+        pieceTip.style.top = `${pieceRect.top - rootRect.top + pieceRect.height / 2}px`;
+        pieceTip.hidden = false;
+    });
+
+    board.addEventListener("pointerout", (event) => {
+        if (event.target.closest(".blocka__piece") && instructionMoves < 1) {
+            pieceTip.hidden = true;
+        }
+    });
+
     // Fija una pieza que sigue girada y aplica la penalización de cinco segundos.
     helpButton.addEventListener("click", () => {
         if (finished) return;
@@ -456,6 +563,8 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         const candidates = pieces.filter((piece) => !piece.locked && piece.rotation % 4 !== 0);
         if (candidates.length === 0) return;
 
+        // Limita la ayudita a un solo uso por partida.
+        helpButton.disabled = true;
         const piece = candidates[Math.floor(Math.random() * candidates.length)];
         piece.rotation = 0;
         piece.locked = true;
