@@ -35,7 +35,7 @@ const BLOCKA_FILTERS = {
         // Alterna los tres filtros disponibles entre las piezas de la imagen.
         filters: ["grayscale", "brightness", "negative"]
     },
-    /*sepia: {
+    sepia: {
         label: "Sepia",
         // Tonos marrones y rojizos, parecidos a una fotografía antigua.
         apply: (r, g, b, alpha) => [
@@ -44,8 +44,8 @@ const BLOCKA_FILTERS = {
             0.272 * r + 0.534 * g + 0.131 * b,
             alpha
         ]
-    }*/
-    /*contrast: {
+    },
+    contrast: {
         label: "High contrast",
         // Contraste más marcado
         apply: (r, g, b, alpha) => [
@@ -54,9 +54,9 @@ const BLOCKA_FILTERS = {
             (b - 128) * 1.5 + 128,
             alpha
         ]
-    },*/
+    },
 
-    /*posterize: {
+    posterize: {
         label: "Posterize",
         // Pocos tonos de color, como un póster
         apply: (r, g, b, alpha) => [
@@ -65,9 +65,9 @@ const BLOCKA_FILTERS = {
             Math.round(b / 85) * 85,
             alpha
         ]
-    },*/
+    },
 
-    /*threshold: {
+    black_and_white: {
         label: "Black and white",
         // Blanco y negro puro, sin grises intermedios
         apply: (r, g, b, alpha) => {
@@ -75,11 +75,16 @@ const BLOCKA_FILTERS = {
             const value = gray >= 128 ? 255 : 0;
             return [value, value, value, alpha];
         }
-    }*/
+    },
     opacity: {
         label: "50% opacity",
         apply: (r, g, b, alpha) => [r, g, b, alpha * 0.5]
-    }
+    },
+    blur: {
+        label: "Blur",
+        type: "canvas",
+        amount: 3
+}
 };
 
 // Cada objeto configura un nivel competitivo. El tiempo se expresa en milisegundos.
@@ -88,9 +93,9 @@ const BLOCKA_LEVELS = [
     // Cada campo enlaza la cantidad de piezas, la clave de filtro y el límite de tiempo.
     { pieceCount: 4, filter: "grayscale", timeLimitMs: 30000 },
     // Escalona los tiempos para dar más margen al nivel intermedio y al último.
-    { pieceCount: 6, filter: "brightness", timeLimitMs: 25000 },
+    { pieceCount: 9, filter: "brightness", timeLimitMs: 25000 },
     /*{ pieceCount: 6, filter: "sepia", timeLimitMs: 20000 },*/
-    { pieceCount: 8, filter: "mixed", timeLimitMs: 15000 }
+    { pieceCount: 16, filter: "mixed", timeLimitMs: 15000 }
 ];
 
 // ===== Arranque y navegación entre pantallas =====
@@ -251,8 +256,8 @@ function showFreeSetup(root) {
                     <span>Number of pieces</span>
                     <select class="blocka__filter-select" id="blockaPieceCount">
                         <option value="4">4 pieces</option>
-                        <option value="6">6 pieces</option>
-                        <option value="8">8 pieces</option>
+                        <option value="9">9 pieces</option>
+                        <option value="16">16 pieces</option>
                     </select>
                 </label>
             </div>
@@ -343,39 +348,56 @@ function createFilteredImage(img, filterName, columns, rows) {
     if (!context) throw new Error("Canvas 2D context is unavailable");
 
     // Dibuja el recorte centrado en un canvas temporal para poder leer sus píxeles.
-    context.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, outputWidth, outputHeight);
-
-    // getImageData entrega un arreglo plano con los canales RGBA de cada píxel.
-    const pixels = context.getImageData(0, 0, outputWidth, outputHeight);
-    // Si se recibe una clave desconocida, aplica el original para evitar que falle el nivel.
     const filter = BLOCKA_FILTERS[filterName] || BLOCKA_FILTERS.original;
-    const mixedTransforms = filter.filters?.map((name) => BLOCKA_FILTERS[name].apply);
+    const isCanvasFilter = filter.type === "canvas";
 
-    // Prepara todos los filtros durante el setup, antes de dividir la imagen en piezas.
-    for (let y = 0; y < outputHeight; y++) {
-        for (let x = 0; x < outputWidth; x++) {
-            // Cada píxel ocupa cuatro posiciones consecutivas: R, G, B y A.
-            const i = (x + y * outputWidth) * 4;
-            // Averigua qué pieza contiene el píxel; esto permite asignar filtros distintos.
-            const pieceColumn = Math.floor(x / pieceSize);
-            const pieceRow = Math.floor(y / pieceSize);
-            const pieceIndex = pieceRow * columns + pieceColumn;
-            // El filtro mixed alterna grayscale, brightness y negative por pieza.
-            const transform = mixedTransforms
-                ? mixedTransforms[pieceIndex % mixedTransforms.length]
-                : filter.apply;
-            const [red, green, blue, alpha] = transform(pixels.data[i], pixels.data[i + 1], pixels.data[i + 2], pixels.data[i + 3]);
+    // Aplica blur durante el dibujo, antes de dividir la imagen en piezas.
+    context.filter = isCanvasFilter
+        ? `blur(${filter.amount}px)`
+        : "none";
 
-            pixels.data[i] = Math.max(0, Math.min(255, Math.round(red)));
-            pixels.data[i + 1] = Math.max(0, Math.min(255, Math.round(green)));
-            pixels.data[i + 2] = Math.max(0, Math.min(255, Math.round(blue)));
-            pixels.data[i + 3] = Math.max(0, Math.min(255, Math.round(alpha)));
-            // El canal alfa (i + 3) se conserva para mantener la transparencia original.
+    context.drawImage(
+        img,
+        sourceX, sourceY, sourceWidth, sourceHeight,
+        0, 0, outputWidth, outputHeight
+    );
+
+    context.filter = "none";
+
+    if (!isCanvasFilter) {
+        const pixels = context.getImageData(0, 0, outputWidth, outputHeight);
+        const mixedTransforms = filter.filters?.map(
+            (name) => BLOCKA_FILTERS[name].apply
+        );
+
+        for (let y = 0; y < outputHeight; y++) {
+            for (let x = 0; x < outputWidth; x++) {
+                const i = (x + y * outputWidth) * 4;
+                const pieceColumn = Math.floor(x / pieceSize);
+                const pieceRow = Math.floor(y / pieceSize);
+                const pieceIndex = pieceRow * columns + pieceColumn;
+
+                const transform = mixedTransforms
+                    ? mixedTransforms[pieceIndex % mixedTransforms.length]
+                    : filter.apply;
+
+                const [red, green, blue, alpha] = transform(
+                    pixels.data[i],
+                    pixels.data[i + 1],
+                    pixels.data[i + 2],
+                    pixels.data[i + 3]
+                );
+
+                pixels.data[i] = Math.max(0, Math.min(255, Math.round(red)));
+                pixels.data[i + 1] = Math.max(0, Math.min(255, Math.round(green)));
+                pixels.data[i + 2] = Math.max(0, Math.min(255, Math.round(blue)));
+                pixels.data[i + 3] = Math.max(0, Math.min(255, Math.round(alpha)));
+            }
         }
+
+        context.putImageData(pixels, 0, 0);
     }
 
-    // Escribe los canales modificados al canvas temporal que luego se cortará en piezas.
-    context.putImageData(pixels, 0, 0);
     return { canvas, sourceX, sourceY, sourceWidth, sourceHeight, pieceSize, columns, rows };
 }
 
@@ -395,9 +417,23 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
     const pieceCount = options.pieceCount || 4;
     const timeLimitMs = options.timeLimitMs || BLOCKA_LEVELS[0].timeLimitMs;
     const levelIndex = options.levelIndex || 0;
-    // La grilla usa dos filas; 4, 6 y 8 piezas producen 2, 3 y 4 columnas.
-    const columns = pieceCount / 2;
-    const rows = 2;
+    //La grilla usa dos filas; 4, 6 y 8 piezas producen 2, 3 y 4 columnas.
+    
+    //para que sea siempre un cuadrado perfecto (antes cambiar a 4 , 9 y 16 en levels):
+    const side = Math.sqrt(pieceCount);
+
+    if (!Number.isInteger(side)) { // aunque nunca va a entrar porque los valores los ingresamos nosotros arriba en el codigo
+        const side = Math.ceil(Math.sqrt(pieceCount));
+        const columns = side;
+        const rows = side;
+        const pieceCount = columns * rows;
+    }
+
+    const columns = side;
+    const rows = side;
+    
+    
+
     // Monta en el hero el marcador, los controles y el tablero vacío.
     root.innerHTML = `
         <button type="button" class="blocka__exit-button" id="blockaExitGame">Exit game</button>
@@ -433,7 +469,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
         canvas.width = pieceSize;
         canvas.height = pieceSize;
         canvas.className = "blocka__piece";
-        // Dibuja solo el cuarto de imagen que le corresponde a esta pieza
+        // Dibuja solo el espacio de imagen que le corresponde a esta pieza
         // drawImage copia el cuadrado de la fila y columna correspondientes a esta pieza.
         canvas.getContext("2d").drawImage(filteredImage.canvas, col * pieceSize, row * pieceSize, pieceSize, pieceSize, 0, 0, pieceSize, pieceSize);
 
