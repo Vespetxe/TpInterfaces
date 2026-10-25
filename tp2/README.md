@@ -1,4 +1,4 @@
-# Nexus Games
+# Nexus Games link: https://vespetxe.github.io/TpInterfaces/tp2/
 
 Nexus Games es una interfaz web para explorar videojuegos y acceder a sus páginas de detalle y ejecución. El proyecto se desarrolló con **HTML5, CSS3 y JavaScript**, con foco en el diseño visual, la navegación y las interacciones del usuario. No requiere un backend.
 
