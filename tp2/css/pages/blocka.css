@@ -503,7 +503,7 @@
 }
 
 .blocka__help-button span {
-    color: var(--bk-accent);
+    color: black;
     font-size: 0.8rem;
 }
 
@@ -512,6 +512,7 @@
     transform: translateX(-50%) translateY(-2px);
     background: var(--bk-accent);
     box-shadow: 5px 5px 0 var(--bk-line);
+    
 }
 
 .blocka__help-button:focus-visible {
