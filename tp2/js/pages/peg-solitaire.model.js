@@ -1,0 +1,195 @@
+// ===== Model de Peg Solitaire =====
+// Guarda el tablero y aplica las reglas. No dibuja ni recibe eventos del mouse.
+
+const PEG_DIRECTIONS = [
+    { row: -1, col: 0 }, // arriba
+    { row: 1, col: 0 },  // abajo
+    { row: 0, col: -1 }, // izquierda
+    { row: 0, col: 1 }   // derecha
+];
+
+class PegSolitaireModel {
+    // Crea el tablero clásico. Las esquinas no forman parte de la cruz.
+    constructor(options) {
+        options = options || {};
+        this.size = 7;
+        this.goalPegCount = options.goalPegCount || 1;
+        this.cells = [];
+
+        // Arma una lista de las 33 casillas válidas usando dos bucles.
+        for (let row = 0; row < this.size; row++) {
+            for (let col = 0; col < this.size; col++) {
+                if ((row >= 2 && row <= 4) || (col >= 2 && col <= 4)) {
+                    this.cells.push({ row: row, col: col });
+                }
+            }
+        }
+
+        // Si se reciben fichas, guarda esa posición; si no, ocupa todo menos el centro.
+        this.initialPegs = [];
+        if (options.occupied) {
+            for (let i = 0; i < options.occupied.length; i++) {
+                this.initialPegs.push({
+                    row: options.occupied[i].row,
+                    col: options.occupied[i].col
+                });
+            }
+        } else {
+            for (let j = 0; j < this.cells.length; j++) {
+                const cell = this.cells[j];
+                if (cell.row !== 3 || cell.col !== 3) {
+                    this.initialPegs.push({ row: cell.row, col: cell.col });
+                }
+            }
+        }
+
+        this.reset();
+    }
+
+    // Comprueba si una posición pertenece a la cruz.
+    isValidCell(row, col) {
+        if (row < 0 || row >= this.size || col < 0 || col >= this.size) return false;
+        for (let i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].row === row && this.cells[i].col === col) return true;
+        }
+        return false;
+    }
+
+    // Indica si hay una ficha en la posición indicada.
+    hasPeg(row, col) {
+        for (let i = 0; i < this.pegs.length; i++) {
+            if (this.pegs[i].row === row && this.pegs[i].col === col) return true;
+        }
+        return false;
+    }
+
+    // Devuelve una copia del estado para que la View pueda dibujar el tablero.
+    getState() {
+        const stateCells = [];
+        for (let i = 0; i < this.cells.length; i++) {
+            const cell = this.cells[i];
+            stateCells.push({
+                row: cell.row,
+                col: cell.col,
+                occupied: this.hasPeg(cell.row, cell.col)
+            });
+        }
+        return {
+            cells: stateCells,
+            pegCount: this.pegs.length,
+            status: this.status
+        };
+    }
+
+    // Vuelve a colocar las fichas en su posición inicial.
+    reset() {
+        this.pegs = [];
+        for (let i = 0; i < this.initialPegs.length; i++) {
+            this.pegs.push({
+                row: this.initialPegs[i].row,
+                col: this.initialPegs[i].col
+            });
+        }
+
+        this.status = "playing";
+        if (this.pegs.length <= this.goalPegCount) {
+            this.status = "won";
+        } else if (this.getLegalMoves().length === 0) {
+            this.status = "lost";
+        }
+        return this.getState();
+    }
+
+    // Busca saltos posibles probando las cuatro direcciones desde cada ficha.
+    getLegalMoves() {
+        const moves = [];
+        if (this.status !== "playing") return moves;
+
+        for (let i = 0; i < this.pegs.length; i++) {
+            const peg = this.pegs[i];
+            for (let j = 0; j < PEG_DIRECTIONS.length; j++) {
+                const direction = PEG_DIRECTIONS[j];
+                const overRow = peg.row + direction.row;
+                const overCol = peg.col + direction.col;
+                const toRow = peg.row + direction.row * 2;
+                const toCol = peg.col + direction.col * 2;
+
+                if (
+                    this.isValidCell(overRow, overCol) &&
+                    this.isValidCell(toRow, toCol) &&
+                    this.hasPeg(overRow, overCol) &&
+                    !this.hasPeg(toRow, toCol)
+                ) {
+                    moves.push({
+                        from: { row: peg.row, col: peg.col },
+                        over: { row: overRow, col: overCol },
+                        to: { row: toRow, col: toCol }
+                    });
+                }
+            }
+        }
+        return moves;
+    }
+
+    // Valida el salto, mueve la ficha, quita la ficha saltada y revisa el resultado.
+    move(from, to) {
+        if (this.status !== "playing") {
+            return { valid: false, reason: "finished", state: this.getState() };
+        }
+
+        const moves = this.getLegalMoves();
+        let chosenMove = null;
+        for (let i = 0; i < moves.length; i++) {
+            if (
+                moves[i].from.row === from.row && moves[i].from.col === from.col &&
+                moves[i].to.row === to.row && moves[i].to.col === to.col
+            ) {
+                chosenMove = moves[i];
+                break;
+            }
+        }
+
+        if (!chosenMove) {
+            return { valid: false, reason: "illegal", state: this.getState() };
+        }
+
+        // Quita del array las dos fichas que participaron y agrega la que aterrizó.
+        this.removePeg(chosenMove.from.row, chosenMove.from.col);
+        this.removePeg(chosenMove.over.row, chosenMove.over.col);
+        this.pegs.push({ row: chosenMove.to.row, col: chosenMove.to.col });
+
+        if (this.pegs.length <= this.goalPegCount) {
+            this.status = "won";
+        } else if (this.getLegalMoves().length === 0) {
+            this.status = "lost";
+        }
+        return { valid: true, move: chosenMove, state: this.getState() };
+    }
+
+    // Elimina una ficha del array buscando su fila y columna.
+    removePeg(row, col) {
+        for (let i = 0; i < this.pegs.length; i++) {
+            if (this.pegs[i].row === row && this.pegs[i].col === col) {
+                this.pegs.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    // Posición preparada para mostrar una victoria con un solo salto.
+    static createDemoWin() {
+        return new PegSolitaireModel({
+            occupied: [{ row: 3, col: 0 }, { row: 3, col: 1 }]
+        });
+    }
+
+    // Posición preparada para mostrar una derrota porque no tiene saltos posibles.
+    static createDemoLoss() {
+        return new PegSolitaireModel({
+            occupied: [{ row: 3, col: 1 }, { row: 3, col: 3 }]
+        });
+    }
+}
+
+// Hace que el Model esté disponible para los otros archivos del juego.
+window.PegSolitaireModel = PegSolitaireModel;
