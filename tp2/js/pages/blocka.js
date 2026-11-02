@@ -417,7 +417,7 @@ function buildBoard(root, img, filterName = "original", startedAt = performance.
     const pieceCount = options.pieceCount || 4;
     const timeLimitMs = options.timeLimitMs || BLOCKA_LEVELS[0].timeLimitMs;
     const levelIndex = options.levelIndex || 0;
-    //La grilla usa dos filas; 4, 6 y 8 piezas producen 2, 3 y 4 columnas.
+   
     
     //para que sea siempre un cuadrado perfecto (antes cambiar a 4 , 9 y 16 en levels):
     const side = Math.sqrt(pieceCount);
