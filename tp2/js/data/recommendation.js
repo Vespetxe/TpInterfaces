@@ -3,37 +3,42 @@
 // Se mantiene en el frontend porque la API de la cátedra es de solo lectura.
 const RECOMMENDED_GAME = {
     id: 90001,
-    title: "Plankton's Petri Puzzle",
+    title: "Peg Solitaire",
     category: "Puzzle",
     genres: ["Puzzle"],
-    image: "assets/img/imgCards/Planktons petri puzzle card.jpg",
-    fullImage: "assets/img/Planktons petri puzzle.jpg",
-    description: "Test your logic with Plankton in a collection of puzzle challenges inspired by his laboratory.",
+    image: "assets/img/imgCards/Peg Solitarie.jpeg",
+    fullImage: "assets/img/pegsolitarie/tablero-fondo.png",
+    description: "Jump over pieces, clear the board and try to leave just one character behind.",
     rating: 4.5,
     likes: 13500,
     type: "free",
     price: 0,
 
     // --- Datos para la página de detalle (game.html) ---
-    longDescription: "Plankton's Petri Puzzle is a single-player logic game set inside the Chum Bucket laboratory. Plankton, always obsessed with cooking up the perfect scheme, got trapped alongside an army of his own clones inside a circular petri dish. Your mission: make him jump over his own clones until only one remains — the final \"mastermind,\" ready to steal the secret Krabby Patty formula.",
-    howToPlay: "The board is circular, like a petri dish sitting on the lab table. Every space is filled with a Plankton clone, except the center, which starts empty. A clone can jump over an adjacent one (horizontally or vertically) into an empty space; the jumped clone disappears with a bubble-pop animation. The challenge: end up with as few clones as possible, ideally just one, right in the center.",
+    longDescription: "Peg Solitaire is a single-player logic puzzle. Choose one of three board shapes and play with Bob or Plankton. Jump over neighboring pieces to remove them from the board and try to leave just one.",
+    howToPlay: "Select a piece and click a highlighted empty space, or drag the piece there. It must jump horizontally or vertically over one neighboring piece. The jumped piece is removed. Leave one piece to win; the game ends when no legal moves remain.",
     features: [
-        "Circular lab-themed board",
-        "The center clone reacts with different expressions as you progress",
-        "Chum Bucket ambient sound",
-        "Hint mode to unlock clues if you get stuck",
-        "Ages 13+, with the show's signature humor"
+        "Classic 33-space cross board",
+        "Choose Bob or Plankton as your piece",
+        "Animated hints show a legal move",
+        "Restart and short victory/game-over demonstrations"
     ],
     faq: [
-        { q: "Is it single-player?", a: "Yes, it's a 100% single-player puzzle against the board — no opponents." },
-        { q: "Can I restart the game?", a: "Yes, you can restart the board anytime from the pause menu." }
+        { q: "How do I move a piece?", a: "Drag it over one neighboring piece and drop it in the empty space beyond." },
+        { q: "What happens when no moves are left?", a: "The game ends. Leaving one piece is the best result." }
+    ],
+    controls: [
+        "Click a piece and then click a highlighted empty space, or drag the piece there.",
+        "The landing space must be empty and the move must be horizontal or vertical.",
+        "Use Hint to see an animated example of a legal move.",
+        "Use Restart to begin the selected board again."
     ],
     gallery: [
-        "assets/img/gallery-1.jpg",
-        "assets/img/gallery-2.jpg",
-        "assets/img/gallery-3.jpg",
-        "assets/img/gallery-4.jpg",
-        "assets/img/gallery-5.jpg"
+        "assets/img/pegsolitarie/tablero-fondo.png",
+        "assets/img/pegsolitarie/ficha-plankton-default.png",
+        "assets/img/pegsolitarie/ficha-bob-default.png",
+        "assets/img/pegsolitarie/ficha-plankton-hover.png",
+        "assets/img/pegsolitarie/ficha-bob-hover.png"
     ]
 };
 
