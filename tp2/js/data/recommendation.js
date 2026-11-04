@@ -34,6 +34,7 @@ const RECOMMENDED_GAME = {
         "Use Restart to begin the selected board again."
     ],
     gallery: [
+        "assets/img/pegsolitarie/fondo default.jpg",
         "assets/img/pegsolitarie/tablero-fondo.png",
         "assets/img/pegsolitarie/ficha-plankton-default.png",
         "assets/img/pegsolitarie/ficha-bob-default.png",

@@ -50,9 +50,16 @@ function initPegSolitaire(hero) {
                 </button>
             </div>
 
-            <div class="peg-solitaire__background-preview">
-                <img src="assets/img/pegsolitarie/tablero-fondo.png" alt="Current game background">
-                <span>Game background</span>
+            <h3>Background</h3>
+            <div class="peg-solitaire__background-options" id="pegBackgroundOptions">
+                <button type="button" class="is-selected" data-background="assets/img/pegsolitarie/fondo default.jpg" aria-pressed="true">
+                    <img src="assets/img/pegsolitarie/fondo default.jpg" alt="">
+                    <span>Default</span>
+                </button>
+                <button type="button" data-background="assets/img/pegsolitarie/tablero-fondo.png" aria-pressed="false">
+                    <img src="assets/img/pegsolitarie/tablero-fondo.png" alt="">
+                    <span>Alternative</span>
+                </button>
             </div>
 
             <label for="pegGameType">Game</label>
@@ -164,6 +171,20 @@ function initPegSolitaire(hero) {
             button.classList.add("is-selected");
             button.setAttribute("aria-pressed", "true");
             selectedLayout = button.dataset.layout;
+        });
+    }
+
+    // Cambiar el fondo actualiza el tablero y deja visible cuál opción está elegida.
+    const backgroundButtons = root.querySelectorAll("#pegBackgroundOptions button");
+    for (let i = 0; i < backgroundButtons.length; i++) {
+        backgroundButtons[i].addEventListener("click", function () {
+            for (let j = 0; j < backgroundButtons.length; j++) {
+                backgroundButtons[j].classList.remove("is-selected");
+                backgroundButtons[j].setAttribute("aria-pressed", "false");
+            }
+            backgroundButtons[i].classList.add("is-selected");
+            backgroundButtons[i].setAttribute("aria-pressed", "true");
+            view.setBackground(backgroundButtons[i].dataset.background);
         });
     }
 
