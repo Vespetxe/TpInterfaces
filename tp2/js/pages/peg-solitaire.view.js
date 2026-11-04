@@ -17,7 +17,8 @@ class PegSolitaireView {
         this.boardX = 256;
         this.boardY = 46;
         this.gameData = null;
-        this.boardVisible = false;
+        this.boardVisible = true;
+        this.piecesVisible = false;
         this.animatingHint = false;
         this.images = {};
         this.previews = [];
@@ -28,7 +29,7 @@ class PegSolitaireView {
     // Carga el fondo y las variantes de cada personaje. Al terminar cada imagen,
     // vuelve a dibujar por si el estado del juego ya está disponible.
     loadImages() {
-        // El fondo nuevo se usa por defecto; el anterior queda disponible en el selector.
+        // Carga el fondo elegido por defecto y la superficie visual del tablero.
         this.images.background = this.loadImage("assets/img/pegsolitarie/peg solitaire landscape.png");
         this.images.boardSurface = this.loadImage("assets/img/pegsolitarie/tablero.png");
         this.images.hintArrow = this.loadImage("assets/img/pegsolitarie/flecha.png");
@@ -76,6 +77,12 @@ class PegSolitaireView {
         this.draw();
     }
 
+    // Oculta o muestra las fichas para dejar el tablero vacío en el menú inicial.
+    setPiecesVisible(visible) {
+        this.piecesVisible = visible;
+        this.draw();
+    }
+
     // Dibuja el fondo, los espacios del tablero y las fichas visibles.
     draw() {
         const context = this.context;
@@ -119,6 +126,9 @@ class PegSolitaireView {
         for (let i = 0; i < cells.length; i++) {
             this.drawHole(cells[i].row, cells[i].col);
         }
+
+        // En la configuración se ven los huecos, pero las fichas aparecen al iniciar.
+        if (!this.piecesVisible) return;
 
         if (this.gameData.selectedCell) this.drawSelection(this.gameData.selectedCell);
         this.drawPossibleMoves(this.gameData.selectedMoves);
@@ -210,6 +220,7 @@ class PegSolitaireView {
         context.restore();
     }
 
+    // Dibuja el hueco de una casilla válida del tablero.
     drawHole(row, col) {
         const center = this.getCellCenter(row, col);
         const context = this.context;

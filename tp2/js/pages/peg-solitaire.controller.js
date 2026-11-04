@@ -16,6 +16,10 @@ class PegSolitaireController {
         this.started = false;
         this.finished = model.getState().status !== "playing";
         this.result = model.getState().status;
+        this.timeLimit = 120000;
+        this.remainingTime = this.timeLimit;
+        this.startedAt = null;
+        this.timerInterval = null;
 
         // Los eventos de puntero funcionan con mouse y con pantallas táctiles.
         const controller = this;
@@ -32,11 +36,30 @@ class PegSolitaireController {
         this.updateView();
     }
 
-    // Habilita las jugadas. El juego no usa temporizador.
+    // Habilita las jugadas e inicia el tiempo máximo cuando comienza la partida.
     start() {
-        if (this.finished) return;
+        if (this.finished || this.started) return;
         this.started = true;
+        this.startedAt = performance.now();
+        const controller = this;
+        this.timerInterval = window.setInterval(function () {
+            const elapsed = performance.now() - controller.startedAt;
+            controller.remainingTime = Math.max(0, controller.timeLimit - elapsed);
+
+            if (controller.remainingTime === 0) {
+                controller.finish("timeout");
+            } else {
+                controller.updateView();
+            }
+        }, 250);
         this.updateView();
+    }
+
+    // Detiene el intervalo para que el reloj no siga luego de terminar o reiniciar.
+    stopTimer() {
+        window.clearInterval(this.timerInterval);
+        this.timerInterval = null;
+        this.startedAt = null;
     }
 
     // Selecciona una ficha, o intenta mover la ficha seleccionada con un clic.
@@ -173,6 +196,7 @@ class PegSolitaireController {
     // Reinicia la posición actual y deja la partida detenida hasta pulsar Start.
     reset() {
         window.clearTimeout(this.invalidTimeout);
+        this.stopTimer();
         this.model.reset();
         this.started = false;
         this.finished = this.model.getState().status !== "playing";
@@ -182,12 +206,14 @@ class PegSolitaireController {
         this.pointerPosition = null;
         this.hintMove = null;
         this.invalidPoint = null;
+        this.remainingTime = this.timeLimit;
         this.updateView();
     }
 
     // Cambia la forma o la posición inicial del tablero elegido.
     setModel(model) {
         window.clearTimeout(this.invalidTimeout);
+        this.stopTimer();
         this.model = model;
         this.started = false;
         this.finished = model.getState().status !== "playing";
@@ -197,11 +223,13 @@ class PegSolitaireController {
         this.pointerPosition = null;
         this.hintMove = null;
         this.invalidPoint = null;
+        this.remainingTime = this.timeLimit;
         this.updateView();
     }
 
     // Finaliza al ganar o cuando no quedan movimientos posibles.
     finish(result) {
+        this.stopTimer();
         this.finished = true;
         this.result = result;
         this.selectedCell = null;
@@ -222,7 +250,8 @@ class PegSolitaireController {
             invalidPoint: this.invalidPoint,
             started: this.started,
             finished: this.finished,
-            result: this.result
+            result: this.result,
+            remainingTime: this.remainingTime
         });
     }
 }

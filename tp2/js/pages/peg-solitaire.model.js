@@ -45,7 +45,7 @@ class PegSolitaireModel {
         this.layoutId = this.layout.id;
         this.cells = [];
 
-        // Arma una lista de las 33 casillas válidas usando dos bucles.
+        // Arma la lista de casillas válidas para la forma elegida usando dos bucles.
         for (let row = 0; row < this.size; row++) {
             for (let col = 0; col < this.size; col++) {
                 if (this.layout.rows[row].charAt(col) === "x") {
@@ -75,7 +75,7 @@ class PegSolitaireModel {
         this.reset();
     }
 
-    // Comprueba si una posición pertenece a la cruz.
+    // Comprueba si una posición pertenece a la forma de tablero elegida.
     isValidCell(row, col) {
         if (row < 0 || row >= this.size || col < 0 || col >= this.size) return false;
         for (let i = 0; i < this.cells.length; i++) {

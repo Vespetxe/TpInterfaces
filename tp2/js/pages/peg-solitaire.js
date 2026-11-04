@@ -13,6 +13,7 @@ function initPegSolitaire(hero) {
         <div class="peg-solitaire__topbar">
             <div class="peg-solitaire__stats">
                 <span>Pieces <strong id="pegCount">32</strong></span>
+                <span>Time <strong id="pegTimer">02:00</strong></span>
             </div>
             <div class="peg-solitaire__buttons">
                 <button type="button" id="pegHint">Hint</button>
@@ -25,7 +26,7 @@ function initPegSolitaire(hero) {
 
         <div class="peg-solitaire__instructions" id="pegInstructions" hidden>
             <h2>How to play</h2>
-            <p>Plankton and SpongeBob are competing to claim the secret formula. Select a piece, then click a highlighted empty space or drag the piece there.</p>
+            <p>Plankton and SpongeBob are competing to claim the secret formula. Select a piece, then click a highlighted empty space or drag the piece there. You have two minutes.</p>
             <p>Jump horizontally or vertically over one adjacent piece into the empty space beyond it. The jumped piece is captured and removed.</p>
             <p>Plankton can capture SpongeBob, and SpongeBob can capture Plankton. A team cannot capture its own pieces.</p>
             <p>Capture every piece on the opposing team to win. If no legal moves remain before either team is eliminated, the game ends without a winner.</p>
@@ -72,6 +73,7 @@ function initPegSolitaire(hero) {
     const canvas = root.querySelector("#pegCanvas");
     const view = new PegSolitaireView(canvas);
     const pieceCount = root.querySelector("#pegCount");
+    const timer = root.querySelector("#pegTimer");
     const message = root.querySelector("#pegMessage");
     const setup = root.querySelector("#pegSetup");
     const resultPanel = root.querySelector("#pegResult");
@@ -90,6 +92,10 @@ function initPegSolitaire(hero) {
     function updateGame(data) {
         view.render(data);
         pieceCount.textContent = data.state.pegCount;
+        const totalSeconds = Math.ceil(data.remainingTime / 1000);
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        timer.textContent = `${minutes}:${seconds}`;
 
         if (data.selectedCell && data.selectedMoves.length > 0) {
             message.textContent = "Cyan rings mark valid landing spaces";
@@ -128,6 +134,9 @@ function initPegSolitaire(hero) {
                 : winner === "bob"
                     ? "All of Plankton's pieces were eliminated. Bob wins Plan Z!"
                     : "One team has eliminated the other.";
+        } else if (result === "timeout") {
+            title.textContent = "Time's up";
+            detail.textContent = "The two-minute time limit has expired.";
         } else {
             title.textContent = "Game over";
             detail.textContent = "There are no moves left. Try another strategy.";
@@ -141,6 +150,7 @@ function initPegSolitaire(hero) {
         controller.setModel(createModel(gameType));
         attemptStarted = true;
         view.setBoardVisible(true);
+        view.setPiecesVisible(true);
         root.classList.add("peg-solitaire--started");
         setup.hidden = true;
         resultPanel.hidden = true;
@@ -152,7 +162,8 @@ function initPegSolitaire(hero) {
 
     // Vuelve al selector sin salir de la página del juego.
     function chooseGame() {
-        view.setBoardVisible(false);
+        view.setBoardVisible(true);
+        view.setPiecesVisible(false);
         controller.reset();
         attemptStarted = false;
         root.classList.remove("peg-solitaire--started");
@@ -176,7 +187,7 @@ function initPegSolitaire(hero) {
         });
     }
 
-    // Cambiar el fondo actualiza el tablero y deja visible cuál opción está elegida.
+    // Conecta los botones para iniciar, reiniciar, pedir ayuda o volver al menú.
     root.querySelector("#pegStart").addEventListener("click", startSelectedGame);
     root.querySelector("#pegHint").addEventListener("click", function () {
         controller.showHint();
