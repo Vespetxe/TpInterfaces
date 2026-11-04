@@ -33,7 +33,6 @@ class PegSolitaireModel {
     constructor(options) {
         options = options || {};
         this.size = 7;
-        this.goalPegCount = options.goalPegCount || 1;
         this.layoutId = options.layoutId || "classic";
         this.layout = PEG_BOARD_LAYOUTS[0];
 
@@ -93,6 +92,26 @@ class PegSolitaireModel {
         return false;
     }
 
+    // Determina si Bob o Plankton ya no tiene fichas en el tablero.
+    getWinner() {
+        let hasBob = false;
+        let hasPlankton = false;
+
+        for (let i = 0; i < this.pegs.length; i++) {
+            const peg = this.pegs[i];
+            if ((peg.row + peg.col) % 2 === 0) {
+                hasBob = true;
+            } else {
+                hasPlankton = true;
+            }
+            if (hasBob && hasPlankton) return null;
+        }
+
+        if (hasPlankton && !hasBob) return "plankton";
+        if (hasBob && !hasPlankton) return "bob";
+        return null;
+    }
+
     // Devuelve una copia del estado para que la View pueda dibujar el tablero.
     getState() {
         const stateCells = [];
@@ -108,6 +127,7 @@ class PegSolitaireModel {
             cells: stateCells,
             pegCount: this.pegs.length,
             status: this.status,
+            winner: this.getWinner(),
             layoutId: this.layoutId
         };
     }
@@ -123,7 +143,7 @@ class PegSolitaireModel {
         }
 
         this.status = "playing";
-        if (this.pegs.length <= this.goalPegCount) {
+        if (this.getWinner()) {
             this.status = "won";
         } else if (this.getLegalMoves().length === 0) {
             this.status = "lost";
@@ -189,7 +209,7 @@ class PegSolitaireModel {
         this.removePeg(chosenMove.over.row, chosenMove.over.col);
         this.pegs.push({ row: chosenMove.to.row, col: chosenMove.to.col });
 
-        if (this.pegs.length <= this.goalPegCount) {
+        if (this.getWinner()) {
             this.status = "won";
         } else if (this.getLegalMoves().length === 0) {
             this.status = "lost";
@@ -219,7 +239,7 @@ class PegSolitaireModel {
     static createDemoLoss(layoutId) {
         return new PegSolitaireModel({
             layoutId: layoutId,
-            occupied: [{ row: 3, col: 1 }, { row: 3, col: 3 }]
+            occupied: [{ row: 0, col: 3 }, { row: 3, col: 1 }]
         });
     }
 }

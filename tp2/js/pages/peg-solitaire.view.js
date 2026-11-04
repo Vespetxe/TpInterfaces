@@ -5,14 +5,19 @@ class PegSolitaireView {
     constructor(canvas) {
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
-        this.canvas.width = 960;
-        this.canvas.height = 540;
+        this.logicalWidth = 960;
+        this.logicalHeight = 540;
+        this.pixelRatio = Math.max(1, window.devicePixelRatio || 1);
+        this.canvas.width = this.logicalWidth * this.pixelRatio;
+        this.canvas.height = this.logicalHeight * this.pixelRatio;
+        this.context.setTransform(this.pixelRatio, 0, 0, this.pixelRatio, 0, 0);
         this.context.imageSmoothingEnabled = true;
         this.context.imageSmoothingQuality = "high";
         this.cellSize = 64;
         this.boardX = 256;
         this.boardY = 46;
         this.gameData = null;
+        this.boardVisible = false;
         this.animatingHint = false;
         this.images = {};
         this.previews = [];
@@ -24,7 +29,9 @@ class PegSolitaireView {
     // vuelve a dibujar por si el estado del juego ya está disponible.
     loadImages() {
         // El fondo nuevo se usa por defecto; el anterior queda disponible en el selector.
-        this.images.background = this.loadImage("assets/img/pegsolitarie/fondo default.jpg");
+        this.images.background = this.loadImage("assets/img/pegsolitarie/peg solitaire landscape.png");
+        this.images.boardSurface = this.loadImage("assets/img/pegsolitarie/tablero.png");
+        this.images.hintArrow = this.loadImage("assets/img/pegsolitarie/flecha.png");
         this.images.plankton = {
             normal: this.loadImage("assets/img/pegsolitarie/ficha-plankton-default.png"),
             selected: this.loadImage("assets/img/pegsolitarie/ficha-plankton-hover.png"),
@@ -35,11 +42,6 @@ class PegSolitaireView {
             selected: this.loadImage("assets/img/pegsolitarie/ficha-bob-hover.png"),
             defeated: this.loadImage("assets/img/pegsolitarie/ficha-bob-loser.png")
         };
-    }
-
-    // Cambia el fondo del tablero cuando el jugador elige la otra alternativa.
-    setBackground(path) {
-        this.images.background = this.loadImage(path);
     }
 
     // Crea un objeto Image y guarda su ruta. Cuando carga, actualiza el Canvas.
@@ -68,16 +70,22 @@ class PegSolitaireView {
         }
     }
 
+    // Muestra u oculta el tablero de juego debajo de la interfaz.
+    setBoardVisible(visible) {
+        this.boardVisible = visible;
+        this.draw();
+    }
+
     // Dibuja el fondo, los espacios del tablero y las fichas visibles.
     draw() {
         const context = this.context;
-        context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        context.clearRect(0, 0, this.logicalWidth, this.logicalHeight);
 
         if (this.images.background && this.images.background.complete && this.images.background.naturalWidth > 0) {
             // Recorta el centro del fondo para llenar el Canvas sin deformar la imagen.
             const image = this.images.background;
             const imageRatio = image.naturalWidth / image.naturalHeight;
-            const canvasRatio = this.canvas.width / this.canvas.height;
+            const canvasRatio = this.logicalWidth / this.logicalHeight;
             let sourceX = 0;
             let sourceY = 0;
             let sourceWidth = image.naturalWidth;
@@ -98,18 +106,23 @@ class PegSolitaireView {
                 sourceHeight,
                 0,
                 0,
-                this.canvas.width,
-                this.canvas.height
+                this.logicalWidth,
+                this.logicalHeight
             );
         }
 
-        if (!this.gameData) return;
+        if (!this.gameData || !this.boardVisible) return;
 
         const cells = this.gameData.state.cells;
+        this.drawBoardSurface();
         // El Model envía las casillas del tablero elegido, así la View no inventa reglas.
         for (let i = 0; i < cells.length; i++) {
             this.drawHole(cells[i].row, cells[i].col);
         }
+
+        if (this.gameData.selectedCell) this.drawSelection(this.gameData.selectedCell);
+        this.drawPossibleMoves(this.gameData.selectedMoves);
+        if (this.gameData.invalidPoint) this.drawInvalidMarker(this.gameData.invalidPoint);
 
         for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
@@ -121,6 +134,9 @@ class PegSolitaireView {
                 this.drawPiece(cell.row, cell.col, this.isSelected(cell) ? "selected" : "normal");
             }
         }
+
+        // Dibuja la flecha del hint sobre las fichas para mantenerla visible.
+        if (this.gameData.hintMove) this.drawHint(this.gameData.hintMove);
 
         // Mientras se arrastra, dibuja la ficha encima del puntero.
         if (this.gameData.draggingCell && this.gameData.pointerPosition) {
@@ -134,22 +150,75 @@ class PegSolitaireView {
             );
         }
 
-        if (this.gameData.selectedCell) this.drawSelection(this.gameData.selectedCell);
-        this.drawPossibleMoves(this.gameData.selectedMoves);
-        if (this.gameData.hintMove) this.drawHint(this.gameData.hintMove);
-        if (this.gameData.invalidPoint) this.drawInvalidMarker(this.gameData.invalidPoint);
     }
 
-    // Dibuja una cavidad vacía con borde y sombra para distinguirla del fondo.
+    // Dibuja la imagen del piso dentro de una superficie circular con sombra.
+    drawBoardSurface() {
+        const context = this.context;
+        const centerX = this.boardX + this.cellSize * 3.5;
+        const centerY = this.boardY + this.cellSize * 3.5;
+        const radius = this.cellSize * 3.75;
+        const image = this.images.boardSurface;
+
+        context.save();
+        context.shadowColor = "#121d2b";
+        context.shadowBlur = 18;
+        context.shadowOffsetY = 8;
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        context.fillStyle = "#9e52be";
+        context.fill();
+        context.restore();
+
+        context.save();
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        context.clip();
+
+        if (image && image.complete && image.naturalWidth > 0) {
+            // Crop the image center to preserve its proportions inside the circle.
+            const imageRatio = image.naturalWidth / image.naturalHeight;
+            let sourceX = 0;
+            let sourceY = 0;
+            let sourceWidth = image.naturalWidth;
+            let sourceHeight = image.naturalHeight;
+
+            if (imageRatio > 1) {
+                sourceWidth = image.naturalHeight;
+                sourceX = (image.naturalWidth - sourceWidth) / 2;
+            } else {
+                sourceHeight = image.naturalWidth;
+                sourceY = (image.naturalHeight - sourceHeight) / 2;
+            }
+
+            context.drawImage(
+                image,
+                sourceX,
+                sourceY,
+                sourceWidth,
+                sourceHeight,
+                centerX - radius,
+                centerY - radius,
+                radius * 2,
+                radius * 2
+            );
+        } else {
+            context.fillStyle = "#9e52be";
+            context.fill();
+        }
+
+        context.restore();
+    }
+
     drawHole(row, col) {
         const center = this.getCellCenter(row, col);
         const context = this.context;
         context.beginPath();
         context.arc(center.x, center.y, 29, 0, Math.PI * 2);
-        context.fillStyle = "rgba(18, 20, 25, 0.72)";
+        context.fillStyle = "#122431";
         context.fill();
         context.lineWidth = 3;
-        context.strokeStyle = "rgba(255, 205, 90, 0.9)";
+        context.strokeStyle = "#0fbef7";
         context.stroke();
     }
 
@@ -171,7 +240,7 @@ class PegSolitaireView {
         this.context.beginPath();
         this.context.arc(center.x, center.y, 34, 0, Math.PI * 2);
         this.context.lineWidth = 5;
-        this.context.strokeStyle = "#fff36a";
+        this.context.strokeStyle = "#c0f62c";
         this.context.stroke();
     }
 
@@ -182,11 +251,11 @@ class PegSolitaireView {
             this.context.beginPath();
             this.context.arc(center.x, center.y, 24, 0, Math.PI * 2);
             this.context.lineWidth = 5;
-            this.context.strokeStyle = "#70ff9d";
+            this.context.strokeStyle = "#0fbef7";
             this.context.stroke();
             this.context.beginPath();
             this.context.arc(center.x, center.y, 7, 0, Math.PI * 2);
-            this.context.fillStyle = "rgba(112, 255, 157, 0.7)";
+            this.context.fillStyle = "#0fbef7";
             this.context.fill();
         }
     }
@@ -194,7 +263,7 @@ class PegSolitaireView {
     // Muestra una X roja donde se intentó hacer un movimiento prohibido.
     drawInvalidMarker(point) {
         this.context.save();
-        this.context.fillStyle = "#ff3d42";
+        this.context.fillStyle = "#e14848";
         this.context.strokeStyle = "#ffffff";
         this.context.lineWidth = 4;
         this.context.beginPath();
@@ -236,8 +305,8 @@ class PegSolitaireView {
     getCanvasPoint(event) {
         const bounds = this.canvas.getBoundingClientRect();
         return {
-            x: (event.clientX - bounds.left) * this.canvas.width / bounds.width,
-            y: (event.clientY - bounds.top) * this.canvas.height / bounds.height
+            x: (event.clientX - bounds.left) * this.logicalWidth / bounds.width,
+            y: (event.clientY - bounds.top) * this.logicalHeight / bounds.height
         };
     }
 
@@ -291,7 +360,7 @@ class PegSolitaireView {
         context.imageSmoothingEnabled = true;
         context.imageSmoothingQuality = "high";
         context.clearRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = "#f3e6c9";
+        context.fillStyle = "#bfefff";
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         const cellSize = Math.min(canvas.width / 7, canvas.height / 7);
@@ -312,7 +381,7 @@ class PegSolitaireView {
                 } else {
                     context.beginPath();
                     context.arc(x, y, size / 2, 0, Math.PI * 2);
-                    context.fillStyle = "#d75b28";
+                    context.fillStyle = "#9e52be";
                     context.fill();
                 }
             }
@@ -340,33 +409,46 @@ class PegSolitaireView {
     drawHint(move) {
         const from = this.getCellCenter(move.from.row, move.from.col);
         const to = this.getCellCenter(move.to.row, move.to.col);
-        const context = this.context;
-        const angle = Math.atan2(to.y - from.y, to.x - from.x);
-        const pulse = 0.55 + Math.sin(Date.now() / 180) * 0.35;
+        const image = this.images.hintArrow;
+        if (!image || !image.complete || image.naturalWidth === 0) return;
 
+        const context = this.context;
+        const dx = to.x - from.x;
+        const dy = to.y - from.y;
+        const distance = Math.hypot(dx, dy);
+        const angle = Math.atan2(dy, dx);
+        const rotation = angle - Math.PI;
+        const pieceRadius = this.cellSize * 0.82 / 2;
+        const destinationRadius = 29;
+        const width = Math.max(24, distance - pieceRadius - destinationRadius);
+        const height = width * image.naturalHeight / image.naturalWidth;
+        const centerX = (from.x + to.x) / 2;
+        const centerY = (from.y + to.y) / 2;
+        const pulse = 0.95 + Math.sin(Date.now() / 220) * 0.04;
+
+        // Add an accent glow around the moving piece and the landing space.
         context.save();
         context.globalAlpha = pulse;
-        context.strokeStyle = "#ffffff";
-        context.fillStyle = "#ffffff";
-        context.lineWidth = 7;
-        context.beginPath();
-        context.moveTo(from.x, from.y);
-        context.lineTo(to.x, to.y);
-        context.stroke();
+        context.strokeStyle = "#c0f62c";
+        context.lineWidth = 5;
+        context.shadowColor = "#c0f62c";
+        context.shadowBlur = 22;
+        [from, to].forEach(function (point) {
+            context.beginPath();
+            context.arc(point.x, point.y, 34, 0, Math.PI * 2);
+            context.stroke();
+        });
+        context.restore();
 
-        // Dibuja la punta de flecha calculando sus dos lados.
-        context.beginPath();
-        context.moveTo(to.x, to.y);
-        context.lineTo(
-            to.x - 20 * Math.cos(angle - Math.PI / 6),
-            to.y - 20 * Math.sin(angle - Math.PI / 6)
-        );
-        context.lineTo(
-            to.x - 20 * Math.cos(angle + Math.PI / 6),
-            to.y - 20 * Math.sin(angle + Math.PI / 6)
-        );
-        context.closePath();
-        context.fill();
+        // Draw the supplied left-facing arrow between the edges of both circles.
+        context.save();
+        context.globalAlpha = pulse;
+        context.translate(centerX, centerY);
+        context.rotate(rotation);
+        context.shadowColor = "#c0f62c";
+        context.shadowBlur = 18;
+        context.drawImage(image, -width / 2, -height / 2, width, height);
+        context.drawImage(image, -width / 2, -height / 2, width, height);
         context.restore();
     }
 }

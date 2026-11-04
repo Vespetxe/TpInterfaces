@@ -3,7 +3,7 @@
 // Se mantiene en el frontend porque la API de la cátedra es de solo lectura.
 const RECOMMENDED_GAME = {
     id: 90001,
-    title: "Peg Solitaire",
+    title: "Plan Z: Plankton’s Solitaire",
     category: "Puzzle",
     genres: ["Puzzle"],
     image: "assets/img/imgCards/Planktons petri puzzle card.jpg",
@@ -15,7 +15,7 @@ const RECOMMENDED_GAME = {
     price: 0,
 
     // --- Datos para la página de detalle (game.html) ---
-    longDescription: "Peg Solitaire is a single-player logic puzzle. Play with Bob and Plankton on one of three board shapes. Jump over neighboring pieces to remove them from the board and try to leave just one.",
+    longDescription: "Plan Z: Plankton’s Solitaire is a single-player logic puzzle. Play with Bob and Plankton on one of three board shapes. Jump over neighboring pieces to remove them from the board and try to leave just one.",
     howToPlay: "Select a piece and click a highlighted empty space, or drag the piece there. It must jump horizontally or vertically over one neighboring piece. The jumped piece is removed. Leave one piece to win; the game ends when no legal moves remain.",
     features: [
         "Classic 33-space cross board",
@@ -34,12 +34,11 @@ const RECOMMENDED_GAME = {
         "Use Restart to begin the selected board again."
     ],
     gallery: [
-        "assets/img/pegsolitarie/fondo default.jpg",
-        "assets/img/pegsolitarie/tablero-fondo.png",
-        "assets/img/pegsolitarie/ficha-plankton-default.png",
-        "assets/img/pegsolitarie/ficha-bob-default.png",
-        "assets/img/pegsolitarie/ficha-plankton-hover.png",
-        "assets/img/pegsolitarie/ficha-bob-hover.png"
+        "assets/img/pegsolitarie/seeitinaction1.png",
+        "assets/img/pegsolitarie/seeitinaction2.png",
+        "assets/img/pegsolitarie/seeitinaction3.png",
+        "assets/img/pegsolitarie/seeitinaction4.png",
+        "assets/img/pegsolitarie/seeitinaction5.png"
     ]
 };
 

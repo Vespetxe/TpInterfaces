@@ -4,16 +4,15 @@
 function initPegSolitaire(hero) {
     const root = document.createElement("section");
     root.className = "peg-solitaire";
-    root.setAttribute("aria-label", "Peg Solitaire game");
+    root.setAttribute("aria-label", "Plan Z: Plankton’s Solitaire game");
     root.innerHTML = `
-        <canvas class="peg-solitaire__canvas" id="pegCanvas" aria-label="Peg Solitaire board">
+        <canvas class="peg-solitaire__canvas" id="pegCanvas" aria-label="Plan Z: Plankton’s Solitaire board">
             Drag or click a piece and choose an empty highlighted space.
         </canvas>
 
         <div class="peg-solitaire__topbar">
             <div class="peg-solitaire__stats">
                 <span>Pieces <strong id="pegCount">32</strong></span>
-                <span id="pegMessage" aria-live="polite">Select a piece to see its moves</span>
             </div>
             <div class="peg-solitaire__buttons">
                 <button type="button" id="pegHint">Hint</button>
@@ -22,6 +21,7 @@ function initPegSolitaire(hero) {
                 <button type="button" id="pegExit">Exit</button>
             </div>
         </div>
+        <div class="peg-solitaire__message" id="pegMessage" aria-live="polite">Select a piece to see its moves</div>
 
         <div class="peg-solitaire__instructions" id="pegInstructions" hidden>
             <h2>How to play</h2>
@@ -32,7 +32,7 @@ function initPegSolitaire(hero) {
         </div>
 
         <div class="peg-solitaire__setup" id="pegSetup">
-            <h2>Peg Solitaire</h2>
+            <h2>Plan Z: Plankton’s Solitaire</h2>
             <p>Choose a board. SpongeBob and Plankton pieces are both included in the game.</p>
             <h3>Board</h3>
             <div class="peg-solitaire__board-options" id="pegBoardOptions">
@@ -50,19 +50,7 @@ function initPegSolitaire(hero) {
                 </button>
             </div>
 
-            <h3>Background</h3>
-            <div class="peg-solitaire__background-options" id="pegBackgroundOptions">
-                <button type="button" class="is-selected" data-background="assets/img/pegsolitarie/fondo default.jpg" aria-pressed="true">
-                    <img src="assets/img/pegsolitarie/fondo default.jpg" alt="">
-                    <span>Default</span>
-                </button>
-                <button type="button" data-background="assets/img/pegsolitarie/tablero-fondo.png" aria-pressed="false">
-                    <img src="assets/img/pegsolitarie/tablero-fondo.png" alt="">
-                    <span>Alternative</span>
-                </button>
-            </div>
-
-            <label for="pegGameType">Game</label>
+            <label for="pegGameType">Choose a game mode</label>
             <select id="pegGameType">
                 <option value="standard">Standard game</option>
                 <option value="demo-win">Victory demo — one move</option>
@@ -103,7 +91,7 @@ function initPegSolitaire(hero) {
         pieceCount.textContent = data.state.pegCount;
 
         if (data.selectedCell && data.selectedMoves.length > 0) {
-            message.textContent = "Green spaces are valid moves";
+            message.textContent = "Cyan rings mark valid landing spaces";
         } else if (data.selectedCell) {
             message.textContent = "This piece has no available moves";
         } else if (data.invalidPoint) {
@@ -128,8 +116,17 @@ function initPegSolitaire(hero) {
         const detail = root.querySelector("#pegResultText");
 
         if (result === "won") {
-            title.textContent = "You won!";
-            detail.textContent = "Only one piece remains on the board.";
+            const winner = controller.model.getWinner();
+            title.textContent = winner === "plankton"
+                ? "Plankton won!"
+                : winner === "bob"
+                    ? "Bob won!"
+                    : "You won!";
+            detail.textContent = winner === "plankton"
+                ? "All of Bob's pieces were eliminated. Plankton wins Plan Z!"
+                : winner === "bob"
+                    ? "All of Plankton's pieces were eliminated. Bob wins Plan Z!"
+                    : "One team has eliminated the other.";
         } else {
             title.textContent = "Game over";
             detail.textContent = "There are no moves left. Try another strategy.";
@@ -142,6 +139,8 @@ function initPegSolitaire(hero) {
         const gameType = root.querySelector("#pegGameType").value;
         controller.setModel(createModel(gameType));
         attemptStarted = true;
+        view.setBoardVisible(true);
+        root.classList.add("peg-solitaire--started");
         setup.hidden = true;
         resultPanel.hidden = true;
         controller.start();
@@ -152,8 +151,10 @@ function initPegSolitaire(hero) {
 
     // Vuelve al selector sin salir de la página del juego.
     function chooseGame() {
+        view.setBoardVisible(false);
         controller.reset();
         attemptStarted = false;
+        root.classList.remove("peg-solitaire--started");
         resultPanel.hidden = true;
         setup.hidden = false;
     }
@@ -175,20 +176,6 @@ function initPegSolitaire(hero) {
     }
 
     // Cambiar el fondo actualiza el tablero y deja visible cuál opción está elegida.
-    const backgroundButtons = root.querySelectorAll("#pegBackgroundOptions button");
-    for (let i = 0; i < backgroundButtons.length; i++) {
-        backgroundButtons[i].addEventListener("click", function () {
-            for (let j = 0; j < backgroundButtons.length; j++) {
-                backgroundButtons[j].classList.remove("is-selected");
-                backgroundButtons[j].setAttribute("aria-pressed", "false");
-            }
-            backgroundButtons[i].classList.add("is-selected");
-            backgroundButtons[i].setAttribute("aria-pressed", "true");
-            view.setBackground(backgroundButtons[i].dataset.background);
-        });
-    }
-
-    // Los botones envían las acciones a la parte correspondiente del juego.
     root.querySelector("#pegStart").addEventListener("click", startSelectedGame);
     root.querySelector("#pegHint").addEventListener("click", function () {
         controller.showHint();
@@ -208,13 +195,7 @@ function initPegSolitaire(hero) {
     });
 
     // Sale del modo de juego y restaura el botón Play del detalle.
-    root.querySelector("#pegExit").addEventListener("click", function () {
-        controller.reset();
-        root.remove();
-        hero.classList.remove("game-hero--peg-started");
-        hero.classList.remove("game-hero--enabled");
-        hero.querySelector(".game-hero__play").style.display = "";
-    });
+    root.querySelector("#pegExit").addEventListener("click", chooseGame);
 }
 
 // El detalle llama esta función cuando el usuario pulsa Play.

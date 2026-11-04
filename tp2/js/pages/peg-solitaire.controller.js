@@ -127,8 +127,8 @@ class PegSolitaireController {
     // Marca temporalmente un destino prohibido para que la View muestre una señal roja.
     showForbidden(point) {
         this.invalidPoint = {
-            x: Math.max(24, Math.min(this.view.canvas.width - 24, point.x)),
-            y: Math.max(24, Math.min(this.view.canvas.height - 24, point.y))
+            x: Math.max(24, Math.min(this.view.logicalWidth - 24, point.x)),
+            y: Math.max(24, Math.min(this.view.logicalHeight - 24, point.y))
         };
 
         window.clearTimeout(this.invalidTimeout);
