@@ -8,18 +8,48 @@ const PEG_DIRECTIONS = [
     { row: 0, col: 1 }   // derecha
 ];
 
+// Cada fila usa x para una casilla del tablero y . para un espacio exterior.
+// Las tres formas comparten las mismas reglas de movimiento.
+const PEG_BOARD_LAYOUTS = [
+    {
+        id: "classic",
+        name: "Classic",
+        rows: ["..xxx..", "..xxx..", "xxxxxxx", "xxxxxxx", "xxxxxxx", "..xxx..", "..xxx.."]
+    },
+    {
+        id: "european",
+        name: "European",
+        rows: ["..xxx..", ".xxxxx.", "xxxxxxx", "xxxxxxx", "xxxxxxx", ".xxxxx.", "..xxx.."]
+    },
+    {
+        id: "diamond",
+        name: "Diamond",
+        rows: ["...x...", "..xxx..", ".xxxxx.", "xxxxxxx", ".xxxxx.", "..xxx..", "...x..."]
+    }
+];
+
 class PegSolitaireModel {
     // Crea el tablero clásico. Las esquinas no forman parte de la cruz.
     constructor(options) {
         options = options || {};
         this.size = 7;
         this.goalPegCount = options.goalPegCount || 1;
+        this.layoutId = options.layoutId || "classic";
+        this.layout = PEG_BOARD_LAYOUTS[0];
+
+        // Busca el diseño elegido; si no existe, usa el clásico.
+        for (let i = 0; i < PEG_BOARD_LAYOUTS.length; i++) {
+            if (PEG_BOARD_LAYOUTS[i].id === this.layoutId) {
+                this.layout = PEG_BOARD_LAYOUTS[i];
+            }
+        }
+        this.layoutId = this.layout.id;
         this.cells = [];
 
         // Arma una lista de las 33 casillas válidas usando dos bucles.
         for (let row = 0; row < this.size; row++) {
             for (let col = 0; col < this.size; col++) {
-                if ((row >= 2 && row <= 4) || (col >= 2 && col <= 4)) {
+                if (this.layout.rows[row].charAt(col) === "x") {
                     this.cells.push({ row: row, col: col });
                 }
             }
@@ -77,7 +107,8 @@ class PegSolitaireModel {
         return {
             cells: stateCells,
             pegCount: this.pegs.length,
-            status: this.status
+            status: this.status,
+            layoutId: this.layoutId
         };
     }
 
@@ -177,15 +208,17 @@ class PegSolitaireModel {
     }
 
     // Posición preparada para mostrar una victoria con un solo salto.
-    static createDemoWin() {
+    static createDemoWin(layoutId) {
         return new PegSolitaireModel({
+            layoutId: layoutId,
             occupied: [{ row: 3, col: 0 }, { row: 3, col: 1 }]
         });
     }
 
     // Posición preparada para mostrar una derrota porque no tiene saltos posibles.
-    static createDemoLoss() {
+    static createDemoLoss(layoutId) {
         return new PegSolitaireModel({
+            layoutId: layoutId,
             occupied: [{ row: 3, col: 1 }, { row: 3, col: 3 }]
         });
     }
@@ -193,3 +226,4 @@ class PegSolitaireModel {
 
 // Hace que el Model esté disponible para los otros archivos del juego.
 window.PegSolitaireModel = PegSolitaireModel;
+window.PEG_BOARD_LAYOUTS = PEG_BOARD_LAYOUTS;

@@ -1,25 +1,23 @@
 // ===== Controller de Peg Solitaire =====
-// Recibe las acciones del usuario, se las comunica al Model y actualiza la View.
+// Recibe clics y arrastres, consulta las reglas al Model y actualiza la View.
 class PegSolitaireController {
-    // Conecta el modelo con el canvas y las funciones de dibujo de la View.
-    constructor(model, canvas, view, onChange, timeLimitSeconds) {
+    // Conecta el Model, el Canvas, la View y la función que actualiza la interfaz.
+    constructor(model, canvas, view, onChange) {
         this.model = model;
         this.canvas = canvas;
         this.view = view;
         this.onChange = onChange;
-        if (timeLimitSeconds === undefined) timeLimitSeconds = 120;
-        this.timeLimitSeconds = timeLimitSeconds; // null deja el tiempo sin límite.
         this.selectedCell = null;
         this.draggingCell = null;
         this.pointerPosition = null;
         this.hintMove = null;
+        this.invalidPoint = null;
+        this.invalidTimeout = null;
         this.started = false;
         this.finished = model.getState().status !== "playing";
         this.result = model.getState().status;
-        this.seconds = 0;
-        this.timerId = null;
 
-        // Los eventos de puntero sirven para mouse y también para pantallas táctiles.
+        // Los eventos de puntero funcionan con mouse y con pantallas táctiles.
         const controller = this;
         canvas.addEventListener("pointerdown", function (event) {
             controller.selectPiece(event);
@@ -34,91 +32,148 @@ class PegSolitaireController {
         this.updateView();
     }
 
-    // Comienza la partida y activa el reloj.
+    // Habilita las jugadas. El juego no usa temporizador.
     start() {
-        if (this.finished || this.started) return;
+        if (this.finished) return;
         this.started = true;
-        const controller = this;
-        this.timerId = window.setInterval(function () {
-            controller.updateTimer();
-        }, 1000);
         this.updateView();
     }
 
-    // Suma el tiempo o resta el tiempo límite; al llegar a cero termina la partida.
-    updateTimer() {
-        this.seconds++;
-        if (this.timeLimitSeconds !== null && this.seconds >= this.timeLimitSeconds) {
-            this.finish("timeout");
+    // Selecciona una ficha, o intenta mover la ficha seleccionada con un clic.
+    selectPiece(event) {
+        if (!this.started || this.finished || event.button !== 0) return;
+
+        const cell = this.view.getCellAt(event);
+        const point = this.view.getCanvasPoint(event);
+
+        if (!cell) {
+            // Un clic fuera del tablero no cambia la selección ni muestra una marca.
+            return;
+        }
+
+        if (!this.model.hasPeg(cell.row, cell.col)) {
+            // Un segundo clic en una casilla vacía intenta completar el salto.
+            if (this.selectedCell) this.tryMove(this.selectedCell, cell);
+            return;
+        }
+
+        // Al hacer clic en otra ficha, esa ficha pasa a ser la seleccionada.
+        this.selectedCell = { row: cell.row, col: cell.col };
+        this.draggingCell = { row: cell.row, col: cell.col };
+        this.pointerPosition = point;
+        this.canvas.setPointerCapture(event.pointerId);
+        this.updateView();
+    }
+
+    // Mueve visualmente la ficha seleccionada mientras el usuario la arrastra.
+    dragPiece(event) {
+        if (!this.draggingCell) return;
+        this.pointerPosition = this.view.getCanvasPoint(event);
+        this.updateView();
+    }
+
+    // Al soltar la ficha, intenta el salto o muestra que el destino no está permitido.
+    dropPiece(event) {
+        if (!this.draggingCell || this.finished) return;
+
+        const origin = this.draggingCell;
+        const destination = this.view.getCellAt(event);
+        this.draggingCell = null;
+        this.pointerPosition = null;
+
+        if (!destination) {
+            // Si se suelta fuera del tablero, la ficha vuelve a su lugar sin marcar una X.
+            this.selectedCell = origin;
+            this.updateView();
+            return;
+        }
+
+        if (destination.row === origin.row && destination.col === origin.col) {
+            this.selectedCell = origin;
+            this.updateView();
+            return;
+        }
+
+        if (this.model.hasPeg(destination.row, destination.col)) {
+            this.selectedCell = destination;
+            this.updateView();
+            return;
+        }
+
+        this.tryMove(origin, destination);
+    }
+
+    // Pide al Model validar una jugada. Si la rechaza, conserva seleccionada la ficha.
+    tryMove(origin, destination) {
+        const result = this.model.move(origin, destination);
+
+        if (!result.valid) {
+            this.selectedCell = origin;
+            const point = this.view.getCellCenter(destination.row, destination.col);
+            this.showForbidden(point);
+            return;
+        }
+
+        this.selectedCell = null;
+        this.hintMove = null;
+        this.invalidPoint = null;
+        if (result.state.status !== "playing") {
+            this.finish(result.state.status);
             return;
         }
         this.updateView();
     }
 
-    // Selecciona una ficha y guarda que el usuario empezó a arrastrarla.
-    selectPiece(event) {
-        if (!this.started || this.finished || event.button !== 0) return;
-        const cell = this.view.getCellAt(event);
-        if (!cell || !this.model.hasPeg(cell.row, cell.col)) return;
+    // Marca temporalmente un destino prohibido para que la View muestre una señal roja.
+    showForbidden(point) {
+        this.invalidPoint = {
+            x: Math.max(24, Math.min(this.view.canvas.width - 24, point.x)),
+            y: Math.max(24, Math.min(this.view.canvas.height - 24, point.y))
+        };
 
-        this.selectedCell = cell;
-        this.draggingCell = cell;
-        this.pointerPosition = { x: event.offsetX, y: event.offsetY };
-        this.canvas.setPointerCapture(event.pointerId);
+        window.clearTimeout(this.invalidTimeout);
         this.updateView();
+        const controller = this;
+        this.invalidTimeout = window.setTimeout(function () {
+            controller.invalidPoint = null;
+            controller.updateView();
+        }, 650);
     }
 
-    // Actualiza la vista mientras la ficha sigue al puntero.
-    dragPiece(event) {
-        if (!this.draggingCell) return;
-        this.pointerPosition = { x: event.offsetX, y: event.offsetY };
-        this.updateView();
-    }
-
-    // Al soltar, intenta realizar el salto. El Model decide si es válido.
-    dropPiece(event) {
-        if (!this.draggingCell || this.finished) return;
-
-        const destination = this.view.getCellAt(event);
-        const origin = this.draggingCell;
-        this.draggingCell = null;
-        this.pointerPosition = null;
-
-        if (destination) {
-            const move = this.model.move(origin, destination);
-            if (move.valid) {
-                this.selectedCell = null;
-                this.hintMove = null;
-                if (move.state.status !== "playing") {
-                    this.finish(move.state.status);
-                    return;
-                }
-            } else {
-                this.selectedCell = this.model.hasPeg(destination.row, destination.col)
-                    ? destination
-                    : null;
-            }
-        } else {
-            this.selectedCell = null;
-        }
-
-        this.updateView();
-    }
-
-    // Elige una jugada válida al azar para que la View muestre su animación de ayuda.
+    // Elige una jugada válida para que la View anime su origen y destino.
     showHint() {
-        const moves = this.model.getLegalMoves();
-        if (!this.started || this.finished || moves.length === 0) return;
-        this.hintMove = moves[Math.floor(Math.random() * moves.length)];
+        const moves = this.getMovesForSelected();
+        let availableMoves = moves;
+
+        // Si no hay ficha seleccionada, se puede mostrar cualquier jugada legal.
+        if (!this.selectedCell) availableMoves = this.model.getLegalMoves();
+        if (!this.started || this.finished || availableMoves.length === 0) return;
+
+        this.hintMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
         this.updateView();
     }
 
-    // Reinicia el tablero y deja la partida lista para comenzar otra vez.
+    // Devuelve las jugadas legales que empiezan en la ficha seleccionada.
+    getMovesForSelected() {
+        const moves = this.model.getLegalMoves();
+        const selectedMoves = [];
+        if (!this.selectedCell) return selectedMoves;
+
+        for (let i = 0; i < moves.length; i++) {
+            if (
+                moves[i].from.row === this.selectedCell.row &&
+                moves[i].from.col === this.selectedCell.col
+            ) {
+                selectedMoves.push(moves[i]);
+            }
+        }
+        return selectedMoves;
+    }
+
+    // Reinicia la posición actual y deja la partida detenida hasta pulsar Start.
     reset() {
-        window.clearInterval(this.timerId);
-        this.timerId = null;
+        window.clearTimeout(this.invalidTimeout);
         this.model.reset();
-        this.seconds = 0;
         this.started = false;
         this.finished = this.model.getState().status !== "playing";
         this.result = this.model.getState().status;
@@ -126,35 +181,51 @@ class PegSolitaireController {
         this.draggingCell = null;
         this.pointerPosition = null;
         this.hintMove = null;
+        this.invalidPoint = null;
         this.updateView();
     }
 
-    // Detiene el nivel cuando se gana, se pierde o se acaba el tiempo.
+    // Cambia la forma o la posición inicial del tablero elegido.
+    setModel(model) {
+        window.clearTimeout(this.invalidTimeout);
+        this.model = model;
+        this.started = false;
+        this.finished = model.getState().status !== "playing";
+        this.result = model.getState().status;
+        this.selectedCell = null;
+        this.draggingCell = null;
+        this.pointerPosition = null;
+        this.hintMove = null;
+        this.invalidPoint = null;
+        this.updateView();
+    }
+
+    // Finaliza al ganar o cuando no quedan movimientos posibles.
     finish(result) {
         this.finished = true;
         this.result = result;
-        window.clearInterval(this.timerId);
-        this.timerId = null;
+        this.selectedCell = null;
+        this.draggingCell = null;
         this.updateView();
     }
 
-    // Envía a la View el estado del tablero y los datos que necesita para dibujar.
+    // Envía a la View el tablero y los datos visuales de la selección y el hint.
     updateView() {
         this.onChange({
             state: this.model.getState(),
             legalMoves: this.model.getLegalMoves(),
+            selectedMoves: this.getMovesForSelected(),
             selectedCell: this.selectedCell,
             draggingCell: this.draggingCell,
             pointerPosition: this.pointerPosition,
             hintMove: this.hintMove,
+            invalidPoint: this.invalidPoint,
             started: this.started,
             finished: this.finished,
-            result: this.result,
-            seconds: this.seconds,
-            timeLimitSeconds: this.timeLimitSeconds
+            result: this.result
         });
     }
 }
 
-// Permite cargar el Controller desde un script normal en el navegador.
+// Permite que el archivo de inicio cree el Controller.
 window.PegSolitaireController = PegSolitaireController;

@@ -99,6 +99,7 @@ function escapeDetailText(value = "") {
         document.title = `${game.title} | Nexus Games`;
         // Amplía Blocka desde que carga la página para que no dependa del modo fullscreen.
         detailMount.classList.toggle("game-detail-main--blocka", game.id === BLOCKA_GAME.id);
+        detailMount.classList.toggle("game-detail-main--peg", game.id === RECOMMENDED_GAME.id);
 
     // Renderiza el detalle local y convierte sus listas en secciones HTML.
     detailMount.innerHTML = `
@@ -110,7 +111,7 @@ function escapeDetailText(value = "") {
             <span class="breadcrumb__current">${game.title}</span>
         </nav>
 
-        <div class="game-hero">
+        <div class="game-hero ${game.id === RECOMMENDED_GAME.id ? "game-hero--peg" : ""}">
             <img class="game-hero__image" src="${game.fullImage}" alt="${game.title}">
             <button class="game-hero__play" type="button">Play</button>
         </div>
@@ -274,7 +275,7 @@ function escapeDetailText(value = "") {
         instructionsToggle.focus();
     });
 
-    // Al pulsar Play, quita el aspecto atenuado y, si es Blocka, arranca el juego.
+    // Al pulsar Play, quita el aspecto atenuado y arranca el juego correspondiente.
     document.querySelector(".game-hero__play").addEventListener("click", (event) => {
         const hero = document.querySelector(".game-hero");
         hero.classList.add("game-hero--enabled");
@@ -284,6 +285,11 @@ function escapeDetailText(value = "") {
             // Quita la portada del fondo mientras Blocka muestra su propia pantalla.
             hero.classList.add("game-hero--blocka-started");
             initBlocka(hero);
+        } else if (game.id === RECOMMENDED_GAME.id) {
+            event.currentTarget.style.display = "none";
+            hero.classList.add("game-hero--peg");
+            hero.classList.add("game-hero--peg-started");
+            initPegSolitaire(hero);
         }
     });
     // Alterna el modo de pantalla completa para la imagen principal del juego.
