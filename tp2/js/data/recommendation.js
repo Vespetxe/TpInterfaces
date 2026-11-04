@@ -6,8 +6,8 @@ const RECOMMENDED_GAME = {
     title: "Peg Solitaire",
     category: "Puzzle",
     genres: ["Puzzle"],
-    image: "assets/img/imgCards/Peg Solitarie.jpeg",
-    fullImage: "assets/img/pegsolitarie/tablero-fondo.png",
+    image: "assets/img/imgCards/Planktons petri puzzle card.jpg",
+    fullImage: "assets/img/Planktons petri puzzle.jpg",
     description: "Jump over pieces, clear the board and try to leave just one character behind.",
     rating: 4.5,
     likes: 13500,
@@ -15,11 +15,11 @@ const RECOMMENDED_GAME = {
     price: 0,
 
     // --- Datos para la página de detalle (game.html) ---
-    longDescription: "Peg Solitaire is a single-player logic puzzle. Choose one of three board shapes and play with Bob or Plankton. Jump over neighboring pieces to remove them from the board and try to leave just one.",
+    longDescription: "Peg Solitaire is a single-player logic puzzle. Play with Bob and Plankton on one of three board shapes. Jump over neighboring pieces to remove them from the board and try to leave just one.",
     howToPlay: "Select a piece and click a highlighted empty space, or drag the piece there. It must jump horizontally or vertically over one neighboring piece. The jumped piece is removed. Leave one piece to win; the game ends when no legal moves remain.",
     features: [
         "Classic 33-space cross board",
-        "Choose Bob or Plankton as your piece",
+        "Play with Bob and Plankton pieces together",
         "Animated hints show a legal move",
         "Restart and short victory/game-over demonstrations"
     ],

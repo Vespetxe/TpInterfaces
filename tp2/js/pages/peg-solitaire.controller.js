@@ -47,7 +47,7 @@ class PegSolitaireController {
         const point = this.view.getCanvasPoint(event);
 
         if (!cell) {
-            if (this.selectedCell) this.showForbidden(point);
+            // Un clic fuera del tablero no cambia la selección ni muestra una marca.
             return;
         }
 
@@ -78,13 +78,13 @@ class PegSolitaireController {
 
         const origin = this.draggingCell;
         const destination = this.view.getCellAt(event);
-        const point = this.view.getCanvasPoint(event);
         this.draggingCell = null;
         this.pointerPosition = null;
 
         if (!destination) {
+            // Si se suelta fuera del tablero, la ficha vuelve a su lugar sin marcar una X.
             this.selectedCell = origin;
-            this.showForbidden(point);
+            this.updateView();
             return;
         }
 

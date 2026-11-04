@@ -33,7 +33,7 @@ function initPegSolitaire(hero) {
 
         <div class="peg-solitaire__setup" id="pegSetup">
             <h2>Peg Solitaire</h2>
-            <p>Choose a board and a character.</p>
+            <p>Choose a board. SpongeBob and Plankton pieces are both included in the game.</p>
             <h3>Board</h3>
             <div class="peg-solitaire__board-options" id="pegBoardOptions">
                 <button type="button" class="is-selected" data-layout="classic" aria-pressed="true">
@@ -47,18 +47,6 @@ function initPegSolitaire(hero) {
                 <button type="button" data-layout="diamond" aria-pressed="false">
                     <canvas width="168" height="112" data-board-preview="diamond"></canvas>
                     <span>Diamond</span>
-                </button>
-            </div>
-
-            <h3>Piece</h3>
-            <div class="peg-solitaire__piece-options" id="pegPieceOptions">
-                <button type="button" class="is-selected" data-character="plankton" aria-pressed="true">
-                    <img src="assets/img/pegsolitarie/ficha-plankton-default.png" alt="">
-                    <span>Plankton</span>
-                </button>
-                <button type="button" data-character="bob" aria-pressed="false">
-                    <img src="assets/img/pegsolitarie/ficha-bob-default.png" alt="">
-                    <span>SpongeBob</span>
                 </button>
             </div>
 
@@ -142,11 +130,9 @@ function initPegSolitaire(hero) {
         resultPanel.hidden = false;
     }
 
-    // Inicia una partida con el tablero, la ficha y el tipo seleccionados.
+    // Inicia una partida con el tablero y el tipo de partida seleccionados.
     function startSelectedGame() {
         const gameType = root.querySelector("#pegGameType").value;
-        const pieceButton = root.querySelector("#pegPieceOptions .is-selected");
-        view.setCharacter(pieceButton.dataset.character);
         controller.setModel(createModel(gameType));
         attemptStarted = true;
         setup.hidden = true;
@@ -169,7 +155,7 @@ function initPegSolitaire(hero) {
     const boardButtons = root.querySelectorAll("#pegBoardOptions button");
     for (let i = 0; i < boardButtons.length; i++) {
         const button = boardButtons[i];
-        view.drawPreview(button.querySelector("canvas"), button.dataset.layout, "plankton");
+        view.drawPreview(button.querySelector("canvas"), button.dataset.layout);
         button.addEventListener("click", function () {
             for (let j = 0; j < boardButtons.length; j++) {
                 boardButtons[j].classList.remove("is-selected");
@@ -178,25 +164,6 @@ function initPegSolitaire(hero) {
             button.classList.add("is-selected");
             button.setAttribute("aria-pressed", "true");
             selectedLayout = button.dataset.layout;
-        });
-    }
-
-    // Las dos fichas se muestran como miniaturas y también se usan en las vistas previas.
-    const pieceButtons = root.querySelectorAll("#pegPieceOptions button");
-    for (let i = 0; i < pieceButtons.length; i++) {
-        const button = pieceButtons[i];
-        button.addEventListener("click", function () {
-            for (let j = 0; j < pieceButtons.length; j++) {
-                pieceButtons[j].classList.remove("is-selected");
-                pieceButtons[j].setAttribute("aria-pressed", "false");
-            }
-            button.classList.add("is-selected");
-            button.setAttribute("aria-pressed", "true");
-            view.setCharacter(button.dataset.character);
-
-            for (let j = 0; j < boardButtons.length; j++) {
-                view.drawPreview(boardButtons[j].querySelector("canvas"), boardButtons[j].dataset.layout, button.dataset.character);
-            }
         });
     }
 

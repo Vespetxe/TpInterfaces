@@ -181,9 +181,8 @@
     text-align: left;
 }
 
-/* Miniaturas para elegir la forma del tablero y el tipo de ficha. */
-.peg-solitaire__board-options,
-.peg-solitaire__piece-options {
+/* Miniaturas para elegir la forma del tablero. */
+.peg-solitaire__board-options {
     display: grid;
     gap: 10px;
 }
@@ -192,12 +191,7 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.peg-solitaire__piece-options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.peg-solitaire__board-options button,
-.peg-solitaire__piece-options button {
+.peg-solitaire__board-options button {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -209,8 +203,7 @@
     font-size: 13px;
 }
 
-.peg-solitaire__board-options button.is-selected,
-.peg-solitaire__piece-options button.is-selected {
+.peg-solitaire__board-options button.is-selected {
     border-color: #ffe27a;
     box-shadow: 0 0 0 2px rgba(255, 226, 122, .35);
     background: rgba(255, 226, 122, .14);
@@ -221,12 +214,6 @@
     width: 100%;
     height: auto;
     border-radius: 5px;
-}
-
-.peg-solitaire__piece-options img {
-    width: 62px;
-    height: 62px;
-    object-fit: contain;
 }
 
 .peg-solitaire__background-preview {

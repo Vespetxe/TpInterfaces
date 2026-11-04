@@ -12,7 +12,6 @@ class PegSolitaireView {
         this.cellSize = 64;
         this.boardX = 256;
         this.boardY = 46;
-        this.character = "plankton";
         this.gameData = null;
         this.animatingHint = false;
         this.images = {};
@@ -47,15 +46,6 @@ class PegSolitaireView {
         };
         image.src = path;
         return image;
-    }
-
-    // Permite usar las fichas de Bob o de Plankton en el mismo tablero.
-    setCharacter(character) {
-        if (character === "bob" || character === "plankton") {
-            this.character = character;
-            this.draw();
-            this.drawPreviews();
-        }
     }
 
     // Recibe una copia del estado enviada por el Controller y redibuja el juego.
@@ -131,7 +121,7 @@ class PegSolitaireView {
             const point = this.gameData.pointerPosition;
             const size = this.cellSize * 0.82;
             this.drawImageCentered(
-                this.getPieceImage("selected"),
+                this.getPieceImage("selected", this.getCharacter(this.gameData.draggingCell.row, this.gameData.draggingCell.col)),
                 point.x,
                 point.y,
                 size
@@ -160,7 +150,13 @@ class PegSolitaireView {
     // Dibuja una ficha en el centro de una casilla usando la imagen elegida.
     drawPiece(row, col, state) {
         const center = this.getCellCenter(row, col);
-        this.drawImageCentered(this.getPieceImage(state), center.x, center.y, this.cellSize * 0.82);
+        const character = this.getCharacter(row, col);
+        this.drawImageCentered(this.getPieceImage(state, character), center.x, center.y, this.cellSize * 0.82);
+    }
+
+    // Alterna los personajes por casilla para que Bob y Plankton aparezcan juntos.
+    getCharacter(row, col) {
+        return (row + col) % 2 === 0 ? "bob" : "plankton";
     }
 
     // Rodea la ficha seleccionada para que se note cuál se está moviendo.
@@ -207,9 +203,9 @@ class PegSolitaireView {
         this.context.restore();
     }
 
-    // Elige la imagen normal, seleccionada o de derrota del personaje actual.
-    getPieceImage(state) {
-        const characterImages = this.images[this.character];
+    // Elige la imagen normal, seleccionada o de derrota del personaje de esa casilla.
+    getPieceImage(state, character) {
+        const characterImages = this.images[character];
         if (this.gameData && (this.gameData.result === "lost" || this.gameData.result === "timeout")) {
             return characterImages.defeated;
         }
@@ -258,29 +254,28 @@ class PegSolitaireView {
     }
 
     // Dibuja una miniatura del tablero para la pantalla de selección.
-    drawPreview(canvas, layoutId, character) {
+    drawPreview(canvas, layoutId) {
         let found = false;
         for (let i = 0; i < this.previews.length; i++) {
             if (this.previews[i].canvas === canvas) {
                 this.previews[i].layoutId = layoutId;
-                this.previews[i].character = character;
                 found = true;
             }
         }
-        if (!found) this.previews.push({ canvas: canvas, layoutId: layoutId, character: character });
-        this.paintPreview(canvas, layoutId, character);
+        if (!found) this.previews.push({ canvas: canvas, layoutId: layoutId });
+        this.paintPreview(canvas, layoutId);
     }
 
-    // Redibuja las miniaturas cuando termina de cargar una ficha o cambia de personaje.
+    // Redibuja las miniaturas cuando terminan de cargar las imágenes de las fichas.
     drawPreviews() {
         for (let i = 0; i < this.previews.length; i++) {
             const preview = this.previews[i];
-            this.paintPreview(preview.canvas, preview.layoutId, preview.character);
+            this.paintPreview(preview.canvas, preview.layoutId);
         }
     }
 
     // Pinta la forma del tablero y una ficha pequeña en cada casilla ocupada.
-    paintPreview(canvas, layoutId, character) {
+    paintPreview(canvas, layoutId) {
         let layout = PEG_BOARD_LAYOUTS[0];
         for (let i = 0; i < PEG_BOARD_LAYOUTS.length; i++) {
             if (PEG_BOARD_LAYOUTS[i].id === layoutId) layout = PEG_BOARD_LAYOUTS[i];
@@ -296,13 +291,13 @@ class PegSolitaireView {
         const cellSize = Math.min(canvas.width / 7, canvas.height / 7);
         const startX = (canvas.width - cellSize * 7) / 2;
         const startY = (canvas.height - cellSize * 7) / 2;
-        const piece = this.images[character].normal;
-
         for (let row = 0; row < 7; row++) {
             for (let col = 0; col < 7; col++) {
                 if (layout.rows[row].charAt(col) !== "x") continue;
                 if (row === 3 && col === 3) continue;
 
+                const character = this.getCharacter(row, col);
+                const piece = this.images[character].normal;
                 const x = startX + col * cellSize + cellSize / 2;
                 const y = startY + row * cellSize + cellSize / 2;
                 const size = cellSize * 0.82;
