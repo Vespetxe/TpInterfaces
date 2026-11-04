@@ -8,15 +8,15 @@ const RECOMMENDED_GAME = {
     genres: ["Puzzle"],
     image: "assets/img/imgCards/Planktons petri puzzle card.jpg",
     fullImage: "assets/img/Planktons petri puzzle.jpg",
-    description: "Jump over pieces, clear the board and try to leave just one character behind.",
+    description: "Plankton and SpongeBob battle for the secret formula. Eliminate every piece on the opposing team to win.",
     rating: 4.5,
     likes: 13500,
     type: "free",
     price: 0,
 
     // --- Datos para la página de detalle (game.html) ---
-    longDescription: "Plan Z: Plankton’s Solitaire is a single-player logic puzzle. Play with Bob and Plankton on one of three board shapes. Jump over neighboring pieces to remove them from the board and try to leave just one.",
-    howToPlay: "Select a piece and click a highlighted empty space, or drag the piece there. It must jump horizontally or vertically over one neighboring piece. The jumped piece is removed. Leave one piece to win; the game ends when no legal moves remain.",
+    longDescription: "Plan Z: Plankton’s Solitaire is a single-player puzzle where Plankton and SpongeBob compete for the secret formula. Jump horizontally or vertically over one adjacent opposing piece to capture it. Your pieces cannot capture members of their own team. Eliminate every piece on the opposing team to win. If no legal moves remain before either team is eliminated, the game ends without a winner.",
+    howToPlay: "Select a piece and click a highlighted empty space, or drag the piece there. Jump horizontally or vertically over one adjacent piece to capture it. You can only capture a piece from the opposing team. Eliminate all opposing pieces to win; if no legal moves remain first, the game ends without a winner.",
     features: [
         "Classic 33-space cross board",
         "Play with Bob and Plankton pieces together",
@@ -25,11 +25,12 @@ const RECOMMENDED_GAME = {
     ],
     faq: [
         { q: "How do I move a piece?", a: "Drag it over one neighboring piece and drop it in the empty space beyond." },
-        { q: "What happens when no moves are left?", a: "The game ends. Leaving one piece is the best result." }
+        { q: "How do I win?", a: "Capture every piece on the opposing team. If no legal moves remain before that happens, the game ends without a winner." }
     ],
     controls: [
         "Click a piece and then click a highlighted empty space, or drag the piece there.",
-        "The landing space must be empty and the move must be horizontal or vertical.",
+        "Jump horizontally or vertically over one adjacent opposing piece into the empty space beyond it; your own team cannot be captured.",
+        "Capture every opposing piece to win. If no legal moves remain first, the game ends without a winner.",
         "Use Hint to see an animated example of a legal move.",
         "Use Restart to begin the selected board again."
     ],

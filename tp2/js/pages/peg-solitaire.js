@@ -25,9 +25,10 @@ function initPegSolitaire(hero) {
 
         <div class="peg-solitaire__instructions" id="pegInstructions" hidden>
             <h2>How to play</h2>
-            <p>Select a piece, then click a highlighted empty space, or drag the piece there.</p>
-            <p>The piece jumps over one neighbor horizontally or vertically. The jumped piece is removed.</p>
-            <p>Try to leave one piece. The game ends when there are no legal moves.</p>
+            <p>Plankton and SpongeBob are competing to claim the secret formula. Select a piece, then click a highlighted empty space or drag the piece there.</p>
+            <p>Jump horizontally or vertically over one adjacent piece into the empty space beyond it. The jumped piece is captured and removed.</p>
+            <p>Plankton can capture SpongeBob, and SpongeBob can capture Plankton. A team cannot capture its own pieces.</p>
+            <p>Capture every piece on the opposing team to win. If no legal moves remain before either team is eliminated, the game ends without a winner.</p>
             <button type="button" id="pegInstructionsClose">Got it</button>
         </div>
 
