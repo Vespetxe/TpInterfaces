@@ -23,7 +23,8 @@ class PegSolitaireView {
     // Carga el fondo y las variantes de cada personaje. Al terminar cada imagen,
     // vuelve a dibujar por si el estado del juego ya está disponible.
     loadImages() {
-        this.images.background = this.loadImage("assets/img/pegsolitarie/tablero-fondo.png");
+        // El fondo nuevo se usa por defecto; el anterior queda disponible en el selector.
+        this.images.background = this.loadImage("assets/img/pegsolitarie/fondo default.jpg");
         this.images.plankton = {
             normal: this.loadImage("assets/img/pegsolitarie/ficha-plankton-default.png"),
             selected: this.loadImage("assets/img/pegsolitarie/ficha-plankton-hover.png"),
@@ -34,6 +35,11 @@ class PegSolitaireView {
             selected: this.loadImage("assets/img/pegsolitarie/ficha-bob-hover.png"),
             defeated: this.loadImage("assets/img/pegsolitarie/ficha-bob-loser.png")
         };
+    }
+
+    // Cambia el fondo del tablero cuando el jugador elige la otra alternativa.
+    setBackground(path) {
+        this.images.background = this.loadImage(path);
     }
 
     // Crea un objeto Image y guarda su ruta. Cuando carga, actualiza el Canvas.

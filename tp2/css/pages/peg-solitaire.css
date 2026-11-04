@@ -216,16 +216,30 @@
     border-radius: 5px;
 }
 
-.peg-solitaire__background-preview {
+.peg-solitaire__background-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.peg-solitaire__background-options button {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 12px 0;
-    text-align: left;
+    justify-content: center;
+    gap: 8px;
+    padding: 7px;
+    border-color: rgba(255, 232, 159, .35);
+    background: rgba(255, 255, 255, .08);
     font-size: 13px;
 }
 
-.peg-solitaire__background-preview img {
+.peg-solitaire__background-options button.is-selected {
+    border-color: #ffe27a;
+    box-shadow: 0 0 0 2px rgba(255, 226, 122, .35);
+    background: rgba(255, 226, 122, .14);
+}
+
+.peg-solitaire__background-options img {
     width: 90px;
     height: 50px;
     border: 1px solid rgba(255, 232, 159, .55);
