@@ -48,6 +48,13 @@
     transform: translate(-50%, -50%);
 }
 
+/* Alinea los controles con el Canvas 16:9 centrado, no con el borde del viewport. */
+.game-hero--peg:fullscreen .peg-solitaire__topbar {
+    top: max(14px, calc((100vh - 56.25vw) / 2 + 14px));
+    left: max(14px, calc((100vw - 177.78vh) / 2 + 14px));
+    right: max(14px, calc((100vw - 177.78vh) / 2 + 14px));
+}
+
 .game-hero--peg-started .game-hero__image {
     opacity: 0;
 }
