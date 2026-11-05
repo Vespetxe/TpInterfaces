@@ -162,7 +162,7 @@ function initPegSolitaire(hero) {
 
     // Vuelve al selector sin salir de la página del juego.
     function chooseGame() {
-        view.setBoardVisible(true);
+        view.setBoardVisible(false);
         view.setPiecesVisible(false);
         controller.reset();
         attemptStarted = false;

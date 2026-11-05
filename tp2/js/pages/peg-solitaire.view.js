@@ -17,7 +17,7 @@ class PegSolitaireView {
         this.boardX = 256;
         this.boardY = 46;
         this.gameData = null;
-        this.boardVisible = true;
+        this.boardVisible = false;
         this.piecesVisible = false;
         this.animatingHint = false;
         this.images = {};
