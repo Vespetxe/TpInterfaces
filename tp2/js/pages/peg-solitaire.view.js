@@ -63,10 +63,12 @@ class PegSolitaireView {
         this.draw();
 
         // Si hay un hint, comienza a animarlo. Si se limpió, la animación se detiene.
-        if (gameData.hintMove && !this.animatingHint) {
+        const hasAnimatedMarkers = gameData.hintMove || gameData.invalidPoint ||
+            (gameData.selectedCell && gameData.selectedMoves.length > 0);
+        if (hasAnimatedMarkers && !this.animatingHint) {
             this.animatingHint = true;
             this.animateHint();
-        } else if (!gameData.hintMove) {
+        } else if (!hasAnimatedMarkers) {
             this.animatingHint = false;
         }
     }
@@ -145,8 +147,11 @@ class PegSolitaireView {
             }
         }
 
-        // Dibuja la flecha del hint sobre las fichas para mantenerla visible.
-        if (this.gameData.hintMove) this.drawHint(this.gameData.hintMove);
+        // Dibuja la flecha y el mismo destino pulsante que se usa al seleccionar una ficha.
+        if (this.gameData.hintMove) {
+            this.drawHint(this.gameData.hintMove);
+            this.drawPossibleMoves([this.gameData.hintMove]);
+        }
 
         // Mientras se arrastra, dibuja la ficha encima del puntero.
         if (this.gameData.draggingCell && this.gameData.pointerPosition) {
@@ -256,29 +261,47 @@ class PegSolitaireView {
     }
 
     // Resalta los espacios vacíos donde la ficha seleccionada puede aterrizar.
-    drawPossibleMoves(moves) {
+    drawPossibleMoves(moves, showOuterRing) {
+        const pulse = (Math.sin(Date.now() / 230) + 1) / 2;
         for (let i = 0; i < moves.length; i++) {
             const center = this.getCellCenter(moves[i].to.row, moves[i].to.col);
+            const context = this.context;
+
+            // Mantiene el anillo visible y suma un brillo lima que titila en el agujero.
+            context.save();
+            context.globalAlpha = 0.78 + pulse * 0.22;
+            context.shadowColor = "#c0f62c";
+            context.shadowBlur = 8 + pulse * 12;
+            if (showOuterRing !== false) {
+                context.strokeStyle = "#c0f62c";
+                context.lineWidth = 4;
+                context.beginPath();
+                context.arc(center.x, center.y, 24, 0, Math.PI * 2);
+                context.stroke();
+            }
+
+            // El punto central crece y se ilumina suavemente para marcar dónde soltar.
             this.context.beginPath();
-            this.context.arc(center.x, center.y, 24, 0, Math.PI * 2);
-            this.context.lineWidth = 5;
-            this.context.strokeStyle = "#0fbef7";
-            this.context.stroke();
-            this.context.beginPath();
-            this.context.arc(center.x, center.y, 7, 0, Math.PI * 2);
-            this.context.fillStyle = "#0fbef7";
+            this.context.arc(center.x, center.y, 5 + pulse * 3, 0, Math.PI * 2);
+            this.context.fillStyle = "#c0f62c";
             this.context.fill();
+            context.restore();
         }
     }
 
     // Muestra una X roja donde se intentó hacer un movimiento prohibido.
     drawInvalidMarker(point) {
+        const elapsed = Math.max(0, performance.now() - point.startedAt);
+        const progress = Math.min(1, elapsed / 650);
+        const fade = 1 - progress * progress;
+        const radius = 23 - progress * 3;
         this.context.save();
+        this.context.globalAlpha = fade;
         this.context.fillStyle = "#e14848";
         this.context.strokeStyle = "#ffffff";
         this.context.lineWidth = 4;
         this.context.beginPath();
-        this.context.arc(point.x, point.y, 23, 0, Math.PI * 2);
+        this.context.arc(point.x, point.y, radius, 0, Math.PI * 2);
         this.context.fill();
         this.context.beginPath();
         this.context.moveTo(point.x - 9, point.y - 9);
@@ -408,7 +431,12 @@ class PegSolitaireView {
 
     // Anima un hint dibujando repetidamente una flecha entre origen y destino.
     animateHint() {
-        if (!this.animatingHint || !this.gameData || !this.gameData.hintMove) return;
+        const hasAnimatedMarkers = this.gameData && (
+            this.gameData.hintMove ||
+            this.gameData.invalidPoint ||
+            (this.gameData.selectedCell && this.gameData.selectedMoves.length > 0)
+        );
+        if (!this.animatingHint || !hasAnimatedMarkers) return;
         this.draw();
         const view = this;
         window.requestAnimationFrame(function () {
@@ -433,9 +461,12 @@ class PegSolitaireView {
         const destinationRadius = 29;
         const width = Math.max(24, distance - pieceRadius - destinationRadius);
         const height = width * image.naturalHeight / image.naturalWidth;
-        const centerX = (from.x + to.x) / 2;
-        const centerY = (from.y + to.y) / 2;
-        const pulse = 0.95 + Math.sin(Date.now() / 220) * 0.04;
+        const animationWave = Math.sin(Date.now() / 320);
+        const motion = animationWave * 3;
+        const centerX = (from.x + to.x) / 2 + Math.cos(angle) * motion;
+        const centerY = (from.y + to.y) / 2 + Math.sin(angle) * motion;
+        const pulse = 0.9 + (animationWave + 1) * 0.04;
+        const glowStrength = 16 + (animationWave + 1) * 3;
 
         // Add an accent glow around the moving piece and the landing space.
         context.save();
@@ -443,12 +474,10 @@ class PegSolitaireView {
         context.strokeStyle = "#c0f62c";
         context.lineWidth = 5;
         context.shadowColor = "#c0f62c";
-        context.shadowBlur = 22;
-        [from, to].forEach(function (point) {
-            context.beginPath();
-            context.arc(point.x, point.y, 34, 0, Math.PI * 2);
-            context.stroke();
-        });
+        context.shadowBlur = glowStrength;
+        context.beginPath();
+        context.arc(from.x, from.y, 34, 0, Math.PI * 2);
+        context.stroke();
         context.restore();
 
         // Draw the supplied left-facing arrow between the edges of both circles.
@@ -457,7 +486,7 @@ class PegSolitaireView {
         context.translate(centerX, centerY);
         context.rotate(rotation);
         context.shadowColor = "#c0f62c";
-        context.shadowBlur = 18;
+        context.shadowBlur = glowStrength;
         context.drawImage(image, -width / 2, -height / 2, width, height);
         context.drawImage(image, -width / 2, -height / 2, width, height);
         context.restore();

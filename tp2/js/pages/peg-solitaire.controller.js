@@ -81,6 +81,8 @@ class PegSolitaireController {
         }
 
         // Al hacer clic en otra ficha, esa ficha pasa a ser la seleccionada.
+        // Al elegir una ficha se descarta cualquier hint anterior, incluso si era su origen.
+        this.hintMove = null;
         this.selectedCell = { row: cell.row, col: cell.col };
         this.draggingCell = { row: cell.row, col: cell.col };
         this.pointerPosition = point;
@@ -151,7 +153,8 @@ class PegSolitaireController {
     showForbidden(point) {
         this.invalidPoint = {
             x: Math.max(24, Math.min(this.view.logicalWidth - 24, point.x)),
-            y: Math.max(24, Math.min(this.view.logicalHeight - 24, point.y))
+            y: Math.max(24, Math.min(this.view.logicalHeight - 24, point.y)),
+            startedAt: performance.now()
         };
 
         window.clearTimeout(this.invalidTimeout);
@@ -165,11 +168,14 @@ class PegSolitaireController {
 
     // Elige una jugada válida para que la View anime su origen y destino.
     showHint() {
-        const moves = this.getMovesForSelected();
-        let availableMoves = moves;
+        if (!this.started || this.finished) return;
 
-        // Si no hay ficha seleccionada, se puede mostrar cualquier jugada legal.
-        if (!this.selectedCell) availableMoves = this.model.getLegalMoves();
+        // El hint toma una jugada global y limpia cualquier selección o arrastre actual.
+        this.selectedCell = null;
+        this.draggingCell = null;
+        this.pointerPosition = null;
+        this.invalidPoint = null;
+        const availableMoves = this.model.getLegalMoves();
         if (!this.started || this.finished || availableMoves.length === 0) return;
 
         this.hintMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
