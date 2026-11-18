@@ -114,17 +114,19 @@ class PegSolitaireController {
         }
 
         if (destination.row === origin.row && destination.col === origin.col) {
+            // Se suelta en la misma casilla de origen
             this.selectedCell = origin;
             this.updateView();
             return;
         }
 
         if (this.model.hasPeg(destination.row, destination.col)) {
+            //Se suelta encima de otra ficha
             this.selectedCell = destination;
             this.updateView();
             return;
         }
-
+        // Se suelta en una casilla vacía
         this.tryMove(origin, destination);
     }
 

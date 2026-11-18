@@ -231,7 +231,7 @@ class PegSolitaireModel {
     static createDemoWin(layoutId) {
         return new PegSolitaireModel({
             layoutId: layoutId,
-            occupied: [{ row: 3, col: 0 }, { row: 3, col: 1 }]
+            occupied: [{ row: 3, col: 2 }, { row: 3, col: 3 }]
         });
     }
 
