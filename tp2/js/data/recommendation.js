@@ -70,6 +70,45 @@ const BLOCKA_GAME = {
     ]
 };
 
-// Lista de juegos con página de detalle propia
-const CURATED_GAMES = [RECOMMENDED_GAME, BLOCKA_GAME];
+// Nuevo juego curado de arcade integrado en la página de detalle.
+const RUNNER_GAME = {
+    id: 900002,
+    title: "Moonlit Flight",
+    category: "Arcade",
+    genres: ["Arcade"],
+    likes: 0,
+    rating: 4.5,
+    type: "free",
+    price: 0,
+    image: "assets/img/runner/cover.svg",
+    fullImage: "assets/img/runner/cover.svg",
+    gallery: [
+        "assets/img/runner/gallery-candy.svg",
+        "assets/img/runner/gallery-ghost.svg",
+        "assets/img/runner/gallery-castle.svg"
+    ],
+    description: "A kawaii Halloween flight through a moonlit castle town.",
+    longDescription: "Fly through a cozy Halloween night as a tiny kawaii bat. Weave between enchanted castle towers, collect sweet treats and watch out for mischievous ghosts.",
+    howToPlay: "Press Space, Arrow Up, W or click inside the game to flap upward. Tower collisions only cause a brief harmless bump. Candy adds 5 points; touching a ghost removes 3 points. Fly for 120 seconds to reach dawn.",
+    features: [
+        "A responsive runner with four parallax scenery layers",
+        "Haunted towers with changing gaps and heights",
+        "Animated candy and ghosts with different effects",
+        "A two-minute flight timer and live score"
+    ],
+    faq: [
+        { q: "How do I fly?", a: "Press Space, Arrow Up or W, or click inside the game to flap upward." },
+        { q: "What do candy and ghosts do?", a: "Candy adds 5 points. A ghost removes 3 points. They never end the flight." },
+        { q: "When does a flight end?", a: "The flight ends if the bat flies off the screen or when the two-minute timer runs out. Bumping into towers is harmless." }
+    ],
+    controls: [
+        "Press Space, Arrow Up or W, or click inside the game to flap upward.",
+        "Castle tower bumps are harmless; keep flying through the spooky scene.",
+        "Collect candy for +5 points and avoid ghosts, which take away 3 points.",
+        "Fly for two minutes to complete the flight."
+    ]
+};
+
+// Lista de juegos con página de detalle propia.
+const CURATED_GAMES = [RECOMMENDED_GAME, BLOCKA_GAME, RUNNER_GAME];
 const CURATED_IDS = CURATED_GAMES.map((game) => game.id);

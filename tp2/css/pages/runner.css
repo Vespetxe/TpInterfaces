@@ -1,0 +1,98 @@
+/* Moonlit Flight lives in the shared game detail hero. */
+.game-detail-main--runner { width: min(1440px, calc(100% - 40px)); }
+.game-hero--runner { min-height: 420px; aspect-ratio: 16 / 7; background: #261a4b; }
+.game-hero--runner .game-hero__image { object-fit: cover; }
+.game-hero--runner-started .game-hero__image { opacity: 0; }
+.game-hero--runner-started { overflow: visible; }
+
+.runner {
+    --runner-ink: #291947;
+    --runner-cream: #fff7e5;
+    --runner-pink: #ffb1c8;
+    --runner-gold: #ffd36d;
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    padding: clamp(12px, 2.2vw, 26px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--runner-ink);
+    font-family: inherit;
+    text-align: left;
+}
+.runner__topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; }
+.runner__brand { color: var(--runner-cream); font-size: clamp(14px, 2vw, 20px); font-weight: 800; text-shadow: 0 2px 0 #442664; }
+.runner__brand span { color: var(--runner-gold); font-size: 1.25em; vertical-align: -1px; }
+.runner__stats { display: flex; gap: 8px; color: var(--runner-cream); font-size: clamp(11px, 1.5vw, 14px); font-weight: 700; }
+.runner__stats span { padding: 7px 12px; border: 1px solid #ffffff45; border-radius: 999px; background: #2c1b56b8; box-shadow: 0 3px 0 #1c123c; }
+.runner__stats strong { margin-left: 5px; color: var(--runner-gold); font-variant-numeric: tabular-nums; }
+.runner__stage { position: relative; isolation: isolate; flex: 1; min-height: 250px; overflow: hidden; border: 4px solid #fff1ce; border-radius: 20px; outline: none; background: linear-gradient(#77d5ef 0%, #a6e4ed 55%, #ffd7bd 100%); box-shadow: 0 7px 0 #4d346d, 0 12px 28px #17102d75; }
+.runner__stage:focus-visible { box-shadow: 0 0 0 4px var(--runner-gold), 0 7px 0 #4d346d; }
+.runner__layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat-x; background-size: 900px 100%; will-change: background-position; }
+.runner__layer--clouds { background-image: url("../../assets/img/runner/clouds.svg"); opacity: .74; }
+.runner__layer--hills { background-image: url("../../assets/img/runner/hills.svg"); }
+.runner__layer--castles { background-image: url("../../assets/img/runner/castles.svg"); }
+.runner__layer--foreground { background-image: url("../../assets/img/runner/foreground.svg"); }
+.runner__ground { position: absolute; z-index: 2; right: 0; bottom: 0; left: 0; height: 14px; border-top: 3px solid #9d6ba1; background: repeating-linear-gradient(100deg, #805a96 0 13px, #9c71a3 13px 25px); }
+.runner__towers, .runner__items { position: absolute; inset: 0; pointer-events: none; }
+.runner__tower-pair { position: absolute; inset: 0 auto 0 0; width: 82px; }
+.runner__tower { position: absolute; left: 0; width: 78px; border: 3px solid #563277; background: repeating-linear-gradient(90deg, #9565ba 0 18px, #a979ca 18px 35px); box-shadow: inset 5px 0 #ffffff28, inset -6px 0 #44236342; }
+.runner__tower--top { top: 0; border-radius: 0 0 13px 13px; }
+.runner__tower--bottom { border-radius: 13px 13px 0 0; }
+.runner__tower::before { content: ""; position: absolute; left: -7px; width: 82px; height: 18px; border: 3px solid #563277; border-radius: 7px; background: repeating-linear-gradient(90deg, #ffd28a 0 12px, #ffb777 12px 23px); }
+.runner__tower--top::before { bottom: -5px; }
+.runner__tower--bottom::before { top: -5px; }
+.runner__tower::after { content: "✦"; position: absolute; left: 50%; color: #ffe7a3; font-size: 18px; text-shadow: 0 1px 3px #482862; transform: translateX(-50%); }
+.runner__tower--top::after { bottom: 28px; }
+.runner__tower--bottom::after { top: 28px; }
+.runner__bat { position: absolute; z-index: 3; width: 64px; height: 64px; transform-origin: 50% 50%; will-change: transform, top, left; filter: drop-shadow(0 4px 1px #41305245); }
+.runner__bat-sprite { position: absolute; inset: 0; display: block; background: url("../../assets/img/runner/bat-sheet.svg") 0 0 / 400% 100% no-repeat; animation: runner-bat-flap .72s steps(4, end) infinite; }
+.runner__cheeks { position: absolute; inset: 0; pointer-events: none; }
+.runner__cheeks::before, .runner__cheeks::after { content: ""; position: absolute; top: 36px; width: 8px; height: 4px; border-radius: 50%; background: #f788a7; opacity: .82; }
+.runner__cheeks::before { left: 17px; }
+.runner__cheeks::after { right: 17px; }
+.runner__bat.is-flapping { animation: runner-bat-bounce .22s ease-out; }
+.runner__bat.is-bonking { animation: runner-tower-bonk .42s ease-out; }
+.runner__pickup { position: absolute; z-index: 2; width: 42px; height: 42px; background-position: 0 0; background-size: 400% 100%; background-repeat: no-repeat; filter: drop-shadow(0 3px 2px #36254e50); }
+.runner__pickup--candy { background-image: url("../../assets/img/runner/candy-sheet.svg"); animation: runner-pickup-candy .68s steps(4, end) infinite; }
+.runner__pickup--ghost { background-image: url("../../assets/img/runner/ghost-sheet.svg"); animation: runner-pickup-ghost .82s steps(4, end) infinite; }
+.runner__overlay { position: absolute; z-index: 5; inset: 0; display: grid; place-items: center; padding: 18px; background: #20133d78; backdrop-filter: blur(3px); }
+.runner__overlay[hidden] { display: none; }
+.runner__card { width: min(390px, 94%); padding: clamp(18px, 3vw, 28px); border: 3px solid #fff0ce; border-radius: 24px; background: #fff8e8; box-shadow: 0 7px 0 #60447a; text-align: center; }
+.runner__eyebrow { margin: 0 0 5px; color: #9b66ab; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.runner__card h2 { margin: 0 0 8px; color: #44275f; font-size: clamp(22px, 4vw, 32px); line-height: 1.05; }
+.runner__card p:not(.runner__eyebrow):not(.runner__hint) { margin: 0 auto 15px; max-width: 34ch; color: #684a76; font-size: clamp(13px, 1.8vw, 15px); }
+.runner__button { min-width: 150px; padding: 11px 20px; border: 0; border-radius: 999px; color: #432359; background: #ffd36d; box-shadow: 0 4px 0 #d69c54; font: inherit; font-weight: 800; cursor: pointer; transition: transform .16s ease, filter .16s ease; }
+.runner__button:hover:not(:disabled) { filter: brightness(1.04); transform: translateY(-2px); }
+.runner__button:disabled { opacity: .65; cursor: progress; }
+.runner__hint { margin: 13px 0 0; color: #9b7c9f; font-size: 11px; }
+.runner__legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 18px; color: #fff6e4; font-size: 12px; font-weight: 700; text-shadow: 0 1px 2px #332247; }
+.runner__legend-icon { margin-right: 4px; font-style: normal; }
+.runner__exit { align-self: center; padding: 5px 12px; border: 1px solid #fff4d9a8; border-radius: 999px; color: #fff7e8; background: #34214cbd; font: inherit; font-size: 12px; cursor: pointer; }
+.runner__exit:hover { background: #50336e; }
+.runner.is-scoring .runner__stats span:first-child { animation: runner-score-pop .4s ease; }
+.runner.is-spooked .runner__stats span:first-child { animation: runner-score-shake .4s ease; color: #ffb2cb; }
+
+@keyframes runner-bat-flap { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@keyframes runner-bat-bounce { 50% { scale: 1.14; } }
+@keyframes runner-tower-bonk { 35% { scale: .82; filter: brightness(1.7) drop-shadow(0 0 10px #ffd36d); } 70% { scale: 1.08; } }
+@keyframes runner-pickup-candy { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@keyframes runner-pickup-ghost { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@keyframes runner-score-pop { 50% { scale: 1.14; color: #ffd36d; } }
+@keyframes runner-score-shake { 25%, 75% { translate: -3px 0; } 50% { translate: 3px 0; } }
+
+@media (max-width: 640px) {
+    .game-detail-main--runner { width: min(100% - 20px, 1440px); }
+    .game-hero--runner { min-height: 480px; aspect-ratio: auto; }
+    .runner { padding: 10px; gap: 8px; }
+    .runner__stage { min-height: 300px; }
+    .runner__tower-pair { width: 68px; }
+    .runner__tower { width: 64px; }
+    .runner__tower::before { width: 68px; }
+    .runner__legend { gap: 5px 11px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .runner__bat-sprite, .runner__pickup { animation-duration: 1.8s; }
+    .runner__button { transition: none; }
+}

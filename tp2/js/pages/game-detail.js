@@ -9,6 +9,9 @@ const ICON_SHARE = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" 
 const ICON_INSTRUCTIONS = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.75h14A1.75 1.75 0 0 1 20.75 5.5v11A1.75 1.75 0 0 1 19 18.25H9l-5.75 3V5.5A1.75 1.75 0 0 1 5 3.75Z"/><path d="M12 7v5m0 3h.01"/></svg>`;
 const ICON_FULLSCREEN = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>`;
 // Blocka muestra solo el comentario del nuevo perfil de TurboKnight.
+const RUNNER_COMMENTS = [
+    { user: "MoonSprite", time: "just now", text: "The little bat is adorable. Dodging those towers feels spooky in the best way!", likes: 5, avatar: "assets/img/voidrunner.png" },
+];
 const BLOCKA_COMMENTS = [
     { user: "TurboKnight", time: "25 min ago", text: "The rotating picture puzzle is a clever twist. I like how each image makes the challenge feel different!", likes: 8, avatar: "assets/img/turboknight.png" },
 ];
@@ -95,11 +98,12 @@ function escapeDetailText(value = "") {
     } else {*/
         const game = CURATED_GAMES.find((item) => item.id === requestedId) || RECOMMENDED_GAME;
         // Selecciona comentarios propios para que cada juego muestre solo los de su perfil.
-        const gameComments = game.id === BLOCKA_GAME.id ? BLOCKA_COMMENTS : PLANKTON_COMMENTS;
+        const gameComments = game.id === RUNNER_GAME.id ? RUNNER_COMMENTS : game.id === BLOCKA_GAME.id ? BLOCKA_COMMENTS : PLANKTON_COMMENTS;
         document.title = `${game.title} | Nexus Games`;
         // Amplía Blocka desde que carga la página para que no dependa del modo fullscreen.
         detailMount.classList.toggle("game-detail-main--blocka", game.id === BLOCKA_GAME.id);
         detailMount.classList.toggle("game-detail-main--peg", game.id === RECOMMENDED_GAME.id);
+        detailMount.classList.toggle("game-detail-main--runner", game.id === RUNNER_GAME.id);
 
     // Renderiza el detalle local y convierte sus listas en secciones HTML.
     detailMount.innerHTML = `
@@ -111,7 +115,7 @@ function escapeDetailText(value = "") {
             <span class="breadcrumb__current">${game.title}</span>
         </nav>
 
-        <div class="game-hero ${game.id === RECOMMENDED_GAME.id ? "game-hero--peg" : ""}">
+        <div class="game-hero ${game.id === RECOMMENDED_GAME.id ? "game-hero--peg" : ""} ${game.id === RUNNER_GAME.id ? "game-hero--runner" : ""}">
             <img class="game-hero__image" src="${game.fullImage}" alt="${game.title}">
             <button class="game-hero__play" type="button">Play</button>
         </div>
@@ -290,6 +294,10 @@ function escapeDetailText(value = "") {
             hero.classList.add("game-hero--peg");
             hero.classList.add("game-hero--peg-started");
             initPegSolitaire(hero);
+        } else if (game.id === RUNNER_GAME.id) {
+            event.currentTarget.style.display = "none";
+            hero.classList.add("game-hero--runner-started");
+            initRunner(hero);
         }
     });
     // Alterna el modo de pantalla completa para la imagen principal del juego.
