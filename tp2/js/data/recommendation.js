@@ -89,23 +89,24 @@ const RUNNER_GAME = {
     ],
     description: "A kawaii Halloween flight through a moonlit castle town.",
     longDescription: "Fly through a cozy Halloween night as a tiny kawaii bat. Weave between enchanted castle towers, collect sweet treats and watch out for mischievous ghosts.",
-    howToPlay: "Press Space, Arrow Up, W or click inside the game to flap upward. Tower collisions only cause a brief harmless bump. Candy adds 5 points; touching a ghost removes 3 points. Fly for 120 seconds to reach dawn.",
+    howToPlay: "Press Space, Arrow Up, W or click inside the game to flap upward. Start with 10 lives: candy restores one life, while ghosts, towers and the top or bottom edge cost one. Candy adds 5 points; passing a tower pair adds 1 point. The flight continues until all lives are lost.",
     features: [
         "A responsive runner with four parallax scenery layers",
         "Haunted towers with changing gaps and heights",
         "Animated candy and ghosts with different effects",
-        "A two-minute flight timer and live score"
+        "A 10-life system, collectible rewards and live score"
     ],
     faq: [
         { q: "How do I fly?", a: "Press Space, Arrow Up or W, or click inside the game to flap upward." },
-        { q: "What do candy and ghosts do?", a: "Candy adds 5 points. A ghost removes 3 points. They never end the flight." },
-        { q: "When does a flight end?", a: "The flight ends if the bat flies off the screen or when the two-minute timer runs out. Bumping into towers is harmless." }
+        { q: "What do candy and ghosts do?", a: "Candy adds 5 points and restores one life, up to 10. A ghost costs one life." },
+        { q: "How do I score points?", a: "Each tower pair you pass adds one point. Collecting candy adds five points." },
+        { q: "When does a flight end?", a: "The flight ends when the bat loses all 10 lives. Tower and screen-edge collisions cost one life and bounce the bat back into play." }
     ],
     controls: [
         "Press Space, Arrow Up or W, or click inside the game to flap upward.",
-        "Castle tower bumps are harmless; keep flying through the spooky scene.",
-        "Collect candy for +5 points and avoid ghosts, which take away 3 points.",
-        "Fly for two minutes to complete the flight."
+        "Tower, ceiling and floor collisions cost one life and bounce the bat back into play.",
+        "Pass a tower pair for +1 point. Candy gives +5 points and +1 life; ghosts cost one life.",
+        "The flight ends when all 10 lives are lost."
     ]
 };
 

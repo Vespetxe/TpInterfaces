@@ -1,6 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
-<path d="M0 390 115 282l76 73 134-172 96 115 112-97 116 123 110-153 141 160v169H0Z" fill="#a991cc"/>
-<path d="m272 214 53-31 27 33-18-7-13 14-14-7-13 11Z M643 207l15-19 14 21-9-6-8 8Z" fill="#f8e8fa"/>
-<path d="M0 421q130-87 260-8t264-5 376 14v78H0Z" fill="#7264a6"/>
-<g fill="#fff2bf"><circle cx="155" cy="384" r="3"/><circle cx="501" cy="406" r="4"/><circle cx="758" cy="387" r="3"/></g>
+  <path d="M0 360 80 299l61 43 104-108 88 78 93-125 81 107 99-91 89 83 95-137 110 112v239H0Z" fill="#20264a"/>
+  <path d="M0 390q97-74 197-3t196-15 198 11 197-19 112 8v128H0Z" fill="#171d3d"/>
+  <g fill="#34375e" stroke="#10162f" stroke-width="5">
+    <path d="M119 390v-40q0-20 19-20t19 20v40zm23-64v-18h-9v-13h18v13h-9"/>
+    <path d="M690 387v-48q0-24 22-24t22 24v48zm25-75v-17h-10v-14h20v14h-10"/>
+  </g>
+  <g fill="#6b7197" opacity=".72">
+    <path d="M275 258q0-18 18-18t18 18v8h-36zM774 242q0-14 14-14t14 14v7h-28z"/>
+    <path d="M277 239v-8h12v8m-3-8v-7h6v7M776 226v-7h9v7m-2-7v-6h5v6"/>
+  </g>
+  <g fill="#7fa0ba" opacity=".8">
+    <circle cx="53" cy="376" r="2"/><circle cx="355" cy="399" r="2"/><circle cx="564" cy="374" r="2"/><circle cx="857" cy="387" r="2"/>
+  </g>
 </svg>
