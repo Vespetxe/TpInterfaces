@@ -71,8 +71,8 @@
     inset: 0;
 }
 
-/* Alinea la imagen al borde superior para conservar el título y recortar más desde abajo. */
-.hero-card .game-card__img { object-position: center top; }
+/* Centra el arte dentro de la card, igual que en la portada del detalle. */
+.hero-card .game-card__img { object-position: center center; }
 
 /* Hero Card Badges and Highlight */
 .hero-card .game-card__badges {

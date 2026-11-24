@@ -40,13 +40,14 @@
 .runner__stats .runner__score { position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
 .runner__stats .runner__score strong { color: var(--runner-gold); }
 .runner__stage { position: relative; isolation: isolate; flex: 1; min-height: 250px; overflow: hidden; border: 4px solid #4b456b; border-radius: 20px; outline: none; background: linear-gradient(#0b1025 0%, #171932 55%, #25203c 100%); box-shadow: 0 7px 0 #332747, 0 12px 28px #090b1a99; }
+.runner__stage::after { content: ""; position: absolute; z-index: 0; right: 0; bottom: 0; left: 0; height: 10.2%; pointer-events: none; background: linear-gradient(to bottom, #11172d 0 38%, #34324e 38% 41%, #0d142a 41% 100%); }
 .runner__stage:focus-visible { box-shadow: 0 0 0 4px var(--runner-gold), 0 7px 0 #4d346d; }
 .runner__layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat-x; background-size: 900px 100%; will-change: background-position; }
-.runner__layer--clouds { background-image: url("../../assets/img/runner/clouds.svg?v=3"); }
-.runner__layer--hills { background-image: url("../../assets/img/runner/hills.svg?v=3"); }
+.runner__layer--clouds { background-image: url("../../assets/img/runner/clouds.svg?v=5"); }
+.runner__layer--hills { background-image: url("../../assets/img/runner/hills.svg?v=4"); }
 .runner__layer--castles { background-image: url("../../assets/img/runner/castles.svg?v=3"); }
-.runner__layer--foreground { z-index: 0; background-size: 1800px 100%; background-image: url("../../assets/img/runner/foreground.svg?v=3"); }
-.runner__towers, .runner__items { position: absolute; z-index: 1; inset: 0; pointer-events: none; }
+.runner__layer--foreground { z-index: 1; background-size: 600px 100%; background-image: url("../../assets/img/runner/foreground.svg?v=7"); }
+.runner__towers, .runner__items { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
 /* 4. Obstáculos: cada pareja tiene una torre superior y otra inferior */
 .runner__tower-pair { position: absolute; inset: 0 auto 0 0; width: 82px; }
 .runner__tower { position: absolute; left: 0; width: 78px; border: 3px solid #563277; background: repeating-linear-gradient(90deg, #9565ba 0 18px, #a979ca 18px 35px); box-shadow: inset 5px 0 #ffffff28, inset -6px 0 #44236342; }
@@ -61,20 +62,23 @@
 /* 5. Personaje y objetos coleccionables */
 .runner__bat { position: absolute; z-index: 3; width: 78px; height: 64px; transform-origin: 50% 50%; transform: rotate(var(--bat-tilt, 35deg)); transition: transform .18s ease-out; will-change: transform, top, left; filter: drop-shadow(0 4px 1px #41305245); }
 .runner__bat-pose { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
-.runner__bat-pose--base { animation: runner-bat-base-frame .32s steps(1, end) infinite; }
-.runner__bat-pose--flap { visibility: hidden; animation: runner-bat-flap-frame .32s steps(1, end) infinite; }
+.runner__bat-pose--base { visibility: visible; }
+.runner__bat-pose--flap { visibility: hidden; }
+.runner__bat.is-flapping:not(.is-hurt):not(.is-dead) .runner__bat-pose--base { visibility: hidden; }
+.runner__bat.is-flapping:not(.is-hurt):not(.is-dead) .runner__bat-pose--flap { visibility: visible; }
 .runner__bat-state { position: absolute; inset: 0; display: none; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
 .runner__bat.is-hurt .runner__bat-pose, .runner__bat.is-dead .runner__bat-pose { display: none; }
 .runner__bat.is-hurt .runner__bat-state, .runner__bat.is-dead .runner__bat-state { display: block; }
 .runner__bat.is-rising { animation: runner-bat-rise .16s ease-out both; }
 .runner__bat.is-falling { animation: runner-bat-fall .24s ease-in both; }
 .runner__bat.is-hurt { animation: runner-bat-hurt .48s ease-out; filter: drop-shadow(0 0 5px #ff263d) drop-shadow(0 0 13px #ff263d); }
-.runner.is-candy-pickup .runner__bat { filter: drop-shadow(0 0 6px #ffe45e) drop-shadow(0 0 15px #ffc928); }
+.runner.is-candy-pickup .runner__bat { filter: drop-shadow(0 0 7px #baff00) drop-shadow(0 0 18px #55ff66); }
 .runner__pickup { position: absolute; z-index: 2; width: 48px; height: 48px; animation: runner-pickup-float 1.3s ease-in-out infinite; filter: drop-shadow(0 3px 2px #36254e50); }
 .runner__pickup img { display: block; width: 100%; height: 100%; object-fit: contain; animation: runner-pickup-wiggle 1.1s ease-in-out infinite; }
 .runner__pickup--candy { width: 54px; height: 42px; }
 .runner__pickup--ghost { width: 34px; height: 42px; animation-duration: 1.5s; }
-.runner__pickup.is-collected { animation: runner-pickup-collect .36s ease-in forwards; pointer-events: none; }
+.runner__pickup.is-collected { animation: runner-pickup-collect .36s linear forwards; pointer-events: none; }
+.runner__pickup--ghost.is-collected img { animation: none; }
 .runner__pickup--candy.is-collected { animation: runner-pickup-candy-collect .36s ease-in forwards; }
 /* 6. Pantalla de inicio/fin, reglas y botón para salir */
 .runner__overlay { position: absolute; z-index: 5; inset: 0; display: grid; place-items: center; padding: 18px; background: #20133d78; backdrop-filter: blur(3px); }
@@ -98,11 +102,11 @@
 @keyframes runner-bat-rise { from { transform: rotate(35deg); } to { transform: rotate(-22deg); } }
 @keyframes runner-bat-fall { from { transform: rotate(-22deg); } to { transform: rotate(35deg); } }
 @keyframes runner-bat-hurt { 0%, 100% { transform: rotate(var(--bat-tilt, 35deg)) translateX(0); } 20%, 60% { transform: rotate(var(--bat-tilt, 35deg)) translateX(-6px); } 40%, 80% { transform: rotate(var(--bat-tilt, 35deg)) translateX(6px); } }
-@keyframes runner-bat-base-frame { 0%, 49.99% { visibility: visible; } 50%, 100% { visibility: hidden; } }
-@keyframes runner-bat-flap-frame { 0%, 49.99% { visibility: hidden; } 50%, 100% { visibility: visible; } }
+@keyframes runner-bat-base-frame { 0%, 49.99% { visibility: hidden; } 50%, 100% { visibility: visible; } }
+@keyframes runner-bat-flap-frame { 0%, 49.99% { visibility: visible; } 50%, 100% { visibility: hidden; } }
 @keyframes runner-pickup-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
 @keyframes runner-pickup-wiggle { 0%, 100% { transform: rotate(-3deg) scale(.98); } 50% { transform: rotate(3deg) scale(1.02); } }
-@keyframes runner-pickup-collect { to { opacity: 0; transform: translateY(-22px) scale(.45); } }
+@keyframes runner-pickup-collect { to { opacity: 0; } }
 @keyframes runner-pickup-candy-collect { 0% { filter: drop-shadow(0 0 2px #fff08a); } 35% { filter: drop-shadow(0 0 10px #ffe45e) drop-shadow(0 0 18px #ffc928); } 100% { opacity: 0; transform: translateY(-22px) scale(.45); filter: drop-shadow(0 0 14px #ffe45e); } }
 @keyframes runner-score-pop { 50% { scale: 1.14; color: #ffd36d; } }
 @keyframes runner-score-shake { 25%, 75% { translate: -3px 0; } 50% { translate: 3px 0; } }

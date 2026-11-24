@@ -80,8 +80,8 @@ const RUNNER_GAME = {
     rating: 4.5,
     type: "free",
     price: 0,
-    image: "assets/img/runner/cover.svg",
-    fullImage: "assets/img/runner/cover.svg",
+    image: "assets/img/moonlight_card.jpg",
+    fullImage: "assets/img/moonlight_hero.png",
     gallery: [
         "assets/img/runner/gallery-candy.svg",
         "assets/img/runner/gallery-ghost.svg",

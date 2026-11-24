@@ -22,10 +22,10 @@ const RUNNER_ASSETS = [
     "assets/img/runner/murcielago_lose.png",
     "assets/img/runner/caramelo.png",
     "assets/img/runner/fantasmita.png",
-    "assets/img/runner/clouds.svg?v=3",
-    "assets/img/runner/hills.svg?v=3",
+    "assets/img/runner/clouds.svg?v=5",
+    "assets/img/runner/hills.svg?v=4",
     "assets/img/runner/castles.svg?v=3",
-    "assets/img/runner/foreground.svg?v=3"
+    "assets/img/runner/foreground.svg?v=7"
 ];
 
 // Constantes de física y movimiento (pixeles y segundos).
@@ -76,7 +76,7 @@ function initRunner(hero) {
             <span><i class="runner__legend-icon runner__legend-icon--ghost" aria-hidden="true">👻</i> Ghost −1 life</span>
             <span>Tower and edge hits −1 life</span>
         </div>
-        <button type="button" class="runner__exit" id="runnerExit">Back to game page</button>
+        <button type="button" class="runner__exit" id="runnerExit">Game menu</button>
     `;
     hero.appendChild(root);
 
@@ -119,6 +119,7 @@ function initRunner(hero) {
     let nextTowerIn = 0.8;
     let lastStageWidth = 0;
     let lastStageHeight = 0;
+    let flapAnimationTimeout = 0;
 
     // ----- 4. Entrada del jugador -----
     // Teclado: Space, flecha arriba o W inician la partida y hacen volar.
@@ -144,8 +145,12 @@ function initRunner(hero) {
     // Registra un aleteo. La física se aplica luego en update().
     function queueFlap() {
         input.flap = true;
-        bat.classList.add("is-rising");
+        window.clearTimeout(flapAnimationTimeout);
+        bat.classList.remove("is-flapping");
+        void bat.offsetWidth;
+        bat.classList.add("is-flapping", "is-rising");
         bat.classList.remove("is-falling");
+        flapAnimationTimeout = window.setTimeout(() => bat.classList.remove("is-flapping"), 360);
     }
 
     // Cambia la imagen principal del murciélago (normal, herido o derrotado).
@@ -161,7 +166,7 @@ function initRunner(hero) {
         if (state === "ready") { startGame(); queueFlap(); }
         else if (state === "over") resetGame();
     });
-    exitButton.addEventListener("click", leaveGame);
+    exitButton.addEventListener("click", returnToMenu);
 
     // Espera la carga de todos los recursos. Si alguno falla, el juego igual continúa.
     function preloadAssets() {
@@ -240,6 +245,33 @@ function initRunner(hero) {
         queueFlap();
     }
 
+    // Vuelve al menú propio del minijuego y deja la opción de iniciar otra partida.
+    function returnToMenu() {
+        state = "ready";
+        input.flap = false;
+        window.clearTimeout(flapAnimationTimeout);
+        bat.classList.remove("is-hurt", "is-dead", "is-flapping", "is-rising", "is-falling");
+        setBatImage("assets/img/runner/murcielago_playing.png");
+        distance = 0;
+        elapsed = 0;
+        score = 0;
+        lives = maxLives;
+        hitCooldown = 0;
+        batVelocity = 0;
+        batY = stage.clientHeight * 0.46;
+        nextTowerIn = 0.8;
+        towers.splice(0).forEach((tower) => tower.node.remove());
+        items.splice(0).forEach((item) => item.node.remove());
+        root.classList.remove("is-scoring", "is-spooked", "is-candy-pickup");
+        scoreOutput.textContent = "0";
+        renderLives();
+        overlayTitle.textContent = "Ready to fly?";
+        overlayText.textContent = "Use up to 10 lives to fly through the night. Collect candy, avoid ghosts and towers.";
+        mainButton.textContent = "Start flight";
+        overlay.hidden = false;
+        draw();
+    }
+
     // Cambia al estado de fin y muestra el resultado cuando las vidas llegan a cero.
     function endGame() {
         if (state !== "playing") return;
@@ -268,8 +300,13 @@ function initRunner(hero) {
     // Crea un par de torres con una abertura aleatoria por la que debe pasar el bat.
     function makeTower() {
         const stageHeight = stage.clientHeight;
-        const gapSize = Math.max(132, 202 - elapsed * 1.05);
-        const gapCenter = stageHeight * (0.34 + Math.random() * 0.34);
+        const gapRatio = Math.max(0.30, 0.55 - elapsed * 0.0015);
+        const gapSize = Math.min(stageHeight, 420) * gapRatio;
+        const visibleGapRatio = gapSize / stageHeight;
+        const gapCenterMin = visibleGapRatio / 2 + 0.10;
+        const gapCenterMax = 1 - visibleGapRatio / 2 - 0.10;
+        const gapCenterRatio = gapCenterMin + Math.random() * (gapCenterMax - gapCenterMin);
+        const gapCenter = stageHeight * gapCenterRatio;
         const node = document.createElement("div");
         node.className = "runner__tower-pair";
         node.setAttribute("aria-hidden", "true");
@@ -283,7 +320,7 @@ function initRunner(hero) {
         bottom.style.top = `${gapCenter + gapSize / 2}px`;
         bottom.style.height = `${Math.max(24, stageHeight - gapCenter - gapSize / 2)}px`;
         towersLayer.appendChild(node);
-        const tower = { node, x: stage.clientWidth + 30, gapTop: gapCenter - gapSize / 2, gapBottom: gapCenter + gapSize / 2, gapCenter, gapSize, bonked: false, passed: false };
+        const tower = { node, x: stage.clientWidth + 30, gapTop: gapCenter - gapSize / 2, gapBottom: gapCenter + gapSize / 2, gapCenter, gapCenterRatio, gapSize, gapRatio, bonked: false, passed: false };
         towers.push(tower);
         return tower;
     }
@@ -352,6 +389,30 @@ function initRunner(hero) {
         const width = stage.clientWidth;
         const height = stage.clientHeight;
         if (width !== lastStageWidth || height !== lastStageHeight) {
+            const widthScale = lastStageWidth > 0 ? width / lastStageWidth : 1;
+            const heightScale = lastStageHeight > 0 ? height / lastStageHeight : 1;
+            if (widthScale !== 1 || heightScale !== 1) {
+                // Escala las posiciones de obstáculos y premios para conservar sus proporciones.
+                towers.forEach((tower) => {
+                    tower.x *= widthScale;
+                    tower.gapCenter = tower.gapCenterRatio * height;
+                    tower.gapSize = tower.gapRatio * Math.min(height, 420);
+                    tower.gapTop = tower.gapCenter - tower.gapSize / 2;
+                    tower.gapBottom = tower.gapCenter + tower.gapSize / 2;
+                    const top = tower.node.firstElementChild;
+                    const bottom = tower.node.lastElementChild;
+                    top.style.height = `${Math.max(24, tower.gapTop)}px`;
+                    bottom.style.top = `${tower.gapBottom}px`;
+                    bottom.style.height = `${Math.max(24, height - tower.gapBottom)}px`;
+                    tower.node.style.transform = `translate3d(${tower.x}px, 0, 0)`;
+                });
+                items.forEach((item) => {
+                    item.x *= widthScale;
+                    item.y *= heightScale;
+                    item.node.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+                });
+                batY *= heightScale;
+            }
             lastStageWidth = width;
             lastStageHeight = height;
             batY = Math.min(Math.max(batY, 32), height - 32);
@@ -394,7 +455,8 @@ function initRunner(hero) {
         nextTowerIn -= dt;
         if (nextTowerIn <= 0) {
             const tower = makeTower();
-            nextTowerIn = Math.max(1.15, 1.55 - elapsed * 0.004) + Math.random() * 0.45;
+            const horizontalGapRatio = 0.24 + Math.random() * 0.1;
+            nextTowerIn = Math.max(0.8, (stage.clientWidth * horizontalGapRatio) / RUNNER_WORLD_SPEED);
             if (Math.random() < 0.5) {
                 const type = Math.random() < 0.5 ? "ghost" : "candy";
                 makeItem(tower, type, RUNNER_WORLD_SPEED * nextTowerIn);
@@ -437,22 +499,22 @@ function initRunner(hero) {
             item.x -= RUNNER_WORLD_SPEED * dt;
             item.node.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
             const pickupBounds = { left: item.x + 7, right: item.x + 39, top: item.y + 7, bottom: item.y + 39 };
-            if (overlaps(batBounds, pickupBounds)) {
-                if (!item.collected) {
-                    item.collected = true;
-                    item.node.classList.add("is-collected");
-                    if (item.type === "candy") {
-                        setScore(score + 5, "candy");
-                        gainLife();
-                    } else {
-                        loseLife(true);
-                        root.classList.add("is-spooked");
-                        window.setTimeout(() => root.classList.remove("is-spooked"), 420);
-                    }
-                    window.setTimeout(() => item.node.remove(), 380);
+            if (!item.collected && overlaps(batBounds, pickupBounds)) {
+                item.collected = true;
+                item.node.classList.add("is-collected");
+                if (item.type === "candy") {
+                    setScore(score + 5, "candy");
+                    gainLife();
+                } else {
+                    loseLife(true);
+                    root.classList.add("is-spooked");
+                    window.setTimeout(() => root.classList.remove("is-spooked"), 420);
                 }
-                items.splice(i, 1);
-                continue;
+                window.setTimeout(() => {
+                    item.node.remove();
+                    const itemIndex = items.indexOf(item);
+                    if (itemIndex !== -1) items.splice(itemIndex, 1);
+                }, 380);
             }
             if (item.x < -50) {
                 item.node.remove();
@@ -464,7 +526,7 @@ function initRunner(hero) {
     // ----- 6. Dibujo -----
     // Mueve las capas del fondo y ubica al murciélago en su posición calculada.
     function draw() {
-        const offsets = layerSpeeds.map((factor, index) => `${-(distance * factor % (index === 3 ? 1800 : 900))}px 0px`);
+        const offsets = layerSpeeds.map((factor, index) => `${-(distance * factor % (index === 3 ? 600 : 900))}px 0px`);
         layers.forEach((layer, index) => { layer.style.backgroundPosition = offsets[index]; });
         bat.style.left = `${stage.clientWidth * 0.22}px`;
         bat.style.top = `${batY}px`;
