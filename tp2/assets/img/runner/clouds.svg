@@ -1,16 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
-  <defs>
-    <linearGradient id="mist" x2="0" y2="1"><stop stop-color="#aab9ef" stop-opacity="0"/><stop offset="1" stop-color="#aab9ef" stop-opacity=".12"/></linearGradient>
-  </defs>
-  <g fill="#dbe4ff">
-    <circle cx="54" cy="70" r="2.4"/><circle cx="111" cy="152" r="1.8"/><circle cx="196" cy="94" r="2.2"/><circle cx="267" cy="44" r="1.7"/>
-    <circle cx="330" cy="58" r="2.2"/><circle cx="390" cy="122" r="1.7"/><circle cx="468" cy="82" r="2.6"/><circle cx="536" cy="174" r="1.8"/>
-    <circle cx="610" cy="51" r="2.1"/><circle cx="672" cy="128" r="2.5"/><circle cx="747" cy="72" r="1.8"/><circle cx="819" cy="159" r="2.2"/>
-    <circle cx="875" cy="94" r="1.7"/><circle cx="35" cy="226" r="1.8"/><circle cx="284" cy="215" r="2.1"/><circle cx="724" cy="226" r="2.2"/>
-  </g>
-  <g fill="#f6c96e">
-    <path d="m83 111 3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/><path d="m352 203 2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z"/>
-    <path d="m573 104 3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/><path d="m786 221 2.5 6.5 6.5 2.5-6.5 2.5-2.5 6.5-2.5-6.5-6.5-2.5 6.5-2.5z"/>
-  </g>
-  <path d="M0 280q84-38 170-4t167 0 174-8 172 5 217-1v82H0Z" fill="url(#mist)"/>
+  <g fill="#d9d5ff" opacity=".72"><circle cx="45" cy="78" r="1.8"/><circle cx="116" cy="169" r="1.4"/><circle cx="188" cy="58" r="2"/><circle cx="253" cy="126" r="1.5"/><circle cx="332" cy="73" r="1.8"/><circle cx="407" cy="183" r="1.4"/><circle cx="493" cy="54" r="1.7"/><circle cx="552" cy="143" r="1.5"/><circle cx="631" cy="86" r="2"/><circle cx="716" cy="173" r="1.4"/><circle cx="786" cy="58" r="1.8"/><circle cx="861" cy="125" r="1.5"/></g>
+  <g fill="#ffd98b" opacity=".9"><path d="m96 107 3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/><path d="m294 196 2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="m465 100 3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/><path d="m683 223 2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="m824 179 2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></g>
+  <g fill="#c7c9ee" opacity=".15"><path d="M-80 256q18-25 48-5 14-30 44-11 19 10 13 28h-105q-13-1 0-12Zm342-57q18-25 48-5 14-30 44-11 19 10 13 28H262q-13-1 0-12Zm467 65q18-25 48-5 14-30 44-11 19 10 13 28H729q-13-1 0-12Z"/></g>
 </svg>

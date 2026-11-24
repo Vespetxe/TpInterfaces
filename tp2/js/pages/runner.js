@@ -6,10 +6,10 @@ const RUNNER_ASSETS = [
     "assets/img/runner/murcielago_lose.png",
     "assets/img/runner/caramelo.png",
     "assets/img/runner/fantasmita.png",
-    "assets/img/runner/clouds.svg",
-    "assets/img/runner/hills.svg",
-    "assets/img/runner/castles.svg",
-    "assets/img/runner/foreground.svg"
+    "assets/img/runner/clouds.svg?v=3",
+    "assets/img/runner/hills.svg?v=3",
+    "assets/img/runner/castles.svg?v=3",
+    "assets/img/runner/foreground.svg?v=3"
 ];
 
 function initRunner(hero) {
@@ -384,7 +384,7 @@ function initRunner(hero) {
     }
 
     function draw() {
-        const offsets = layerSpeeds.map((factor) => `${-(distance * factor % 900)}px 0px`);
+        const offsets = layerSpeeds.map((factor, index) => `${-(distance * factor % (index === 3 ? 1800 : 900))}px 0px`);
         layers.forEach((layer, index) => { layer.style.backgroundPosition = offsets[index]; });
         bat.style.left = `${stage.clientWidth * 0.22}px`;
         bat.style.top = `${batY}px`;

@@ -1,15 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
-  <path d="M0 360 80 299l61 43 104-108 88 78 93-125 81 107 99-91 89 83 95-137 110 112v239H0Z" fill="#20264a"/>
-  <path d="M0 390q97-74 197-3t196-15 198 11 197-19 112 8v128H0Z" fill="#171d3d"/>
-  <g fill="#34375e" stroke="#10162f" stroke-width="5">
-    <path d="M119 390v-40q0-20 19-20t19 20v40zm23-64v-18h-9v-13h18v13h-9"/>
-    <path d="M690 387v-48q0-24 22-24t22 24v48zm25-75v-17h-10v-14h20v14h-10"/>
-  </g>
-  <g fill="#6b7197" opacity=".72">
-    <path d="M275 258q0-18 18-18t18 18v8h-36zM774 242q0-14 14-14t14 14v7h-28z"/>
-    <path d="M277 239v-8h12v8m-3-8v-7h6v7M776 226v-7h9v7m-2-7v-6h5v6"/>
-  </g>
-  <g fill="#7fa0ba" opacity=".8">
-    <circle cx="53" cy="376" r="2"/><circle cx="355" cy="399" r="2"/><circle cx="564" cy="374" r="2"/><circle cx="857" cy="387" r="2"/>
-  </g>
+  <path d="M0 405C145 405 145 350 450 350S755 405 900 405" fill="none" stroke="#777196" stroke-width="3" opacity=".38"/>
+  <path d="M0 438C145 438 145 402 450 402S755 438 900 438" fill="none" stroke="#4a4667" stroke-width="3" opacity=".58"/>
+  <g fill="#a9afda" opacity=".26"><circle cx="108" cy="398" r="2"/><circle cx="373" cy="413" r="2"/><circle cx="624" cy="398" r="2"/><circle cx="812" cy="420" r="2"/></g>
 </svg>

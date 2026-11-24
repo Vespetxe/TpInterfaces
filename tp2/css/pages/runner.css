@@ -34,10 +34,10 @@
 .runner__stage { position: relative; isolation: isolate; flex: 1; min-height: 250px; overflow: hidden; border: 4px solid #4b456b; border-radius: 20px; outline: none; background: linear-gradient(#0b1025 0%, #171932 55%, #25203c 100%); box-shadow: 0 7px 0 #332747, 0 12px 28px #090b1a99; }
 .runner__stage:focus-visible { box-shadow: 0 0 0 4px var(--runner-gold), 0 7px 0 #4d346d; }
 .runner__layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat-x; background-size: 900px 100%; will-change: background-position; }
-.runner__layer--clouds { background-image: url("../../assets/img/runner/clouds.svg"); }
-.runner__layer--hills { background-image: url("../../assets/img/runner/hills.svg"); }
-.runner__layer--castles { background-image: url("../../assets/img/runner/castles.svg"); }
-.runner__layer--foreground { z-index: 0; background-image: url("../../assets/img/runner/foreground.svg"); }
+.runner__layer--clouds { background-image: url("../../assets/img/runner/clouds.svg?v=3"); }
+.runner__layer--hills { background-image: url("../../assets/img/runner/hills.svg?v=3"); }
+.runner__layer--castles { background-image: url("../../assets/img/runner/castles.svg?v=3"); }
+.runner__layer--foreground { z-index: 0; background-size: 1800px 100%; background-image: url("../../assets/img/runner/foreground.svg?v=3"); }
 .runner__towers, .runner__items { position: absolute; z-index: 1; inset: 0; pointer-events: none; }
 .runner__tower-pair { position: absolute; inset: 0 auto 0 0; width: 82px; }
 .runner__tower { position: absolute; left: 0; width: 78px; border: 3px solid #563277; background: repeating-linear-gradient(90deg, #9565ba 0 18px, #a979ca 18px 35px); box-shadow: inset 5px 0 #ffffff28, inset -6px 0 #44236342; }
