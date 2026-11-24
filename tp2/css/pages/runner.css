@@ -35,7 +35,10 @@
 .runner__stats { position: absolute; z-index: 4; top: 10px; right: 0; left: 0; display: flex; justify-content: space-between; align-items: flex-start; padding: 0 12px; pointer-events: none; color: var(--runner-cream); font-size: clamp(11px, 1.5vw, 14px); font-weight: 700; }
 .runner__stats span { padding: 7px 12px; border: 1px solid #ffffff45; border-radius: 999px; background: #2c1b56b8; box-shadow: 0 3px 0 #1c123c; }
 .runner__stats strong { margin-left: 5px; color: var(--runner-gold); font-variant-numeric: tabular-nums; }
-.runner__stats .runner__lives { padding: 6px 9px; color: #ff9caf; letter-spacing: 1px; white-space: nowrap; }
+.runner__stats .runner__lives { padding: 6px 9px; color: #71f29a; letter-spacing: 1px; white-space: nowrap; transition: color .18s ease; }
+.runner__stats .runner__lives.is-low { color: #ff657a; }
+.runner__stats .runner__lives.is-gain-flash { animation: runner-lives-gain .62s ease-out; }
+.runner__stats .runner__lives.is-loss-flash { animation: runner-lives-loss .62s ease-out; }
 .runner__stats .runner__lives strong { margin: 0; color: inherit; font-size: clamp(11px, 1.3vw, 14px); }
 .runner__stats .runner__score { position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
 .runner__stats .runner__score strong { color: var(--runner-gold); }
@@ -64,8 +67,6 @@
 .runner__bat-pose { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
 .runner__bat-pose--base { visibility: visible; }
 .runner__bat-pose--flap { visibility: hidden; }
-.runner__bat.is-flapping:not(.is-hurt):not(.is-dead) .runner__bat-pose--base { visibility: hidden; }
-.runner__bat.is-flapping:not(.is-hurt):not(.is-dead) .runner__bat-pose--flap { visibility: visible; }
 .runner__bat-state { position: absolute; inset: 0; display: none; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
 .runner__bat.is-hurt .runner__bat-pose, .runner__bat.is-dead .runner__bat-pose { display: none; }
 .runner__bat.is-hurt .runner__bat-state, .runner__bat.is-dead .runner__bat-state { display: block; }
@@ -96,7 +97,8 @@
 .runner__exit { align-self: center; padding: 5px 12px; border: 1px solid #fff4d9a8; border-radius: 999px; color: #fff7e8; background: #34214cbd; font: inherit; font-size: 12px; cursor: pointer; }
 .runner__exit:hover { background: #50336e; }
 .runner.is-scoring .runner__stats .runner__score { animation: runner-score-pop .4s ease; }
-.runner.is-spooked .runner__stats .runner__lives { animation: runner-score-shake .4s ease; color: #ffb2cb; }
+.runner.is-spooked .runner__stats .runner__lives { animation: runner-score-shake .4s ease; }
+.runner.is-spooked .runner__stats .runner__lives.is-loss-flash { animation: runner-score-shake .4s ease, runner-lives-loss .62s ease-out; }
 
 /* 7. Animaciones: vuelo, daño, recolección y cambios de puntaje */
 @keyframes runner-bat-rise { from { transform: rotate(35deg); } to { transform: rotate(-22deg); } }
@@ -108,6 +110,8 @@
 @keyframes runner-pickup-wiggle { 0%, 100% { transform: rotate(-3deg) scale(.98); } 50% { transform: rotate(3deg) scale(1.02); } }
 @keyframes runner-pickup-collect { to { opacity: 0; } }
 @keyframes runner-pickup-candy-collect { 0% { filter: drop-shadow(0 0 2px #fff08a); } 35% { filter: drop-shadow(0 0 10px #ffe45e) drop-shadow(0 0 18px #ffc928); } 100% { opacity: 0; transform: translateY(-22px) scale(.45); filter: drop-shadow(0 0 14px #ffe45e); } }
+@keyframes runner-lives-gain { 0%, 100% { box-shadow: 0 0 0 0 #64ff8a00; } 35% { box-shadow: 0 0 14px 4px #64ff8a; } }
+@keyframes runner-lives-loss { 0%, 100% { box-shadow: 0 0 0 0 #ff405500; } 35% { box-shadow: 0 0 14px 4px #ff4055; } }
 @keyframes runner-score-pop { 50% { scale: 1.14; color: #ffd36d; } }
 @keyframes runner-score-shake { 25%, 75% { translate: -3px 0; } 50% { translate: 3px 0; } }
 

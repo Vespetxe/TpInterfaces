@@ -58,7 +58,6 @@ function initRunner(hero) {
             <div class="runner__items" id="runnerItems" aria-hidden="true"></div>
             <div class="runner__bat" id="runnerBat" role="img" aria-label="Kawaii bat">
                 <img class="runner__bat-pose runner__bat-pose--base" src="assets/img/runner/murcielago_playing.png" alt="">
-                <img class="runner__bat-pose runner__bat-pose--flap" src="assets/img/runner/murcielago_playing_aleteo.png" alt="">
                 <img class="runner__bat-state" src="assets/img/runner/murcielago_hurt.png" alt="">
             </div>
             <div class="runner__overlay" id="runnerOverlay" aria-live="polite">
@@ -84,11 +83,13 @@ function initRunner(hero) {
     // Guardamos los nodos una sola vez para reutilizarlos durante la partida.
     const stage = root.querySelector("#runnerStage");
     const bat = root.querySelector("#runnerBat");
+    const batPoseImage = root.querySelector(".runner__bat-pose--base");
     const batStateImage = root.querySelector(".runner__bat-state");
     const towersLayer = root.querySelector("#runnerTowers");
     const itemsLayer = root.querySelector("#runnerItems");
     const scoreOutput = root.querySelector("#runnerScore");
     const livesOutput = root.querySelector("#runnerLives");
+    const livesBadge = livesOutput.closest(".runner__lives");
     const overlay = root.querySelector("#runnerOverlay");
     const overlayTitle = root.querySelector("#runnerOverlayTitle");
     const overlayText = root.querySelector("#runnerOverlayText");
@@ -120,6 +121,8 @@ function initRunner(hero) {
     let lastStageWidth = 0;
     let lastStageHeight = 0;
     let flapAnimationTimeout = 0;
+    let flapAnimationFrame = 0;
+    let livesFlashTimeout = 0;
 
     // ----- 4. Entrada del jugador -----
     // Teclado: Space, flecha arriba o W inician la partida y hacen volar.
@@ -146,11 +149,18 @@ function initRunner(hero) {
     function queueFlap() {
         input.flap = true;
         window.clearTimeout(flapAnimationTimeout);
-        bat.classList.remove("is-flapping");
-        void bat.offsetWidth;
-        bat.classList.add("is-flapping", "is-rising");
+        window.cancelAnimationFrame(flapAnimationFrame);
+        bat.classList.add("is-rising");
         bat.classList.remove("is-falling");
-        flapAnimationTimeout = window.setTimeout(() => bat.classList.remove("is-flapping"), 360);
+
+        // Deja que el navegador pinte primero la pose normal y luego muestra el aleteo.
+        batPoseImage.src = "assets/img/runner/murcielago_playing.png";
+        flapAnimationFrame = window.requestAnimationFrame(() => {
+            batPoseImage.src = "assets/img/runner/murcielago_playing_aleteo.png";
+            flapAnimationTimeout = window.setTimeout(() => {
+                batPoseImage.src = "assets/img/runner/murcielago_playing.png";
+            }, 425);
+        });
     }
 
     // Cambia la imagen principal del murciélago (normal, herido o derrotado).
@@ -182,6 +192,19 @@ function initRunner(hero) {
     function renderLives() {
         livesOutput.textContent = "♥".repeat(lives) + "♡".repeat(maxLives - lives);
         livesOutput.setAttribute("aria-label", `${lives} of ${maxLives} lives`);
+        const lowLives = lives <= maxLives / 2;
+        livesBadge.classList.toggle("is-low", lowLives);
+        livesOutput.style.color = lowLives ? "#ff657a" : "#71f29a";
+    }
+
+    // Destella el indicador de vidas para mostrar si se ganó o perdió una.
+    function flashLives(change) {
+        window.clearTimeout(livesFlashTimeout);
+        livesBadge.classList.remove("is-gain-flash", "is-loss-flash");
+        void livesBadge.offsetWidth;
+        const flashClass = change === "gain" ? "is-gain-flash" : "is-loss-flash";
+        livesBadge.classList.add(flashClass);
+        livesFlashTimeout = window.setTimeout(() => livesBadge.classList.remove(flashClass), 650);
     }
 
     // Quita una vida. El enfriamiento evita perder muchas por un mismo choque.
@@ -191,6 +214,7 @@ function initRunner(hero) {
         lives = Math.max(0, lives - 1);
         hitCooldown = 0.8;
         renderLives();
+        flashLives("loss");
         bat.classList.remove("is-hurt", "is-dead");
         void bat.offsetWidth;
         if (lives === 0) bat.classList.add("is-dead");
@@ -206,8 +230,10 @@ function initRunner(hero) {
 
     // Suma una vida sin superar el máximo permitido.
     function gainLife() {
+        const previousLives = lives;
         lives = Math.min(maxLives, lives + 1);
         renderLives();
+        if (lives > previousLives) flashLives("gain");
     }
 
     // Inicializa una partida nueva; el ciclo activo continuará con el estado playing.
@@ -218,6 +244,9 @@ function initRunner(hero) {
         score = 0;
         lives = maxLives;
         hitCooldown = 0;
+        window.clearTimeout(flapAnimationTimeout);
+        window.cancelAnimationFrame(flapAnimationFrame);
+        batPoseImage.src = "assets/img/runner/murcielago_playing.png";
         bat.classList.remove("is-hurt", "is-rising", "is-falling");
         setBatImage("assets/img/runner/murcielago_playing.png");
         distance = 0;
@@ -250,6 +279,8 @@ function initRunner(hero) {
         state = "ready";
         input.flap = false;
         window.clearTimeout(flapAnimationTimeout);
+        window.cancelAnimationFrame(flapAnimationFrame);
+        batPoseImage.src = "assets/img/runner/murcielago_playing.png";
         bat.classList.remove("is-hurt", "is-dead", "is-flapping", "is-rising", "is-falling");
         setBatImage("assets/img/runner/murcielago_playing.png");
         distance = 0;
@@ -257,6 +288,7 @@ function initRunner(hero) {
         score = 0;
         lives = maxLives;
         hitCooldown = 0;
+        livesBadge.classList.remove("is-gain-flash", "is-loss-flash");
         batVelocity = 0;
         batY = stage.clientHeight * 0.46;
         nextTowerIn = 0.8;
