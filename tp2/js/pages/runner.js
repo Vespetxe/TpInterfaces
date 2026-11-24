@@ -1,4 +1,20 @@
-// ===== Moonlit Flight: estado, entrada, actualización y dibujo =====
+/*
+ * MOONLIT FLIGHT
+ * Minijuego estilo "Flappy Bird" integrado en la página de detalle.
+ *
+ * Orden para estudiar el archivo:
+ * 1. Recursos y construcción de la interfaz.
+ * 2. Estado del juego y referencias al HTML.
+ * 3. Entrada del jugador y eventos.
+ * 4. Reglas (vidas, puntaje, obstáculos y objetos).
+ * 5. Bucle principal: frame -> update -> draw.
+ * 6. Preparación inicial.
+ *
+ * Todo queda dentro de initRunner para que las variables del juego no
+ * contaminen el ámbito global. game-detail.js llama a esta función.
+ */
+
+// Imágenes que se cargan antes de habilitar el botón de inicio.
 const RUNNER_ASSETS = [
     "assets/img/runner/murcielago_playing.png",
     "assets/img/runner/murcielago_playing_aleteo.png",
@@ -12,7 +28,16 @@ const RUNNER_ASSETS = [
     "assets/img/runner/foreground.svg?v=3"
 ];
 
+// Constantes de física y movimiento (pixeles y segundos).
+// Centralizarlas facilita entender y ajustar la dificultad.
+const RUNNER_GRAVITY = 1120;
+const RUNNER_FLAP_IMPULSE = -405;
+const RUNNER_MAX_FALL_SPEED = 690;
+const RUNNER_WORLD_SPEED = 225;
+
 function initRunner(hero) {
+    // ----- 1. Interfaz del juego -----
+    // La estructura se crea desde JavaScript y se inserta dentro del hero.
     const root = document.createElement("section");
     root.className = "runner";
     root.setAttribute("aria-label", "Moonlit Flight runner game");
@@ -55,6 +80,8 @@ function initRunner(hero) {
     `;
     hero.appendChild(root);
 
+    // ----- 2. Referencias a elementos de la interfaz -----
+    // Guardamos los nodos una sola vez para reutilizarlos durante la partida.
     const stage = root.querySelector("#runnerStage");
     const bat = root.querySelector("#runnerBat");
     const batStateImage = root.querySelector(".runner__bat-state");
@@ -68,10 +95,16 @@ function initRunner(hero) {
     const mainButton = root.querySelector("#runnerMainButton");
     const exitButton = root.querySelector("#runnerExit");
     const layers = [...root.querySelectorAll(".runner__layer")];
+    // Cada capa del fondo se mueve a distinta velocidad para crear profundidad.
     const layerSpeeds = [0.12, 0.24, 0.48, 0.82];
+
+    // ----- 3. Estado del juego -----
+    // input conserva una acción pendiente hasta que update la procesa.
     const input = { flap: false };
+    // Obstáculos y objetos activos en pantalla.
     const towers = [];
     const items = [];
+    // Variables del único ciclo requestAnimationFrame y del estado general.
     let animationFrame = 0;
     let previousFrame = 0;
     let state = "loading";
@@ -87,6 +120,8 @@ function initRunner(hero) {
     let lastStageWidth = 0;
     let lastStageHeight = 0;
 
+    // ----- 4. Entrada del jugador -----
+    // Teclado: Space, flecha arriba o W inician la partida y hacen volar.
     const onKeyDown = (event) => {
         if (!["Space", "ArrowUp", "KeyW"].includes(event.code)) return;
         event.preventDefault();
@@ -94,22 +129,26 @@ function initRunner(hero) {
         if (state === "ready") startGame();
         if (state === "playing") queueFlap();
     };
+    // Mouse/pantalla táctil: tocar el escenario hace lo mismo que el teclado.
     const onPointerDown = (event) => {
         if (event.target.closest("button")) return;
         if (state === "ready") startGame();
         if (state === "playing") queueFlap();
     };
+    // Al soltar la tecla se limpia la acción para que cada pulsación sea un aleteo.
     const onKeyUp = (event) => {
         if (["Space", "ArrowUp", "KeyW"].includes(event.code)) input.flap = false;
     };
     const onBlur = () => { input.flap = false; };
 
+    // Registra un aleteo. La física se aplica luego en update().
     function queueFlap() {
         input.flap = true;
         bat.classList.add("is-rising");
         bat.classList.remove("is-falling");
     }
 
+    // Cambia la imagen principal del murciélago (normal, herido o derrotado).
     function setBatImage(src) {
         batStateImage.src = src;
     }
@@ -124,6 +163,7 @@ function initRunner(hero) {
     });
     exitButton.addEventListener("click", leaveGame);
 
+    // Espera la carga de todos los recursos. Si alguno falla, el juego igual continúa.
     function preloadAssets() {
         return Promise.all(RUNNER_ASSETS.map((src) => new Promise((resolve) => {
             const image = new Image();
@@ -133,11 +173,14 @@ function initRunner(hero) {
         })));
     }
 
+    // Refleja el valor numérico de vidas como corazones y texto accesible.
     function renderLives() {
         livesOutput.textContent = "♥".repeat(lives) + "♡".repeat(maxLives - lives);
         livesOutput.setAttribute("aria-label", `${lives} of ${maxLives} lives`);
     }
 
+    // Quita una vida. El enfriamiento evita perder muchas por un mismo choque.
+    // ignoreCooldown se usa con fantasmas, que siempre descuentan una vida.
     function loseLife(ignoreCooldown = false) {
         if ((!ignoreCooldown && hitCooldown > 0) || state !== "playing") return false;
         lives = Math.max(0, lives - 1);
@@ -156,11 +199,13 @@ function initRunner(hero) {
         return true;
     }
 
+    // Suma una vida sin superar el máximo permitido.
     function gainLife() {
         lives = Math.min(maxLives, lives + 1);
         renderLives();
     }
 
+    // Inicializa una partida nueva; el ciclo activo continuará con el estado playing.
     function startGame() {
         if (state !== "ready") return;
         state = "playing";
@@ -180,11 +225,11 @@ function initRunner(hero) {
         renderLives();
         overlay.hidden = true;
         stage.focus({ preventScroll: true });
+        // El ciclo ya está activo desde que termina la carga; solo reiniciamos su reloj.
         previousFrame = performance.now();
-        cancelAnimationFrame(animationFrame);
-        animationFrame = requestAnimationFrame(frame);
     }
 
+    // Prepara la pantalla de inicio y vuelve a comenzar tras una derrota.
     function resetGame() {
         state = "ready";
         overlayTitle.textContent = "Ready to fly?";
@@ -195,17 +240,20 @@ function initRunner(hero) {
         queueFlap();
     }
 
+    // Cambia al estado de fin y muestra el resultado cuando las vidas llegan a cero.
     function endGame() {
         if (state !== "playing") return;
         state = "over";
-        cancelAnimationFrame(animationFrame);
         overlayTitle.textContent = "The bat needs a little rest";
         overlayText.textContent = `Final score: ${score}. The bat ran out of lives. Try again and collect more candy.`;
         mainButton.textContent = "Fly again";
         overlay.hidden = false;
     }
 
+    // Quita los eventos y la interfaz para regresar a la página del juego.
     function leaveGame() {
+        // Cerramos el estado antes de cancelar el próximo frame.
+        state = "closed";
         cancelAnimationFrame(animationFrame);
         document.removeEventListener("keydown", onKeyDown);
         document.removeEventListener("keyup", onKeyUp);
@@ -217,6 +265,7 @@ function initRunner(hero) {
         if (playButton) playButton.style.display = "";
     }
 
+    // Crea un par de torres con una abertura aleatoria por la que debe pasar el bat.
     function makeTower() {
         const stageHeight = stage.clientHeight;
         const gapSize = Math.max(132, 202 - elapsed * 1.05);
@@ -239,6 +288,7 @@ function initRunner(hero) {
         return tower;
     }
 
+    // Crea un caramelo (premio) o fantasma (peligro) entre dos obstáculos.
     function makeItem(tower, type, spacingToNextTower) {
         const isCandy = type === "candy";
         const node = document.createElement("div");
@@ -254,6 +304,7 @@ function initRunner(hero) {
         items.push({ node, type: isCandy ? "candy" : "ghost", x: tower.x + spacingToNextTower / 2, y: tower.gapCenter + signedOffset - pickupHeight / 2, collected: false });
     }
 
+    // Actualiza el marcador y dispara una animación según el evento que sumó puntos.
     function setScore(nextScore, pickupType) {
         score = nextScore;
         scoreOutput.textContent = String(score);
@@ -264,19 +315,39 @@ function initRunner(hero) {
         window.setTimeout(() => root.classList.remove("is-scoring", "is-spooked", "is-candy-pickup"), 420);
     }
 
+    // Colisión de rectángulos: true cuando ambos rectángulos se superponen.
     function overlaps(a, b) {
         return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
     }
 
+    // Un frame mide el tiempo transcurrido, actualiza la lógica y vuelve a programarse.
     function frame(now) {
-        if (state !== "playing") return;
+        if (state === "closed") return;
+
+        // Convertimos milisegundos a segundos y limitamos dt para evitar saltos grandes
+        // si la pestaña estuvo pausada o el navegador perdió cuadros.
         const dt = Math.min((now - previousFrame) / 1000, 0.05);
         previousFrame = now;
-        update(dt);
-        draw();
-        if (state === "playing") animationFrame = requestAnimationFrame(frame);
+
+        // El mismo ciclo atiende los tres estados principales de la interfaz.
+        // Solo durante la partida se actualizan física, obstáculos y colisiones.
+        switch (state) {
+            case "ready": // Menú de inicio
+            case "over":  // Pantalla de fin
+                draw();
+                break;
+            case "playing": // Partida activa
+                update(dt);
+                draw();
+                break;
+        }
+
+        // Se solicita exactamente un nuevo frame mientras el minijuego siga montado.
+        if (state !== "closed") animationFrame = requestAnimationFrame(frame);
     }
 
+    // ----- 5. Actualización: física, generación y colisiones -----
+    // dt es el tiempo desde el frame anterior, expresado en segundos.
     function update(dt) {
         const width = stage.clientWidth;
         const height = stage.clientHeight;
@@ -289,20 +360,22 @@ function initRunner(hero) {
         elapsed += dt;
         hitCooldown = Math.max(0, hitCooldown - dt);
 
+        // Física vertical: la gravedad acelera la caída y el aleteo impulsa hacia arriba.
         if (input.flap) {
-            batVelocity = -405;
+            batVelocity = RUNNER_FLAP_IMPULSE;
             bat.classList.add("is-rising");
             bat.classList.remove("is-falling");
             input.flap = false;
         }
-        batVelocity = Math.min(690, batVelocity + 1120 * dt);
+        batVelocity = Math.min(RUNNER_MAX_FALL_SPEED, batVelocity + RUNNER_GRAVITY * dt);
         batY += batVelocity * dt;
-        distance += 225 * dt;
+        distance += RUNNER_WORLD_SPEED * dt;
         if (batVelocity > 45) {
             bat.classList.add("is-falling");
             bat.classList.remove("is-rising");
         }
 
+        // Los límites superior e inferior rebotan al murciélago y pueden quitar vida.
         if (batY < 12) {
             batY = 12;
             batVelocity = Math.max(180, Math.abs(batVelocity) * 0.72);
@@ -317,20 +390,24 @@ function initRunner(hero) {
             loseLife();
         }
 
+        // Cuenta regresiva para generar la próxima torre y, a veces, un objeto.
         nextTowerIn -= dt;
         if (nextTowerIn <= 0) {
             const tower = makeTower();
             nextTowerIn = Math.max(1.15, 1.55 - elapsed * 0.004) + Math.random() * 0.45;
             if (Math.random() < 0.5) {
                 const type = Math.random() < 0.5 ? "ghost" : "candy";
-                makeItem(tower, type, 225 * nextTowerIn);
+                makeItem(tower, type, RUNNER_WORLD_SPEED * nextTowerIn);
             }
         }
 
+        // Caja de colisión reducida respecto del dibujo para que el juego se sienta justo.
         const batBounds = { left: width * 0.22 + 13, right: width * 0.22 + 47, top: batY + 10, bottom: batY + 38 };
+        // Mover torres, sumar por superarlas, comprobar choque y retirar las fuera de pantalla.
+        // Se recorre al revés para poder borrar elementos del array sin saltear ninguno.
         for (let i = towers.length - 1; i >= 0; i--) {
             const tower = towers[i];
-            tower.x -= 225 * dt;
+            tower.x -= RUNNER_WORLD_SPEED * dt;
             tower.node.style.transform = `translate3d(${tower.x}px, 0, 0)`;
             const towerLeft = tower.x + 10;
             const towerRight = towerLeft + 56;
@@ -354,9 +431,10 @@ function initRunner(hero) {
             }
         }
 
+        // Mover caramelos/fantasmas, aplicar sus efectos y limpiar los que ya pasaron.
         for (let i = items.length - 1; i >= 0; i--) {
             const item = items[i];
-            item.x -= 225 * dt;
+            item.x -= RUNNER_WORLD_SPEED * dt;
             item.node.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
             const pickupBounds = { left: item.x + 7, right: item.x + 39, top: item.y + 7, bottom: item.y + 39 };
             if (overlaps(batBounds, pickupBounds)) {
@@ -383,6 +461,8 @@ function initRunner(hero) {
         }
     }
 
+    // ----- 6. Dibujo -----
+    // Mueve las capas del fondo y ubica al murciélago en su posición calculada.
     function draw() {
         const offsets = layerSpeeds.map((factor, index) => `${-(distance * factor % (index === 3 ? 1800 : 900))}px 0px`);
         layers.forEach((layer, index) => { layer.style.backgroundPosition = offsets[index]; });
@@ -390,6 +470,8 @@ function initRunner(hero) {
         bat.style.top = `${batY}px`;
     }
 
+    // ----- 7. Preparación -----
+    // Espera recursos, cambia de loading a ready y dibuja la pantalla inicial.
     function prepareGame() {
         const preload = preloadAssets();
         preload.then(() => {
@@ -401,6 +483,9 @@ function initRunner(hero) {
             lastStageWidth = stage.clientWidth;
             lastStageHeight = stage.clientHeight;
             draw();
+            // El ciclo comienza una vez, al quedar listo, y atiende menú/juego/fin.
+            previousFrame = performance.now();
+            animationFrame = requestAnimationFrame(frame);
         });
     }
 

@@ -1,10 +1,17 @@
-/* Moonlit Flight lives in the shared game detail hero. */
+/*
+ * MOONLIT FLIGHT — estilos del minijuego.
+ * Orden: integración con la página, estructura, escenario, objetos,
+ * interfaz, animaciones y adaptaciones para pantallas pequeñas.
+ */
+
+/* 1. Integración con el hero de la página de detalle */
 .game-detail-main--runner { width: min(1440px, calc(100% - 40px)); }
 .game-hero--runner { min-height: 420px; aspect-ratio: 16 / 7; background: #261a4b; }
 .game-hero--runner .game-hero__image { object-fit: cover; }
 .game-hero--runner-started .game-hero__image { opacity: 0; }
 .game-hero--runner-started { overflow: visible; }
 
+/* 2. Contenedor general y encabezado */
 .runner {
     --runner-ink: #291947;
     --runner-cream: #fff7e5;
@@ -24,6 +31,7 @@
 .runner__topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; }
 .runner__brand { color: var(--runner-cream); font-size: clamp(14px, 2vw, 20px); font-weight: 800; text-shadow: 0 2px 0 #442664; }
 .runner__brand span { color: var(--runner-gold); font-size: 1.25em; vertical-align: -1px; }
+/* 3. Escenario, capas del fondo e indicadores */
 .runner__stats { position: absolute; z-index: 4; top: 10px; right: 0; left: 0; display: flex; justify-content: space-between; align-items: flex-start; padding: 0 12px; pointer-events: none; color: var(--runner-cream); font-size: clamp(11px, 1.5vw, 14px); font-weight: 700; }
 .runner__stats span { padding: 7px 12px; border: 1px solid #ffffff45; border-radius: 999px; background: #2c1b56b8; box-shadow: 0 3px 0 #1c123c; }
 .runner__stats strong { margin-left: 5px; color: var(--runner-gold); font-variant-numeric: tabular-nums; }
@@ -39,6 +47,7 @@
 .runner__layer--castles { background-image: url("../../assets/img/runner/castles.svg?v=3"); }
 .runner__layer--foreground { z-index: 0; background-size: 1800px 100%; background-image: url("../../assets/img/runner/foreground.svg?v=3"); }
 .runner__towers, .runner__items { position: absolute; z-index: 1; inset: 0; pointer-events: none; }
+/* 4. Obstáculos: cada pareja tiene una torre superior y otra inferior */
 .runner__tower-pair { position: absolute; inset: 0 auto 0 0; width: 82px; }
 .runner__tower { position: absolute; left: 0; width: 78px; border: 3px solid #563277; background: repeating-linear-gradient(90deg, #9565ba 0 18px, #a979ca 18px 35px); box-shadow: inset 5px 0 #ffffff28, inset -6px 0 #44236342; }
 .runner__tower--top { top: 0; border-radius: 0 0 13px 13px; }
@@ -49,6 +58,7 @@
 .runner__tower::after { content: "✦"; position: absolute; left: 50%; color: #ffe7a3; font-size: 18px; text-shadow: 0 1px 3px #482862; transform: translateX(-50%); }
 .runner__tower--top::after { bottom: 28px; }
 .runner__tower--bottom::after { top: 28px; }
+/* 5. Personaje y objetos coleccionables */
 .runner__bat { position: absolute; z-index: 3; width: 78px; height: 64px; transform-origin: 50% 50%; transform: rotate(var(--bat-tilt, 35deg)); transition: transform .18s ease-out; will-change: transform, top, left; filter: drop-shadow(0 4px 1px #41305245); }
 .runner__bat-pose { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; }
 .runner__bat-pose--base { animation: runner-bat-base-frame .32s steps(1, end) infinite; }
@@ -66,6 +76,7 @@
 .runner__pickup--ghost { width: 34px; height: 42px; animation-duration: 1.5s; }
 .runner__pickup.is-collected { animation: runner-pickup-collect .36s ease-in forwards; pointer-events: none; }
 .runner__pickup--candy.is-collected { animation: runner-pickup-candy-collect .36s ease-in forwards; }
+/* 6. Pantalla de inicio/fin, reglas y botón para salir */
 .runner__overlay { position: absolute; z-index: 5; inset: 0; display: grid; place-items: center; padding: 18px; background: #20133d78; backdrop-filter: blur(3px); }
 .runner__overlay[hidden] { display: none; }
 .runner__card { width: min(390px, 94%); padding: clamp(18px, 3vw, 28px); border: 3px solid #fff0ce; border-radius: 24px; background: #fff8e8; box-shadow: 0 7px 0 #60447a; text-align: center; }
@@ -83,6 +94,7 @@
 .runner.is-scoring .runner__stats .runner__score { animation: runner-score-pop .4s ease; }
 .runner.is-spooked .runner__stats .runner__lives { animation: runner-score-shake .4s ease; color: #ffb2cb; }
 
+/* 7. Animaciones: vuelo, daño, recolección y cambios de puntaje */
 @keyframes runner-bat-rise { from { transform: rotate(35deg); } to { transform: rotate(-22deg); } }
 @keyframes runner-bat-fall { from { transform: rotate(-22deg); } to { transform: rotate(35deg); } }
 @keyframes runner-bat-hurt { 0%, 100% { transform: rotate(var(--bat-tilt, 35deg)) translateX(0); } 20%, 60% { transform: rotate(var(--bat-tilt, 35deg)) translateX(-6px); } 40%, 80% { transform: rotate(var(--bat-tilt, 35deg)) translateX(6px); } }
@@ -95,6 +107,7 @@
 @keyframes runner-score-pop { 50% { scale: 1.14; color: #ffd36d; } }
 @keyframes runner-score-shake { 25%, 75% { translate: -3px 0; } 50% { translate: 3px 0; } }
 
+/* 8. Ajustes de distribución para celulares */
 @media (max-width: 640px) {
     .game-detail-main--runner { width: min(100% - 20px, 1440px); }
     .game-hero--runner { min-height: 480px; aspect-ratio: auto; }
@@ -107,6 +120,7 @@
     .runner__stats { padding: 0 7px; }
     .runner__stats .runner__lives { padding: 5px 6px; letter-spacing: 0; }
 }
+/* Respeta la preferencia del sistema por menos movimiento. */
 @media (prefers-reduced-motion: reduce) {
     .runner__pickup { animation-duration: 1.8s; }
     .runner__button { transition: none; }
